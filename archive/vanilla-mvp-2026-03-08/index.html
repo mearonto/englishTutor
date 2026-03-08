@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en-CA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Word Quest: Northern Trails</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="topbar">
+        <h1>Word Quest: Northern Trails</h1>
+        <div class="stats">
+          <span>Grade: <strong id="gradeLabel">3</strong></span>
+          <span>XP: <strong id="xpLabel">0</strong></span>
+          <span>Stars: <strong id="starsLabel">0</strong></span>
+          <span>Tokens: <strong id="tokensLabel">0</strong></span>
+          <span>Streak: <strong id="streakLabel">0</strong></span>
+        </div>
+      </header>
+
+      <section class="map-panel">
+        <div id="zoneMessage" class="zone-message"></div>
+        <div class="progress-wrap">
+          <label for="masteryBar">Grade 3 Mastery</label>
+          <progress id="masteryBar" max="100" value="0"></progress>
+          <span id="masteryPct">0%</span>
+        </div>
+      </section>
+
+      <section id="questionCard" class="question-card"></section>
+
+      <section class="actions">
+        <button id="nextBtn" disabled>Next Challenge</button>
+        <button id="shopBtn" type="button">Open Camp Shop</button>
+        <button id="resetBtn" type="button" class="danger">Reset Save</button>
+      </section>
+
+      <dialog id="shopDialog">
+        <h2>Camp Shop</h2>
+        <p>Spend tokens on cosmetics and helper boosts.</p>
+        <ul id="shopList"></ul>
+        <button id="closeShopBtn" type="button">Close</button>
+      </dialog>
+
+      <footer>
+        <p id="feedback" aria-live="polite"></p>
+      </footer>
+    </main>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
