@@ -17,6 +17,13 @@ import {
 import { importLevelsFromCsv, importLevelsFromJson, reportToCsv } from "./game/teacher";
 import type { PlayerState } from "./game/types";
 
+const AUDIO_SETTINGS_KEY = "word-quest-audio-settings-v1";
+const SPEED_OPTIONS = [
+  { label: "Slow", value: 0.75 },
+  { label: "Normal", value: 0.88 },
+  { label: "Fast", value: 1.02 }
+] as const;
+
 function App() {
   const [state, setState] = useState<PlayerState>(getState());
   const [feedback, setFeedback] = useState<{ message: string; good: boolean }>({
@@ -26,9 +33,15 @@ function App() {
   const [shopOpen, setShopOpen] = useState(false);
   const [teacherOpen, setTeacherOpen] = useState(false);
   const [customCount, setCustomCount] = useState(getCustomLevelsCount());
+  const [audioEnabled, setAudioEnabled] = useState<boolean>(true);
+  const [speechRate, setSpeechRate] = useState<number>(0.88);
   const gameRef = useRef<Phaser.Game | null>(null);
 
   useEffect(() => {
+    const saved = loadAudioSettings();
+    setAudioEnabled(saved.enabled);
+    setSpeechRate(saved.rate);
+
     gameRef.current = createGame("phaser-root");
     const unsub = subscribe((nextState) => {
       setState(nextState);
@@ -46,9 +59,21 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    saveAudioSettings({ enabled: audioEnabled, rate: speechRate });
+    gameEvents.emit("command-audio-settings", { enabled: audioEnabled, rate: speechRate });
+  }, [audioEnabled, speechRate]);
+
   const mastery = useMemo(() => masteryPercent(), [state]);
 
   const onNext = () => gameEvents.emit("command-next");
+  const onHearWord = () => {
+    if (!audioEnabled) {
+      setFeedback({ message: "Audio is off. Enable it in Teacher Mode.", good: false });
+      return;
+    }
+    gameEvents.emit("command-pronounce");
+  };
 
   const onReset = () => {
     resetAll();
@@ -130,6 +155,7 @@ function App() {
       </section>
 
       <section className="actions">
+        <button onClick={onHearWord}>Hear Word</button>
         <button onClick={onNext}>Next Challenge</button>
         <button onClick={() => setShopOpen(true)}>Open Camp Shop</button>
         <button onClick={() => setTeacherOpen(true)}>Teacher Mode</button>
@@ -176,6 +202,31 @@ function App() {
               <button onClick={exportJsonReport}>Export Report (JSON)</button>
               <button onClick={exportCsvReport}>Export Report (CSV)</button>
             </div>
+            <hr />
+            <h3>Audio Settings</h3>
+            <label className="toggle-row">
+              <input
+                type="checkbox"
+                checked={audioEnabled}
+                onChange={(event) => setAudioEnabled(event.target.checked)}
+              />
+              <span>Audio On (TTS + success/miss cues)</span>
+            </label>
+            <label htmlFor="speechRate" className="field-label">
+              Pronunciation Speed
+            </label>
+            <select
+              id="speechRate"
+              value={String(speechRate)}
+              onChange={(event) => setSpeechRate(Number(event.target.value))}
+              disabled={!audioEnabled}
+            >
+              {SPEED_OPTIONS.map((option) => (
+                <option key={option.label} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
             <button onClick={() => setTeacherOpen(false)}>Close</button>
           </div>
         </section>
@@ -204,6 +255,25 @@ function dateStamp(): string {
   const mm = String(now.getMonth() + 1).padStart(2, "0");
   const dd = String(now.getDate()).padStart(2, "0");
   return `${yyyy}${mm}${dd}`;
+}
+
+function loadAudioSettings(): { enabled: boolean; rate: number } {
+  try {
+    const raw = localStorage.getItem(AUDIO_SETTINGS_KEY);
+    if (!raw) {
+      return { enabled: true, rate: 0.88 };
+    }
+    const parsed = JSON.parse(raw) as { enabled?: boolean; rate?: number };
+    const enabled = parsed.enabled ?? true;
+    const rate = typeof parsed.rate === "number" ? parsed.rate : 0.88;
+    return { enabled, rate };
+  } catch {
+    return { enabled: true, rate: 0.88 };
+  }
+}
+
+function saveAudioSettings(settings: { enabled: boolean; rate: number }): void {
+  localStorage.setItem(AUDIO_SETTINGS_KEY, JSON.stringify(settings));
 }
 
 export default App;

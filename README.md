@@ -25,6 +25,12 @@ npm run preview
 - React HUD for XP, stars, tokens, streak, grade unlock, and mastery progress.
 - Grade 3 and Grade 4 starter content with Canadian spellings.
 - Reward shop and local save (`localStorage`).
+- Audio support for language learners:
+  - Built-in TTS pronunciation of the challenge word and context sentence.
+  - Manual `Hear Word` button to replay pronunciation.
+  - Phaser/WebAudio success sparkle cue and miss thud cue.
+  - Teacher-controlled `Audio On/Off` toggle.
+  - Teacher-controlled pronunciation speed: `Slow`, `Normal`, `Fast`.
 - Teacher Mode:
   - Import custom word packs from `.json` or `.csv`.
   - Export learner progress reports as `.json` or `.csv`.

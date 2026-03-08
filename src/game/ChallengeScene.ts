@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { gameEvents } from "./events";
 import { applyCorrect, applyFailedRound, breakStreak, pickNextLevel } from "./store";
+import { speakWord } from "./tts";
 import type { Level } from "./types";
 
 type ChoiceNode = {
@@ -19,6 +20,8 @@ export class ChallengeScene extends Phaser.Scene {
   private hintText?: Phaser.GameObjects.Text;
   private typeText?: Phaser.GameObjects.Text;
   private choiceNodes: ChoiceNode[] = [];
+  private audioEnabled = true;
+  private speechRate = 0.88;
 
   constructor() {
     super("ChallengeScene");
@@ -56,8 +59,12 @@ export class ChallengeScene extends Phaser.Scene {
     });
 
     gameEvents.on("command-next", this.startRound, this);
+    gameEvents.on("command-pronounce", this.pronounceCurrent, this);
+    gameEvents.on("command-audio-settings", this.applyAudioSettings, this);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       gameEvents.off("command-next", this.startRound, this);
+      gameEvents.off("command-pronounce", this.pronounceCurrent, this);
+      gameEvents.off("command-audio-settings", this.applyAudioSettings, this);
     });
 
     this.startRound();
@@ -111,6 +118,7 @@ export class ChallengeScene extends Phaser.Scene {
     });
 
     gameEvents.emit("feedback", { message: "", good: false });
+    this.pronounceCurrent();
   }
 
   private onChoice(choice: string): void {
@@ -118,17 +126,20 @@ export class ChallengeScene extends Phaser.Scene {
       return;
     }
 
+    this.resumeAudioContext();
     this.tries += 1;
     const isCorrect = choice === this.level.answer;
 
     if (isCorrect) {
       this.complete = true;
+      this.playSuccessCue();
       const reward = applyCorrect(this.level, this.tries);
       this.choiceNodes.forEach((node) => {
         if (node.value === choice) {
           node.bg.setFillStyle(0xe0f7f2);
         }
       });
+      this.speak(this.level.answer, this.level.contextSentence);
       gameEvents.emit("feedback", {
         message: `Correct! +${reward.xp} XP, +${reward.stars} stars, +${reward.tokens} tokens`,
         good: true
@@ -136,6 +147,7 @@ export class ChallengeScene extends Phaser.Scene {
       return;
     }
 
+    this.playMissCue();
     breakStreak();
     if (this.tries === 1) {
       this.hintText.setText(`Hint: ${this.level.hints[0]}`);
@@ -165,9 +177,100 @@ export class ChallengeScene extends Phaser.Scene {
       }
       node.container.disableInteractive();
     });
+    this.speak(this.level.answer, this.level.contextSentence);
     gameEvents.emit("feedback", {
       message: `Answer: ${this.level.answer}. You still earn +${reward.xp} XP.`,
       good: false
     });
+  }
+
+  private pronounceCurrent(): void {
+    if (!this.level) {
+      return;
+    }
+    this.resumeAudioContext();
+    this.speak(this.level.word, this.level.contextSentence);
+  }
+
+  private resumeAudioContext(): void {
+    const ctx = this.getAudioContext();
+    if (ctx && ctx.state === "suspended") {
+      void ctx.resume();
+    }
+  }
+
+  private playSuccessCue(): void {
+    if (!this.audioEnabled) {
+      return;
+    }
+    const ctx = this.getAudioContext();
+    if (!ctx) {
+      return;
+    }
+    const now = ctx.currentTime;
+    this.playTone(ctx, 660, now, 0.08, "triangle", 0.06);
+    this.playTone(ctx, 880, now + 0.08, 0.08, "triangle", 0.05);
+    this.playTone(ctx, 1100, now + 0.16, 0.1, "sine", 0.05);
+  }
+
+  private playMissCue(): void {
+    if (!this.audioEnabled) {
+      return;
+    }
+    const ctx = this.getAudioContext();
+    if (!ctx) {
+      return;
+    }
+    const now = ctx.currentTime;
+    this.playTone(ctx, 130, now, 0.15, "sawtooth", 0.08, 60);
+  }
+
+  private playTone(
+    ctx: AudioContext,
+    freq: number,
+    start: number,
+    duration: number,
+    type: OscillatorType,
+    gainPeak: number,
+    endFreq?: number
+  ): void {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, start);
+    if (endFreq) {
+      osc.frequency.exponentialRampToValueAtTime(endFreq, start + duration);
+    }
+
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.exponentialRampToValueAtTime(gainPeak, start + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(start);
+    osc.stop(start + duration + 0.02);
+  }
+
+  private getAudioContext(): AudioContext | null {
+    const maybeCtx = (this.sound as unknown as { context?: AudioContext }).context;
+    return maybeCtx ?? null;
+  }
+
+  private speak(word: string, contextSentence?: string): void {
+    if (!this.audioEnabled) {
+      return;
+    }
+    speakWord(word, contextSentence, this.speechRate);
+  }
+
+  private applyAudioSettings(payload: { enabled?: boolean; rate?: number }): void {
+    if (typeof payload.enabled === "boolean") {
+      this.audioEnabled = payload.enabled;
+    }
+    if (typeof payload.rate === "number" && payload.rate > 0.5 && payload.rate <= 1.2) {
+      this.speechRate = payload.rate;
+    }
   }
 }
