@@ -34,6 +34,8 @@ npm run preview
 - Teacher Mode:
   - Import custom word packs from `.json` or `.csv`.
   - Export learner progress reports as `.json` or `.csv`.
+  - Configure and run fixed-length tests: `10`, `20`, or `50` questions.
+  - End-of-test scoring summary (correct count + percentage).
 
 ## Teacher Pack Import Format
 

@@ -23,6 +23,15 @@ const SPEED_OPTIONS = [
   { label: "Normal", value: 0.88 },
   { label: "Fast", value: 1.02 }
 ] as const;
+const TEST_LENGTH_OPTIONS = [10, 20, 50] as const;
+
+type TestState = {
+  running: boolean;
+  finished: boolean;
+  target: 10 | 20 | 50;
+  answered: number;
+  correct: number;
+};
 
 function App() {
   const [state, setState] = useState<PlayerState>(getState());
@@ -35,6 +44,15 @@ function App() {
   const [customCount, setCustomCount] = useState(getCustomLevelsCount());
   const [audioEnabled, setAudioEnabled] = useState<boolean>(true);
   const [speechRate, setSpeechRate] = useState<number>(0.88);
+  const [testLength, setTestLength] = useState<10 | 20 | 50>(10);
+  const [canGoNext, setCanGoNext] = useState(false);
+  const [testState, setTestState] = useState<TestState>({
+    running: false,
+    finished: false,
+    target: 10,
+    answered: 0,
+    correct: 0
+  });
   const gameRef = useRef<Phaser.Game | null>(null);
 
   useEffect(() => {
@@ -50,10 +68,32 @@ function App() {
 
     const feedbackHandler = (payload: { message: string; good: boolean }) => setFeedback(payload);
     gameEvents.on("feedback", feedbackHandler);
+    gameEvents.on("round-start", () => setCanGoNext(false));
+    gameEvents.on("question-complete", (payload: { correct: boolean }) => {
+      setCanGoNext(true);
+      setTestState((prev) => {
+        if (!prev.running) {
+          return prev;
+        }
+        const answered = prev.answered + 1;
+        const correct = prev.correct + (payload.correct ? 1 : 0);
+        if (answered >= prev.target) {
+          const pct = Math.round((correct / prev.target) * 100);
+          setFeedback({
+            message: `Test complete: ${correct}/${prev.target} correct (${pct}%).`,
+            good: pct >= 70
+          });
+          return { ...prev, answered, correct, running: false, finished: true };
+        }
+        return { ...prev, answered, correct };
+      });
+    });
 
     return () => {
       unsub();
       gameEvents.off("feedback", feedbackHandler);
+      gameEvents.off("round-start");
+      gameEvents.off("question-complete");
       gameRef.current?.destroy(true);
       gameRef.current = null;
     };
@@ -66,7 +106,15 @@ function App() {
 
   const mastery = useMemo(() => masteryPercent(), [state]);
 
-  const onNext = () => gameEvents.emit("command-next");
+  const onNext = () => {
+    if (testState.finished) {
+      return;
+    }
+    if (testState.running && !canGoNext) {
+      return;
+    }
+    gameEvents.emit("command-next");
+  };
   const onHearWord = () => {
     if (!audioEnabled) {
       setFeedback({ message: "Audio is off. Enable it in Teacher Mode.", good: false });
@@ -77,6 +125,8 @@ function App() {
 
   const onReset = () => {
     resetAll();
+    setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
+    setCanGoNext(false);
     setFeedback({ message: "Progress reset. New trail started.", good: false });
     gameEvents.emit("command-next");
   };
@@ -117,6 +167,18 @@ function App() {
     setFeedback({ message: "Exported CSV progress report.", good: true });
   };
 
+  const startTest = () => {
+    const target = testLength;
+    setTestState({ running: true, finished: false, target, answered: 0, correct: 0 });
+    setCanGoNext(false);
+    setFeedback({ message: `Test started: ${target} questions.`, good: true });
+    setTeacherOpen(false);
+    gameEvents.emit("command-next");
+  };
+
+  const testScorePct =
+    testState.answered > 0 ? Math.round((testState.correct / testState.answered) * 100) : 0;
+
   return (
     <main className="app-shell">
       <header className="topbar">
@@ -156,13 +218,27 @@ function App() {
 
       <section className="actions">
         <button onClick={onHearWord}>Hear Word</button>
-        <button onClick={onNext}>Next Challenge</button>
+        <button onClick={onNext} disabled={testState.running ? !canGoNext || testState.finished : false}>
+          {testState.running ? "Next Test Question" : "Next Challenge"}
+        </button>
         <button onClick={() => setShopOpen(true)}>Open Camp Shop</button>
         <button onClick={() => setTeacherOpen(true)}>Teacher Mode</button>
         <button className="danger" onClick={onReset}>
           Reset Save
         </button>
       </section>
+
+      {(testState.running || testState.finished) && (
+        <section className="map-panel">
+          <div className="zone-message">
+            {testState.finished
+              ? `Test Complete: ${testState.correct}/${testState.target} correct (${Math.round(
+                  (testState.correct / testState.target) * 100
+                )}%)`
+              : `Test In Progress: ${testState.answered}/${testState.target} answered • Score ${testState.correct}/${testState.answered || 1} (${testScorePct}%)`}
+          </div>
+        </section>
+      )}
 
       {shopOpen && (
         <section className="shop-modal" role="dialog" aria-label="Camp Shop">
@@ -201,6 +277,25 @@ function App() {
             <div className="teacher-actions">
               <button onClick={exportJsonReport}>Export Report (JSON)</button>
               <button onClick={exportCsvReport}>Export Report (CSV)</button>
+            </div>
+            <hr />
+            <h3>Contest Test Mode</h3>
+            <label htmlFor="testLength" className="field-label">
+              Number of Questions
+            </label>
+            <select
+              id="testLength"
+              value={String(testLength)}
+              onChange={(event) => setTestLength(Number(event.target.value) as 10 | 20 | 50)}
+            >
+              {TEST_LENGTH_OPTIONS.map((size) => (
+                <option key={size} value={size}>
+                  {size} questions
+                </option>
+              ))}
+            </select>
+            <div className="teacher-actions">
+              <button onClick={startTest}>Start Test</button>
             </div>
             <hr />
             <h3>Audio Settings</h3>

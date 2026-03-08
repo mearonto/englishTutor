@@ -22,6 +22,7 @@ export class ChallengeScene extends Phaser.Scene {
   private choiceNodes: ChoiceNode[] = [];
   private audioEnabled = true;
   private speechRate = 0.88;
+  private disposed = false;
 
   constructor() {
     super("ChallengeScene");
@@ -61,16 +62,16 @@ export class ChallengeScene extends Phaser.Scene {
     gameEvents.on("command-next", this.startRound, this);
     gameEvents.on("command-pronounce", this.pronounceCurrent, this);
     gameEvents.on("command-audio-settings", this.applyAudioSettings, this);
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
-      gameEvents.off("command-next", this.startRound, this);
-      gameEvents.off("command-pronounce", this.pronounceCurrent, this);
-      gameEvents.off("command-audio-settings", this.applyAudioSettings, this);
-    });
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanup, this);
+    this.events.once(Phaser.Scenes.Events.DESTROY, this.cleanup, this);
 
     this.startRound();
   }
 
   private startRound(): void {
+    if (!this.canRender()) {
+      return;
+    }
     this.level = pickNextLevel();
     this.tries = 0;
     this.complete = false;
@@ -118,6 +119,7 @@ export class ChallengeScene extends Phaser.Scene {
     });
 
     gameEvents.emit("feedback", { message: "", good: false });
+    gameEvents.emit("round-start");
     this.pronounceCurrent();
   }
 
@@ -144,6 +146,7 @@ export class ChallengeScene extends Phaser.Scene {
         message: `Correct! +${reward.xp} XP, +${reward.stars} stars, +${reward.tokens} tokens`,
         good: true
       });
+      gameEvents.emit("question-complete", { correct: true, answer: this.level.answer, tries: this.tries });
       return;
     }
 
@@ -182,6 +185,7 @@ export class ChallengeScene extends Phaser.Scene {
       message: `Answer: ${this.level.answer}. You still earn +${reward.xp} XP.`,
       good: false
     });
+    gameEvents.emit("question-complete", { correct: false, answer: this.level.answer, tries: this.tries });
   }
 
   private pronounceCurrent(): void {
@@ -272,5 +276,26 @@ export class ChallengeScene extends Phaser.Scene {
     if (typeof payload.rate === "number" && payload.rate > 0.5 && payload.rate <= 1.2) {
       this.speechRate = payload.rate;
     }
+  }
+
+  private cleanup(): void {
+    if (this.disposed) {
+      return;
+    }
+    this.disposed = true;
+    gameEvents.off("command-next", this.startRound, this);
+    gameEvents.off("command-pronounce", this.pronounceCurrent, this);
+    gameEvents.off("command-audio-settings", this.applyAudioSettings, this);
+  }
+
+  private canRender(): boolean {
+    if (this.disposed || !this.sys?.isActive()) {
+      return false;
+    }
+    const renderer = (this.game as { renderer?: { destroyed?: boolean } } | null)?.renderer;
+    if (!renderer || renderer.destroyed) {
+      return false;
+    }
+    return true;
   }
 }
