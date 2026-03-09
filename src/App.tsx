@@ -1,18 +1,16 @@
-import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import type Phaser from "phaser";
 import "./App.css";
 import { gameEvents } from "./game/events";
-import { getCustomLevelsCount, SHOP_ITEMS } from "./game/levels";
+import { SHOP_ITEMS } from "./game/levels";
 import { createGame } from "./game/createGame";
 import {
   buildReport,
   getState,
-  masteryPercent,
   purchase,
   refreshAfterContentImport,
   resetAll,
-  subscribe,
-  zoneLabel
+  subscribe
 } from "./game/store";
 import { importLevelsFromCsv, importLevelsFromJson, reportToCsv } from "./game/teacher";
 import type { PlayerState } from "./game/types";
@@ -41,7 +39,6 @@ function App() {
   });
   const [shopOpen, setShopOpen] = useState(false);
   const [teacherOpen, setTeacherOpen] = useState(false);
-  const [customCount, setCustomCount] = useState(getCustomLevelsCount());
   const [audioEnabled, setAudioEnabled] = useState<boolean>(true);
   const [speechRate, setSpeechRate] = useState<number>(0.88);
   const [testLength, setTestLength] = useState<10 | 20 | 50>(10);
@@ -63,7 +60,6 @@ function App() {
     gameRef.current = createGame("phaser-root");
     const unsub = subscribe((nextState) => {
       setState(nextState);
-      setCustomCount(getCustomLevelsCount());
     });
 
     const feedbackHandler = (payload: { message: string; good: boolean }) => setFeedback(payload);
@@ -103,8 +99,6 @@ function App() {
     saveAudioSettings({ enabled: audioEnabled, rate: speechRate });
     gameEvents.emit("command-audio-settings", { enabled: audioEnabled, rate: speechRate });
   }, [audioEnabled, speechRate]);
-
-  const mastery = useMemo(() => masteryPercent(), [state]);
 
   const onNext = () => {
     if (testState.finished) {
@@ -148,7 +142,6 @@ function App() {
 
     if (result.ok) {
       refreshAfterContentImport();
-      setCustomCount(getCustomLevelsCount());
       gameEvents.emit("command-next");
     }
     setFeedback({ message: result.message, good: result.ok });
@@ -178,6 +171,9 @@ function App() {
 
   const testScorePct =
     testState.answered > 0 ? Math.round((testState.correct / testState.answered) * 100) : 0;
+  const testWrong = Math.max(0, testState.answered - testState.correct);
+  const testLeft = Math.max(0, testState.target - testState.answered);
+  const finalScore = Math.round((testState.correct / testState.target) * 100);
 
   return (
     <main className="app-shell">
@@ -202,14 +198,31 @@ function App() {
         </div>
       </header>
 
-      <section className="map-panel">
-        <div className="zone-message">{zoneLabel()}</div>
+      <section className="map-panel metrics-panel">
         <div className="progress-wrap">
-          <label htmlFor="mastery">Grade 3 Mastery</label>
-          <progress id="mastery" max={100} value={mastery} />
-          <span>{mastery}%</span>
-          <span>Custom Pack Levels: {customCount}</span>
+          <span>
+            {testState.finished
+              ? "Test Complete"
+              : testState.running
+                ? "Test In Progress"
+                : "Ready for Test"}
+          </span>
+          <span>Total: {testState.target}</span>
+          <span>Left: {testState.running || testState.finished ? testLeft : testState.target}</span>
+          <span>Correct: {testState.correct}</span>
+          <span>Wrong: {testWrong}</span>
         </div>
+        {testState.finished ? (
+          <div className="zone-message">
+            Final Score: {finalScore}% ({testState.correct}/{testState.target})
+          </div>
+        ) : testState.running ? (
+          <div className="helper-text">
+            Current Score: {testScorePct}% ({testState.correct}/{testState.answered || 1})
+          </div>
+        ) : (
+          <div className="helper-text">Configure and start a test in Teacher Mode.</div>
+        )}
       </section>
 
       <section className="game-frame">
@@ -227,18 +240,6 @@ function App() {
           Reset Save
         </button>
       </section>
-
-      {(testState.running || testState.finished) && (
-        <section className="map-panel">
-          <div className="zone-message">
-            {testState.finished
-              ? `Test Complete: ${testState.correct}/${testState.target} correct (${Math.round(
-                  (testState.correct / testState.target) * 100
-                )}%)`
-              : `Test In Progress: ${testState.answered}/${testState.target} answered • Score ${testState.correct}/${testState.answered || 1} (${testScorePct}%)`}
-          </div>
-        </section>
-      )}
 
       {shopOpen && (
         <section className="shop-modal" role="dialog" aria-label="Camp Shop">

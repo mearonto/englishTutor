@@ -49,6 +49,10 @@ body {
   margin-top: 1rem;
 }
 
+.metrics-panel {
+  margin-top: 1rem;
+}
+
 .map-panel {
   border: 1px solid var(--line);
   border-radius: 10px;
