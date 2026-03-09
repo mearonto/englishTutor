@@ -275,6 +275,10 @@ function App() {
             <p className="helper-text">
               CSV headers: id,grade,type,word,prompt,choice1,choice2,choice3,answer,definition,contextSentence,hint1,hint2,coach
             </p>
+            <p className="helper-text">
+              Supported type values: spelling, homophone, prefix, suffix, multiple-meaning, word-relationships,
+              compound-word, context-clues
+            </p>
             <div className="teacher-actions">
               <button onClick={exportJsonReport}>Export Report (JSON)</button>
               <button onClick={exportCsvReport}>Export Report (CSV)</button>

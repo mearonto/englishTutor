@@ -1,7 +1,16 @@
 import { replaceCustomLevels } from "./levels";
 import type { Level, SkillType } from "./types";
 
-const VALID_TYPES: SkillType[] = ["spelling", "homophone", "prefix", "suffix", "multiple-meaning"];
+const VALID_TYPES: SkillType[] = [
+  "spelling",
+  "homophone",
+  "prefix",
+  "suffix",
+  "multiple-meaning",
+  "word-relationships",
+  "compound-word",
+  "context-clues"
+];
 
 type ImportResult = {
   ok: boolean;

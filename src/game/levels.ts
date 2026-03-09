@@ -62,6 +62,46 @@ export const BASE_LEVELS: Level[] = [
     coach: "They're is a contraction of they are."
   },
   {
+    id: "g3-relationships-synonym-happy",
+    grade: 3,
+    type: "word-relationships",
+    word: "happy",
+    prompt: "Choose the synonym of happy.",
+    choices: ["sad", "joyful", "angry"],
+    answer: "joyful",
+    definition: "feeling good or glad",
+    contextSentence: "The class felt joyful after the field trip.",
+    hints: ["A synonym means nearly the same thing.", "Which word also means glad?"],
+    coach: "Synonyms are words with similar meanings. happy and joyful are close in meaning."
+  },
+  {
+    id: "g3-compound-snowman",
+    grade: 3,
+    type: "compound-word",
+    word: "snowman",
+    prompt: "Which two base words combine to make the compound word snowman?",
+    choices: ["snow + man", "snow + men", "snows + man"],
+    answer: "snow + man",
+    definition: "a figure made of snow",
+    contextSentence: "We built a snowman in the yard.",
+    hints: ["Compound words join two real words.", "Think of the winter word and person word."],
+    coach: "snowman is made from snow + man."
+  },
+  {
+    id: "g3-context-forest-path",
+    grade: 3,
+    type: "context-clues",
+    word: "path",
+    prompt:
+      "Use context clues: We followed the signs through the forest. The narrow _____ was covered with leaves and led us to the lake.",
+    choices: ["path", "storm", "window"],
+    answer: "path",
+    definition: "a small track or way to walk",
+    contextSentence: "The path led to the picnic area.",
+    hints: ["What can be narrow and lead to a lake?", "Look for walking and direction clues."],
+    coach: "Context clues like forest, signs, and led us show this is a walking path."
+  },
+  {
     id: "g4-prefix-preview",
     grade: 4,
     type: "prefix",
@@ -116,6 +156,46 @@ export const BASE_LEVELS: Level[] = [
     contextSentence: "We travelled by train.",
     hints: ["Canadian spelling often doubles the l.", "Look for two l letters."],
     coach: "In Canadian English, travelled usually uses double l."
+  },
+  {
+    id: "g4-relationships-antonym-ancient",
+    grade: 4,
+    type: "word-relationships",
+    word: "ancient",
+    prompt: "Choose the antonym of ancient.",
+    choices: ["old", "modern", "historic"],
+    answer: "modern",
+    definition: "from a very long time ago",
+    contextSentence: "The museum has ancient tools and modern machines.",
+    hints: ["An antonym means opposite.", "Which word means new/current?"],
+    coach: "Opposites are antonyms: ancient and modern."
+  },
+  {
+    id: "g4-compound-bookstore",
+    grade: 4,
+    type: "compound-word",
+    word: "bookstore",
+    prompt: "Pick the correct compound word for this clue: A shop where you buy novels.",
+    choices: ["bookstore", "book house", "storebook"],
+    answer: "bookstore",
+    definition: "a store that sells books",
+    contextSentence: "We visited the bookstore after school.",
+    hints: ["Combine book and store into one word.", "Look for the standard spelling form."],
+    coach: "book + store = bookstore."
+  },
+  {
+    id: "g4-context-science-lab",
+    grade: 4,
+    type: "context-clues",
+    word: "observe",
+    prompt:
+      "Use context clues: In science class, Mia wrote notes while she watched the caterpillar change. Her teacher said to _____ carefully and record each change.",
+    choices: ["observe", "forget", "scatter"],
+    answer: "observe",
+    definition: "to watch closely",
+    contextSentence: "Scientists observe details before making conclusions.",
+    hints: ["Look for clues: watched, notes, record.", "Which word means watch carefully?"],
+    coach: "The paragraph clues point to careful watching, so observe fits best."
   }
 ];
 
@@ -169,7 +249,16 @@ function normalizeLevelLike(partial: Partial<Level>, index = 0): Level {
   const fallbackWord = String(partial.word ?? `word-${index + 1}`);
   const id = String(partial.id ?? `custom-${Date.now()}-${index}`);
   const grade = partial.grade === 4 ? 4 : 3;
-  const validTypes: SkillType[] = ["spelling", "homophone", "prefix", "suffix", "multiple-meaning"];
+  const validTypes: SkillType[] = [
+    "spelling",
+    "homophone",
+    "prefix",
+    "suffix",
+    "multiple-meaning",
+    "word-relationships",
+    "compound-word",
+    "context-clues"
+  ];
   const type = validTypes.includes(partial.type as SkillType)
     ? (partial.type as SkillType)
     : "spelling";

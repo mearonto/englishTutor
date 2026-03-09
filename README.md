@@ -24,6 +24,9 @@ npm run preview
 - Phaser challenge loop with supportive retries (hint, distractor removal, coach mode).
 - React HUD for XP, stars, tokens, streak, grade unlock, and mastery progress.
 - Grade 3 and Grade 4 starter content with Canadian spellings.
+- Word relationship challenges (synonyms and antonyms).
+- Compound word challenges (combining base words).
+- Context clue paragraph inference challenges.
 - Reward shop and local save (`localStorage`).
 - Audio support for language learners:
   - Built-in TTS pronunciation of the challenge word and context sentence.
@@ -50,6 +53,10 @@ Provide an array of level objects. Example keys:
 ### CSV headers
 
 `id,grade,type,word,prompt,choice1,choice2,choice3,answer,definition,contextSentence,hint1,hint2,coach`
+
+### Supported `type` values
+
+`spelling`, `homophone`, `prefix`, `suffix`, `multiple-meaning`, `word-relationships`, `compound-word`, `context-clues`
 
 ## Project Structure
 

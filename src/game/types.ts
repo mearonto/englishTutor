@@ -1,6 +1,14 @@
 export type Grade = 3 | 4;
 
-export type SkillType = "spelling" | "homophone" | "prefix" | "suffix" | "multiple-meaning";
+export type SkillType =
+  | "spelling"
+  | "homophone"
+  | "prefix"
+  | "suffix"
+  | "multiple-meaning"
+  | "word-relationships"
+  | "compound-word"
+  | "context-clues";
 
 export interface Level {
   id: string;
