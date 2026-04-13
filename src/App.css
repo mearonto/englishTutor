@@ -1,10 +1,18 @@
 :root {
-  --bg: #f6f5ef;
-  --surface: #fffdf7;
-  --ink: #18343f;
-  --line: #d8d2c6;
-  --ok: #2a9d8f;
-  --bad: #e76f51;
+  --bg-start: #e8f4fd;
+  --bg-end: #dbeeff;
+  --surface: #ffffff;
+  --ink: #0a3d5c;
+  --ink-light: #475569;
+  --accent: #0099cc;
+  --accent-dark: #0a3d5c;
+  --border: #bfdbfe;
+  --ok-bg: #dcfce7;
+  --ok-text: #166534;
+  --ok-accent: #4ade80;
+  --bad-bg: #fee2e2;
+  --bad-text: #991b1b;
+  --bad-accent: #f87171;
 }
 
 * {
@@ -13,12 +21,10 @@
 
 body {
   margin: 0;
-  font-family: "Trebuchet MS", "Avenir Next", sans-serif;
+  font-family: "Segoe UI", system-ui, "Trebuchet MS", sans-serif;
   color: var(--ink);
-  background:
-    radial-gradient(circle at 15% 10%, #d8f3dc 0 20%, transparent 40%),
-    radial-gradient(circle at 90% 0%, #ffe8cc 0 20%, transparent 35%),
-    linear-gradient(180deg, #f7f3e9 0%, #eef7f2 100%);
+  background: linear-gradient(160deg, var(--bg-start) 0%, var(--bg-end) 100%);
+  min-height: 100vh;
 }
 
 .app-shell {
@@ -34,6 +40,17 @@ body {
 .topbar h1 {
   margin: 0 0 0.8rem;
   color: #144552;
+}
+
+.topbar-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.topbar-row h1 {
+  margin: 0;
 }
 
 .stats {
@@ -142,6 +159,8 @@ button.danger {
   border-radius: 12px;
   width: min(520px, 92vw);
   padding: 1rem;
+  max-height: min(86vh, 760px);
+  overflow-y: auto;
 }
 
 .shop-content ul {
@@ -185,7 +204,34 @@ select {
   background: white;
 }
 
+input[type="password"],
+input[type="file"] {
+  width: 100%;
+  border: 1px solid #3d6f73;
+  border-radius: 8px;
+  padding: 0.45rem 0.6rem;
+  margin-bottom: 0.7rem;
+  background: white;
+}
+
+.inline-note {
+  margin: 0.3rem 0 0.8rem;
+  font-weight: 700;
+}
+
+.inline-note.good {
+  color: var(--ok);
+}
+
+.inline-note.bad {
+  color: var(--bad);
+}
+
 @media (max-width: 640px) {
+  .topbar-row {
+    display: grid;
+  }
+
   .actions {
     display: grid;
   }
