@@ -13,6 +13,10 @@
   --bad-bg: #fee2e2;
   --bad-text: #991b1b;
   --bad-accent: #f87171;
+  /* backward-compat aliases — removed when old rules are replaced in later tasks */
+  --line: var(--border);
+  --ok: var(--ok-accent);
+  --bad: var(--bad-accent);
 }
 
 * {
