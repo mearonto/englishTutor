@@ -102,38 +102,62 @@ body {
 .game-frame,
 .actions,
 .feedback {
-  margin-top: 1rem;
+  margin-top: 0.8rem;
 }
 
 .metrics-panel {
-  margin-top: 1rem;
-}
-
-.map-panel {
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 0.8rem;
-  background: #f9fff9;
-}
-
-.zone-message {
-  font-weight: 700;
+  margin: 0.8rem 1rem 0;
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 0.6rem 1rem;
+  box-shadow: 0 2px 8px rgba(0, 100, 180, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .progress-wrap {
-  margin-top: 0.5rem;
   display: flex;
-  gap: 0.6rem;
+  gap: 0.5rem;
   align-items: center;
   flex-wrap: wrap;
 }
 
+.progress-wrap span {
+  background: #f1f5f9;
+  color: #475569;
+  border-radius: 20px;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.zone-message {
+  font-weight: 700;
+  color: var(--ok-text);
+  background: var(--ok-bg);
+  border-radius: 20px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.82rem;
+}
+
+.helper-text {
+  font-size: 0.82rem;
+  color: var(--ink-light);
+}
+
+.game-frame {
+  margin: 0.8rem 1rem 0;
+}
+
 #phaser-root {
   width: 100%;
-  border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 14px;
   overflow: hidden;
   background: white;
+  box-shadow: 0 4px 20px rgba(0, 100, 180, 0.1);
 }
 
 #phaser-root canvas {
@@ -214,11 +238,6 @@ button.danger {
   display: block;
   font-weight: 700;
   margin-bottom: 0.4rem;
-}
-
-.helper-text {
-  font-size: 0.9rem;
-  color: #425f69;
 }
 
 .teacher-actions {
