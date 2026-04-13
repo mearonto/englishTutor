@@ -165,33 +165,58 @@ body {
   height: auto;
 }
 
-.actions {
-  display: flex;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-}
-
 button {
-  border: 1px solid #3d6f73;
-  background: white;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
   color: var(--ink);
-  border-radius: 8px;
-  padding: 0.55rem 0.9rem;
+  border-radius: 10px;
+  padding: 0.55rem 1rem;
   cursor: pointer;
-  font-size: 0.98rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background 0.15s, border-color 0.15s;
 }
 
 button:hover:enabled {
-  background: #f0fffb;
+  background: #dbeafe;
+  border-color: #93c5fd;
 }
 
 button:disabled {
-  opacity: 0.55;
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
 button.danger {
-  border-color: #8c2f39;
+  border-color: var(--bad-accent);
+  color: var(--bad-text);
+}
+
+button.danger:hover:enabled {
+  background: var(--bad-bg);
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  padding: 0 1rem;
+}
+
+.actions button {
+  flex: 1;
+  min-width: 130px;
+}
+
+/* Primary action: Next Challenge / Next Test Question */
+.actions button:nth-child(2) {
+  background: linear-gradient(135deg, #0099cc, #0a3d5c);
+  color: white;
+  border: none;
+}
+
+.actions button:nth-child(2):hover:enabled {
+  background: linear-gradient(135deg, #0088bb, #082f47);
 }
 
 .feedback {
