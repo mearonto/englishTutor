@@ -16,6 +16,8 @@ import { importLevelsFromCsv, importLevelsFromJson, reportToCsv } from "./game/t
 import type { PlayerState } from "./game/types";
 
 const AUDIO_SETTINGS_KEY = "word-quest-audio-settings-v1";
+const TEACHER_PASSWORD_KEY = "word-quest-teacher-password-v1";
+const DEFAULT_TEACHER_PASSWORD = "2222";
 const SPEED_OPTIONS = [
   { label: "Slow", value: 0.75 },
   { label: "Normal", value: 0.88 },
@@ -39,6 +41,10 @@ function App() {
   });
   const [shopOpen, setShopOpen] = useState(false);
   const [teacherOpen, setTeacherOpen] = useState(false);
+  const [teacherUnlocked, setTeacherUnlocked] = useState(false);
+  const [teacherPasswordInput, setTeacherPasswordInput] = useState("");
+  const [teacherAuthMessage, setTeacherAuthMessage] = useState("");
+  const [teacherAuthGood, setTeacherAuthGood] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState<boolean>(true);
   const [speechRate, setSpeechRate] = useState<number>(0.88);
   const [testLength, setTestLength] = useState<10 | 20 | 50>(10);
@@ -50,9 +56,14 @@ function App() {
     answered: 0,
     correct: 0
   });
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [changePasswordMessage, setChangePasswordMessage] = useState("");
+  const [changePasswordGood, setChangePasswordGood] = useState(false);
   const gameRef = useRef<Phaser.Game | null>(null);
 
   useEffect(() => {
+    ensureTeacherPassword();
     const saved = loadAudioSettings();
     setAudioEnabled(saved.enabled);
     setSpeechRate(saved.rate);
@@ -117,6 +128,39 @@ function App() {
     gameEvents.emit("command-pronounce");
   };
 
+  const openTeacherMode = () => {
+    setTeacherOpen(true);
+    setTeacherUnlocked(false);
+    setTeacherPasswordInput("");
+    setTeacherAuthMessage("");
+    setOldPassword("");
+    setNewPassword("");
+    setChangePasswordMessage("");
+  };
+
+  const closeTeacherMode = () => {
+    setTeacherOpen(false);
+    setTeacherUnlocked(false);
+    setTeacherPasswordInput("");
+    setTeacherAuthMessage("");
+    setOldPassword("");
+    setNewPassword("");
+    setChangePasswordMessage("");
+  };
+
+  const unlockTeacherMode = () => {
+    const current = getTeacherPassword();
+    if (teacherPasswordInput === current) {
+      setTeacherUnlocked(true);
+      setTeacherAuthMessage("Access granted.");
+      setTeacherAuthGood(true);
+      setTeacherPasswordInput("");
+      return;
+    }
+    setTeacherAuthMessage("Wrong password.");
+    setTeacherAuthGood(false);
+  };
+
   const onReset = () => {
     resetAll();
     setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
@@ -169,6 +213,25 @@ function App() {
     gameEvents.emit("command-next");
   };
 
+  const changeTeacherPassword = () => {
+    const current = getTeacherPassword();
+    if (oldPassword !== current) {
+      setChangePasswordMessage("Old password is incorrect.");
+      setChangePasswordGood(false);
+      return;
+    }
+    if (!newPassword.trim()) {
+      setChangePasswordMessage("New password cannot be empty.");
+      setChangePasswordGood(false);
+      return;
+    }
+    localStorage.setItem(TEACHER_PASSWORD_KEY, newPassword);
+    setChangePasswordMessage("Teacher password updated.");
+    setChangePasswordGood(true);
+    setOldPassword("");
+    setNewPassword("");
+  };
+
   const testScorePct =
     testState.answered > 0 ? Math.round((testState.correct / testState.answered) * 100) : 0;
   const testWrong = Math.max(0, testState.answered - testState.correct);
@@ -178,7 +241,10 @@ function App() {
   return (
     <main className="app-shell">
       <header className="topbar">
-        <h1>Word Quest: Northern Trails</h1>
+        <div className="topbar-row">
+          <h1>Word Quest: Northern Trails</h1>
+          <button onClick={startTest}>Start Test ({testLength})</button>
+        </div>
         <div className="stats">
           <span>
             Grade: <strong>{state.gradeUnlocked}</strong>
@@ -235,10 +301,7 @@ function App() {
           {testState.running ? "Next Test Question" : "Next Challenge"}
         </button>
         <button onClick={() => setShopOpen(true)}>Open Camp Shop</button>
-        <button onClick={() => setTeacherOpen(true)}>Teacher Mode</button>
-        <button className="danger" onClick={onReset}>
-          Reset Save
-        </button>
+        <button onClick={openTeacherMode}>Teacher Mode</button>
       </section>
 
       {shopOpen && (
@@ -267,72 +330,132 @@ function App() {
         <section className="shop-modal" role="dialog" aria-label="Teacher Mode">
           <div className="shop-content">
             <h2>Teacher Mode</h2>
-            <p>Import custom word packs (.json or .csv) and export learner progress reports.</p>
-            <label htmlFor="packUpload" className="field-label">
-              Import Word Pack
-            </label>
-            <input id="packUpload" type="file" accept=".json,.csv" onChange={onTeacherFile} />
-            <p className="helper-text">
-              CSV headers: id,grade,type,word,prompt,choice1,choice2,choice3,answer,definition,contextSentence,hint1,hint2,coach
-            </p>
-            <p className="helper-text">
-              Supported type values: spelling, homophone, prefix, suffix, multiple-meaning, word-relationships,
-              compound-word, context-clues
-            </p>
-            <div className="teacher-actions">
-              <button onClick={exportJsonReport}>Export Report (JSON)</button>
-              <button onClick={exportCsvReport}>Export Report (CSV)</button>
-            </div>
-            <hr />
-            <h3>Contest Test Mode</h3>
-            <label htmlFor="testLength" className="field-label">
-              Number of Questions
-            </label>
-            <select
-              id="testLength"
-              value={String(testLength)}
-              onChange={(event) => setTestLength(Number(event.target.value) as 10 | 20 | 50)}
-            >
-              {TEST_LENGTH_OPTIONS.map((size) => (
-                <option key={size} value={size}>
-                  {size} questions
-                </option>
-              ))}
-            </select>
-            <div className="teacher-actions">
-              <button onClick={startTest}>Start Test</button>
-            </div>
-            <hr />
-            <h3>Audio Settings</h3>
-            <label className="toggle-row">
-              <input
-                type="checkbox"
-                checked={audioEnabled}
-                onChange={(event) => setAudioEnabled(event.target.checked)}
-              />
-              <span>Audio On (TTS + success/miss cues)</span>
-            </label>
-            <label htmlFor="speechRate" className="field-label">
-              Pronunciation Speed
-            </label>
-            <select
-              id="speechRate"
-              value={String(speechRate)}
-              onChange={(event) => setSpeechRate(Number(event.target.value))}
-              disabled={!audioEnabled}
-            >
-              {SPEED_OPTIONS.map((option) => (
-                <option key={option.label} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <button onClick={() => setTeacherOpen(false)}>Close</button>
+            {!teacherUnlocked ? (
+              <>
+                <p>Enter teacher password to continue.</p>
+                <label htmlFor="teacherPassword" className="field-label">
+                  Password
+                </label>
+                <input
+                  id="teacherPassword"
+                  type="password"
+                  value={teacherPasswordInput}
+                  onChange={(event) => setTeacherPasswordInput(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      unlockTeacherMode();
+                    }
+                  }}
+                />
+                {teacherAuthMessage && (
+                  <p className={teacherAuthGood ? "inline-note good" : "inline-note bad"}>{teacherAuthMessage}</p>
+                )}
+                <div className="teacher-actions">
+                  <button onClick={unlockTeacherMode}>Unlock</button>
+                  <button onClick={closeTeacherMode}>Close</button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p>Import custom word packs (.json or .csv) and export learner progress reports.</p>
+                <label htmlFor="packUpload" className="field-label">
+                  Import Word Pack
+                </label>
+                <input id="packUpload" type="file" accept=".json,.csv" onChange={onTeacherFile} />
+                <p className="helper-text">
+                  CSV headers:
+                  id,grade,type,word,prompt,choice1,choice2,choice3,answer,definition,contextSentence,hint1,hint2,coach
+                </p>
+                <p className="helper-text">
+                  Supported type values: spelling, homophone, prefix, suffix, multiple-meaning, word-relationships,
+                  compound-word, context-clues
+                </p>
+                <div className="teacher-actions">
+                  <button onClick={exportJsonReport}>Export Report (JSON)</button>
+                  <button onClick={exportCsvReport}>Export Report (CSV)</button>
+                </div>
+                <hr />
+                <h3>Contest Test Mode</h3>
+                <label htmlFor="testLength" className="field-label">
+                  Number of Questions
+                </label>
+                <select
+                  id="testLength"
+                  value={String(testLength)}
+                  onChange={(event) => setTestLength(Number(event.target.value) as 10 | 20 | 50)}
+                >
+                  {TEST_LENGTH_OPTIONS.map((size) => (
+                    <option key={size} value={size}>
+                      {size} questions
+                    </option>
+                  ))}
+                </select>
+                <hr />
+                <h3>Audio Settings</h3>
+                <label className="toggle-row">
+                  <input
+                    type="checkbox"
+                    checked={audioEnabled}
+                    onChange={(event) => setAudioEnabled(event.target.checked)}
+                  />
+                  <span>Audio On (TTS + success/miss cues)</span>
+                </label>
+                <label htmlFor="speechRate" className="field-label">
+                  Pronunciation Speed
+                </label>
+                <select
+                  id="speechRate"
+                  value={String(speechRate)}
+                  onChange={(event) => setSpeechRate(Number(event.target.value))}
+                  disabled={!audioEnabled}
+                >
+                  {SPEED_OPTIONS.map((option) => (
+                    <option key={option.label} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <hr />
+                <h3>Change Teacher Password</h3>
+                <label htmlFor="oldPassword" className="field-label">
+                  Old Password
+                </label>
+                <input
+                  id="oldPassword"
+                  type="password"
+                  value={oldPassword}
+                  onChange={(event) => setOldPassword(event.target.value)}
+                />
+                <label htmlFor="newPassword" className="field-label">
+                  New Password
+                </label>
+                <input
+                  id="newPassword"
+                  type="password"
+                  value={newPassword}
+                  onChange={(event) => setNewPassword(event.target.value)}
+                />
+                {changePasswordMessage && (
+                  <p className={changePasswordGood ? "inline-note good" : "inline-note bad"}>
+                    {changePasswordMessage}
+                  </p>
+                )}
+                <div className="teacher-actions">
+                  <button onClick={changeTeacherPassword}>Change Password</button>
+                </div>
+                <div className="teacher-actions">
+                  <button className="danger" onClick={onReset}>
+                    Reset Save
+                  </button>
+                </div>
+                <button onClick={closeTeacherMode}>Close</button>
+              </>
+            )}
           </div>
         </section>
       )}
 
-      <footer className={feedback.good ? "feedback good" : "feedback bad"}>{feedback.message}</footer>
+      <footer className={feedback.message ? (feedback.good ? "feedback good" : "feedback bad") : "feedback"}>{feedback.message}</footer>
     </main>
   );
 }
@@ -374,6 +497,17 @@ function loadAudioSettings(): { enabled: boolean; rate: number } {
 
 function saveAudioSettings(settings: { enabled: boolean; rate: number }): void {
   localStorage.setItem(AUDIO_SETTINGS_KEY, JSON.stringify(settings));
+}
+
+function ensureTeacherPassword(): void {
+  const existing = localStorage.getItem(TEACHER_PASSWORD_KEY);
+  if (!existing) {
+    localStorage.setItem(TEACHER_PASSWORD_KEY, DEFAULT_TEACHER_PASSWORD);
+  }
+}
+
+function getTeacherPassword(): string {
+  return localStorage.getItem(TEACHER_PASSWORD_KEY) || DEFAULT_TEACHER_PASSWORD;
 }
 
 export default App;
