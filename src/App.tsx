@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ChangeEvent } from "react";
 import type Phaser from "phaser";
 import "./App.css";
 import { gameEvents } from "./game/events";
@@ -42,6 +42,17 @@ type Mode = "practice" | "test";
 
 type LotteryPrize = { id: string; label: string; weight: number };
 
+type ConfettiPiece = {
+  id: number;
+  x: number;
+  color: string;
+  size: number;
+  duration: number;
+  delay: number;
+  drift: number;
+  isCircle: boolean;
+};
+
 const DEFAULT_STORED_PRIZES: LotteryPrize[] = [
   { id: "lollipop", label: "棒棒糖", weight: 30 },
   { id: "chocolate", label: "巧克力", weight: 25 },
@@ -84,6 +95,7 @@ function App() {
   const [lastPrize, setLastPrize] = useState<LotteryPrize | null>(null);
   const [drawing, setDrawing] = useState(false);
   const [highlightIndex, setHighlightIndex] = useState(-1);
+  const [confetti, setConfetti] = useState<ConfettiPiece[]>([]);
   const testStartTime = useRef<number>(0);
   const testWrongWords = useRef<string[]>([]);
   const [testHistory, setTestHistory] = useState<TestRecord[]>(() => loadTestHistory());
@@ -168,6 +180,16 @@ function App() {
     saveAudioSettings({ enabled: audioEnabled, rate: speechRate });
     gameEvents.emit("command-audio-settings", { enabled: audioEnabled, rate: speechRate });
   }, [audioEnabled, speechRate]);
+
+  useEffect(() => {
+    if (lastPrize && lastPrize.id !== "replay") {
+      setConfetti(generateConfetti(55));
+      const t = setTimeout(() => setConfetti([]), 3600);
+      return () => clearTimeout(t);
+    } else {
+      setConfetti([]);
+    }
+  }, [lastPrize]);
 
   const switchMode = (newMode: Mode) => {
     if (testState.running) return;
@@ -519,7 +541,6 @@ function App() {
                       .join(" ")}
                   >
                     <div className="prize-label">{prize.label}</div>
-                    <div className="prize-pct">{prize.weight}%</div>
                   </div>
                 ))}
               </div>
@@ -537,6 +558,7 @@ function App() {
                     setLotteryOpen(false);
                     setLastPrize(null);
                     setHighlightIndex(-1);
+                    setConfetti([]);
                   }}
                 >
                   关闭
@@ -788,6 +810,29 @@ function App() {
       >
         {mode === "test" && testState.running ? "" : feedback.message}
       </footer>
+
+      {confetti.length > 0 && (
+        <div className="confetti-overlay" aria-hidden="true">
+          {confetti.map((piece) => (
+            <div
+              key={piece.id}
+              className="confetti-piece"
+              style={
+                {
+                  left: `${piece.x}%`,
+                  width: `${piece.size}px`,
+                  height: `${piece.isCircle ? piece.size : piece.size * 2.2}px`,
+                  background: piece.color,
+                  borderRadius: piece.isCircle ? "50%" : "3px",
+                  animationDuration: `${piece.duration}s`,
+                  animationDelay: `${piece.delay}s`,
+                  "--drift": `${piece.drift}px`
+                } as CSSProperties
+              }
+            />
+          ))}
+        </div>
+      )}
     </main>
   );
 }
@@ -810,6 +855,21 @@ function dateStamp(): string {
   const mm = String(now.getMonth() + 1).padStart(2, "0");
   const dd = String(now.getDate()).padStart(2, "0");
   return `${yyyy}${mm}${dd}`;
+}
+
+const CONFETTI_COLORS = ["#f43f5e", "#f97316", "#eab308", "#22c55e", "#3b82f6", "#8b5cf6", "#ec4899", "#06b6d4"];
+
+function generateConfetti(count: number): ConfettiPiece[] {
+  return Array.from({ length: count }, (_, i) => ({
+    id: i,
+    x: Math.random() * 100,
+    color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+    size: 7 + Math.random() * 7,
+    duration: 2.4 + Math.random() * 1.6,
+    delay: Math.random() * 0.7,
+    drift: (Math.random() - 0.5) * 140,
+    isCircle: Math.random() > 0.55
+  }));
 }
 
 function loadStoredPrizes(): LotteryPrize[] {

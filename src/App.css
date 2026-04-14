@@ -365,6 +365,26 @@ button.danger:hover:enabled {
   margin: 0.3rem 0 0.6rem;
 }
 
+.confetti-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 300;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -20px;
+  animation: confetti-fall linear forwards;
+}
+
+@keyframes confetti-fall {
+  0%   { transform: translateY(0) rotate(0deg) translateX(0); opacity: 1; }
+  75%  { opacity: 1; }
+  100% { transform: translateY(105vh) rotate(600deg) translateX(var(--drift, 0px)); opacity: 0; }
+}
+
 .prize-editor {
   border: 1px solid var(--border);
   border-radius: 10px;
