@@ -447,6 +447,19 @@ function App() {
                   <button onClick={unlockTeacherMode}>Unlock</button>
                   <button onClick={closeTeacherMode}>Close</button>
                 </div>
+                <div className="teacher-actions">
+                  <button
+                    className="danger"
+                    onClick={() => {
+                      localStorage.setItem(TEACHER_PASSWORD_KEY, DEFAULT_TEACHER_PASSWORD);
+                      setTeacherAuthMessage(`Password reset to "${DEFAULT_TEACHER_PASSWORD}".`);
+                      setTeacherAuthGood(true);
+                      setTeacherPasswordInput("");
+                    }}
+                  >
+                    Reset to Default Password
+                  </button>
+                </div>
               </>
             ) : (
               <>
