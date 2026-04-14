@@ -17,6 +17,7 @@ import type { PlayerState } from "./game/types";
 
 const AUDIO_SETTINGS_KEY = "word-quest-audio-settings-v1";
 const TEACHER_PASSWORD_KEY = "word-quest-teacher-password-v1";
+const TEST_HISTORY_KEY = "word-quest-test-history-v1";
 const DEFAULT_TEACHER_PASSWORD = "2222";
 const SPEED_OPTIONS = [
   { label: "Slow", value: 0.75 },
@@ -35,6 +36,17 @@ type TestState = {
 
 type Mode = "practice" | "test";
 
+type TestRecord = {
+  id: string;
+  startTime: number;
+  endTime: number;
+  duration: number;
+  target: number;
+  correct: number;
+  score: number;
+  wrongWords: string[];
+};
+
 function App() {
   const [state, setState] = useState<PlayerState>(getState());
   const [feedback, setFeedback] = useState<{ message: string; good: boolean }>({
@@ -52,6 +64,9 @@ function App() {
   const [testLength, setTestLength] = useState<10 | 20 | 50>(10);
   const [mode, setMode] = useState<Mode>("practice");
   const modeRef = useRef<Mode>("practice");
+  const testStartTime = useRef<number>(0);
+  const testWrongWords = useRef<string[]>([]);
+  const [testHistory, setTestHistory] = useState<TestRecord[]>(() => loadTestHistory());
   const [canGoNext, setCanGoNext] = useState(false);
   const [testState, setTestState] = useState<TestState>({
     running: false,
@@ -80,18 +95,34 @@ function App() {
     const feedbackHandler = (payload: { message: string; good: boolean }) => setFeedback(payload);
     gameEvents.on("feedback", feedbackHandler);
     gameEvents.on("round-start", () => setCanGoNext(false));
-    gameEvents.on("question-complete", (payload: { correct: boolean }) => {
+    gameEvents.on("question-complete", (payload: { correct: boolean; word: string }) => {
       if (modeRef.current === "practice") {
         setCanGoNext(true);
         return;
       }
-      // test mode: auto-advance handled by ChallengeScene; just track progress
+      // test mode: auto-advance handled by ChallengeScene; track progress + record
+      if (!payload.correct) {
+        testWrongWords.current.push(payload.word);
+      }
       setTestState((prev) => {
         if (!prev.running) return prev;
         const answered = prev.answered + 1;
         const correct = prev.correct + (payload.correct ? 1 : 0);
         if (answered >= prev.target) {
           const pct = Math.round((correct / prev.target) * 100);
+          const endTime = Date.now();
+          const record: TestRecord = {
+            id: String(endTime),
+            startTime: testStartTime.current,
+            endTime,
+            duration: Math.round((endTime - testStartTime.current) / 1000),
+            target: prev.target,
+            correct,
+            score: pct,
+            wrongWords: [...testWrongWords.current]
+          };
+          saveTestRecord(record);
+          setTestHistory(loadTestHistory());
           gameEvents.emit("command-set-mode", { testMode: false });
           setFeedback({
             message: `Test complete: ${correct}/${prev.target} correct (${pct}%).`,
@@ -219,11 +250,18 @@ function App() {
 
   const startTest = () => {
     const target = testLength;
+    testStartTime.current = Date.now();
+    testWrongWords.current = [];
     setTestState({ running: true, finished: false, target, answered: 0, correct: 0 });
     setCanGoNext(false);
     setFeedback({ message: "", good: false });
     gameEvents.emit("command-set-mode", { testMode: true });
     gameEvents.emit("command-next");
+  };
+
+  const clearTestHistory = () => {
+    localStorage.removeItem(TEST_HISTORY_KEY);
+    setTestHistory([]);
   };
 
   const changeTeacherPassword = () => {
@@ -430,6 +468,37 @@ function App() {
                   <button onClick={exportCsvReport}>Export Report (CSV)</button>
                 </div>
                 <hr />
+                <h3>Test History</h3>
+                {testHistory.length === 0 ? (
+                  <p className="helper-text">No tests recorded yet.</p>
+                ) : (
+                  <>
+                    <div className="test-history">
+                      {testHistory.map((record) => (
+                        <div key={record.id} className="test-record">
+                          <div className="test-record-header">
+                            <span className="helper-text">{formatTestDate(record.startTime)}</span>
+                            <span className={record.score >= 70 ? "zone-message" : "test-record-fail"}>
+                              {record.score}% ({record.correct}/{record.target})
+                            </span>
+                            <span className="helper-text">{formatTestDuration(record.duration)}</span>
+                          </div>
+                          {record.wrongWords.length > 0 && (
+                            <div className="test-record-wrong">
+                              Missed: {record.wrongWords.join(", ")}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    <div className="teacher-actions">
+                      <button className="danger" onClick={clearTestHistory}>
+                        Clear History
+                      </button>
+                    </div>
+                  </>
+                )}
+                <hr />
                 <h3>Audio Settings</h3>
                 <label className="toggle-row">
                   <input
@@ -529,6 +598,34 @@ function dateStamp(): string {
   const mm = String(now.getMonth() + 1).padStart(2, "0");
   const dd = String(now.getDate()).padStart(2, "0");
   return `${yyyy}${mm}${dd}`;
+}
+
+function loadTestHistory(): TestRecord[] {
+  try {
+    const raw = localStorage.getItem(TEST_HISTORY_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw) as TestRecord[];
+  } catch {
+    return [];
+  }
+}
+
+function saveTestRecord(record: TestRecord): void {
+  const history = loadTestHistory();
+  history.unshift(record);
+  if (history.length > 50) history.length = 50;
+  localStorage.setItem(TEST_HISTORY_KEY, JSON.stringify(history));
+}
+
+function formatTestDate(ts: number): string {
+  return new Date(ts).toLocaleString();
+}
+
+function formatTestDuration(seconds: number): string {
+  if (seconds < 60) return `${seconds}s`;
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return s > 0 ? `${m}m ${s}s` : `${m}m`;
 }
 
 function loadAudioSettings(): { enabled: boolean; rate: number } {

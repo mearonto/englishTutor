@@ -296,6 +296,46 @@ button.danger:hover:enabled {
   border-left-color: var(--bad-accent);
 }
 
+.test-history {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 280px;
+  overflow-y: auto;
+  margin-bottom: 0.6rem;
+}
+
+.test-record {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.55rem 0.75rem;
+}
+
+.test-record-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.test-record-wrong {
+  margin-top: 0.35rem;
+  color: var(--bad-text);
+  font-size: 0.8rem;
+  word-break: break-word;
+}
+
+.test-record-fail {
+  font-weight: 700;
+  color: var(--bad-text);
+  background: var(--bad-bg);
+  border-radius: 20px;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.82rem;
+}
+
 .shop-modal {
   position: fixed;
   inset: 0;

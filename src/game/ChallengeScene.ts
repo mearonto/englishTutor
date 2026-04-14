@@ -176,7 +176,7 @@ export class ChallengeScene extends Phaser.Scene {
           node.container.disableInteractive();
         });
       }
-      gameEvents.emit("question-complete", { correct: isCorrect, answer: this.level.answer, tries: 1 });
+      gameEvents.emit("question-complete", { correct: isCorrect, answer: this.level.answer, word: this.level.word, tries: 1 });
       this.time.delayedCall(900, () => {
         if (this.canRender()) {
           this.startRound();
@@ -200,7 +200,7 @@ export class ChallengeScene extends Phaser.Scene {
         message: `Correct! +${reward.xp} XP, +${reward.stars} stars, +${reward.tokens} tokens`,
         good: true
       });
-      gameEvents.emit("question-complete", { correct: true, answer: this.level.answer, tries: this.tries });
+      gameEvents.emit("question-complete", { correct: true, answer: this.level.answer, word: this.level.word, tries: this.tries });
       return;
     }
 
@@ -240,7 +240,7 @@ export class ChallengeScene extends Phaser.Scene {
       message: `Answer: ${this.level.answer}. You still earn +${reward.xp} XP.`,
       good: false
     });
-    gameEvents.emit("question-complete", { correct: false, answer: this.level.answer, tries: this.tries });
+    gameEvents.emit("question-complete", { correct: false, answer: this.level.answer, word: this.level.word, tries: this.tries });
   }
 
   private pronounceCurrent(): void {
