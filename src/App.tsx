@@ -452,7 +452,7 @@ function App() {
                     className="danger"
                     onClick={() => {
                       localStorage.setItem(TEACHER_PASSWORD_KEY, DEFAULT_TEACHER_PASSWORD);
-                      setTeacherAuthMessage(`Password reset to "${DEFAULT_TEACHER_PASSWORD}".`);
+                      setTeacherAuthMessage("Password has been reset to default.");
                       setTeacherAuthGood(true);
                       setTeacherPasswordInput("");
                     }}
