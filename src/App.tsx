@@ -321,7 +321,7 @@ function App() {
   const getEffectivePrizes = (prizes: LotteryPrize[]): LotteryPrize[] => {
     const total = prizes.reduce((sum, p) => sum + p.weight, 0);
     const replayWeight = Math.max(0, 100 - total);
-    return [{ id: "replay", label: "再来一次", weight: replayWeight }, ...prizes];
+    return [{ id: "replay", label: "Please play again", weight: replayWeight }, ...prizes];
   };
 
   const drawLottery = () => {
@@ -564,7 +564,7 @@ function App() {
               </div>
               {lastPrize && (
                 <div className="lottery-result">
-                  {lastPrize.id === "replay" ? "再来一次！" : `恭喜获得：${lastPrize.label}！`}
+                  {lastPrize.id === "replay" ? "Please play again!" : `恭喜获得：${lastPrize.label}！`}
                 </div>
               )}
               <div className="teacher-actions">
@@ -781,7 +781,7 @@ function App() {
                 <label className="field-label">Prizes</label>
                 <div className="prize-editor">
                   <div className="prize-row replay-row">
-                    <span>再来一次</span>
+                    <span>Please play again</span>
                     <span>{Math.max(0, 100 - storedPrizes.reduce((s, p) => s + p.weight, 0))}%</span>
                     <span className="helper-text">自动补齐</span>
                   </div>
