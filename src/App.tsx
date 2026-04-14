@@ -33,6 +33,8 @@ type TestState = {
   correct: number;
 };
 
+type Mode = "practice" | "test";
+
 function App() {
   const [state, setState] = useState<PlayerState>(getState());
   const [feedback, setFeedback] = useState<{ message: string; good: boolean }>({
@@ -48,6 +50,8 @@ function App() {
   const [audioEnabled, setAudioEnabled] = useState<boolean>(true);
   const [speechRate, setSpeechRate] = useState<number>(0.88);
   const [testLength, setTestLength] = useState<10 | 20 | 50>(10);
+  const [mode, setMode] = useState<Mode>("practice");
+  const modeRef = useRef<Mode>("practice");
   const [canGoNext, setCanGoNext] = useState(false);
   const [testState, setTestState] = useState<TestState>({
     running: false,
@@ -77,15 +81,18 @@ function App() {
     gameEvents.on("feedback", feedbackHandler);
     gameEvents.on("round-start", () => setCanGoNext(false));
     gameEvents.on("question-complete", (payload: { correct: boolean }) => {
-      setCanGoNext(true);
+      if (modeRef.current === "practice") {
+        setCanGoNext(true);
+        return;
+      }
+      // test mode: auto-advance handled by ChallengeScene; just track progress
       setTestState((prev) => {
-        if (!prev.running) {
-          return prev;
-        }
+        if (!prev.running) return prev;
         const answered = prev.answered + 1;
         const correct = prev.correct + (payload.correct ? 1 : 0);
         if (answered >= prev.target) {
           const pct = Math.round((correct / prev.target) * 100);
+          gameEvents.emit("command-set-mode", { testMode: false });
           setFeedback({
             message: `Test complete: ${correct}/${prev.target} correct (${pct}%).`,
             good: pct >= 70
@@ -111,13 +118,19 @@ function App() {
     gameEvents.emit("command-audio-settings", { enabled: audioEnabled, rate: speechRate });
   }, [audioEnabled, speechRate]);
 
+  const switchMode = (newMode: Mode) => {
+    if (testState.running) return;
+    setMode(newMode);
+    modeRef.current = newMode;
+    setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
+    setCanGoNext(false);
+    setFeedback({ message: "", good: false });
+    gameEvents.emit("command-set-mode", { testMode: false });
+    gameEvents.emit("command-next");
+  };
+
   const onNext = () => {
-    if (testState.finished) {
-      return;
-    }
-    if (testState.running && !canGoNext) {
-      return;
-    }
+    if (!canGoNext) return;
     gameEvents.emit("command-next");
   };
   const onHearWord = () => {
@@ -208,8 +221,8 @@ function App() {
     const target = testLength;
     setTestState({ running: true, finished: false, target, answered: 0, correct: 0 });
     setCanGoNext(false);
-    setFeedback({ message: `Test started: ${target} questions.`, good: true });
-    setTeacherOpen(false);
+    setFeedback({ message: "", good: false });
+    gameEvents.emit("command-set-mode", { testMode: true });
     gameEvents.emit("command-next");
   };
 
@@ -232,9 +245,6 @@ function App() {
     setNewPassword("");
   };
 
-  const testScorePct =
-    testState.answered > 0 ? Math.round((testState.correct / testState.answered) * 100) : 0;
-  const testWrong = Math.max(0, testState.answered - testState.correct);
   const testLeft = Math.max(0, testState.target - testState.answered);
   const finalScore = Math.round((testState.correct / testState.target) * 100);
 
@@ -243,7 +253,22 @@ function App() {
       <header className="topbar">
         <div className="topbar-row">
           <h1>Word Quest: Northern Trails</h1>
-          <button onClick={startTest}>Start Test ({testLength})</button>
+          <div className="mode-toggle">
+            <button
+              className={mode === "practice" ? "active" : ""}
+              onClick={() => switchMode("practice")}
+              disabled={testState.running}
+            >
+              Practice
+            </button>
+            <button
+              className={mode === "test" ? "active" : ""}
+              onClick={() => switchMode("test")}
+              disabled={testState.running}
+            >
+              Test
+            </button>
+          </div>
         </div>
         <div className="stats">
           <span>
@@ -265,29 +290,51 @@ function App() {
       </header>
 
       <section className="map-panel metrics-panel">
-        <div className="progress-wrap">
-          <span>
-            {testState.finished
-              ? "Test Complete"
-              : testState.running
-                ? "Test In Progress"
-                : "Ready for Test"}
-          </span>
-          <span>Total: {testState.target}</span>
-          <span>Left: {testState.running || testState.finished ? testLeft : testState.target}</span>
-          <span>Correct: {testState.correct}</span>
-          <span>Wrong: {testWrong}</span>
-        </div>
-        {testState.finished ? (
-          <div className="zone-message">
-            Final Score: {finalScore}% ({testState.correct}/{testState.target})
-          </div>
-        ) : testState.running ? (
-          <div className="helper-text">
-            Current Score: {testScorePct}% ({testState.correct}/{testState.answered || 1})
-          </div>
+        {mode === "practice" ? (
+          <>
+            <div className="progress-wrap">
+              <span>Practice Mode</span>
+              <span>
+                Streak: <strong>{state.streak}</strong>
+              </span>
+            </div>
+            <div className="helper-text">Answer questions to earn XP and stars.</div>
+          </>
         ) : (
-          <div className="helper-text">Configure and start a test in Teacher Mode.</div>
+          <>
+            <div className="progress-wrap">
+              <span>
+                {testState.finished ? "Test Complete" : testState.running ? "Test In Progress" : "Test Mode"}
+              </span>
+              {(testState.running || testState.finished) && (
+                <>
+                  <span>Total: {testState.target}</span>
+                  <span>Left: {testLeft}</span>
+                </>
+              )}
+            </div>
+            {testState.finished ? (
+              <div className="zone-message">
+                Final Score: {finalScore}% ({testState.correct}/{testState.target})
+              </div>
+            ) : testState.running ? (
+              <div className="helper-text">{testLeft} questions remaining.</div>
+            ) : (
+              <div className="test-start-row">
+                <select
+                  value={String(testLength)}
+                  onChange={(event) => setTestLength(Number(event.target.value) as 10 | 20 | 50)}
+                >
+                  {TEST_LENGTH_OPTIONS.map((size) => (
+                    <option key={size} value={size}>
+                      {size} questions
+                    </option>
+                  ))}
+                </select>
+                <button onClick={startTest}>Start Test</button>
+              </div>
+            )}
+          </>
         )}
       </section>
 
@@ -296,10 +343,18 @@ function App() {
       </section>
 
       <section className="actions">
-        <button onClick={onHearWord}>Hear Word</button>
-        <button onClick={onNext} disabled={testState.running ? !canGoNext || testState.finished : false}>
-          {testState.running ? "Next Test Question" : "Next Challenge"}
+        <button onClick={onHearWord} disabled={mode === "test" && testState.running}>
+          Hear Word
         </button>
+        {mode === "practice" ? (
+          <button onClick={onNext} disabled={!canGoNext}>
+            Next Challenge
+          </button>
+        ) : testState.running ? (
+          <button disabled>Test in Progress…</button>
+        ) : (
+          <button onClick={startTest}>{testState.finished ? "New Test" : "Start Test"}</button>
+        )}
         <button onClick={() => setShopOpen(true)}>Open Camp Shop</button>
         <button onClick={openTeacherMode}>Teacher Mode</button>
       </section>
@@ -375,22 +430,6 @@ function App() {
                   <button onClick={exportCsvReport}>Export Report (CSV)</button>
                 </div>
                 <hr />
-                <h3>Contest Test Mode</h3>
-                <label htmlFor="testLength" className="field-label">
-                  Number of Questions
-                </label>
-                <select
-                  id="testLength"
-                  value={String(testLength)}
-                  onChange={(event) => setTestLength(Number(event.target.value) as 10 | 20 | 50)}
-                >
-                  {TEST_LENGTH_OPTIONS.map((size) => (
-                    <option key={size} value={size}>
-                      {size} questions
-                    </option>
-                  ))}
-                </select>
-                <hr />
                 <h3>Audio Settings</h3>
                 <label className="toggle-row">
                   <input
@@ -455,7 +494,19 @@ function App() {
         </section>
       )}
 
-      <footer className={feedback.message ? (feedback.good ? "feedback good" : "feedback bad") : "feedback"}>{feedback.message}</footer>
+      <footer
+        className={
+          mode === "test" && testState.running
+            ? "feedback"
+            : feedback.message
+              ? feedback.good
+                ? "feedback good"
+                : "feedback bad"
+              : "feedback"
+        }
+      >
+        {mode === "test" && testState.running ? "" : feedback.message}
+      </footer>
     </main>
   );
 }

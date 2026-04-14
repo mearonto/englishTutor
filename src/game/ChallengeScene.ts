@@ -22,6 +22,7 @@ export class ChallengeScene extends Phaser.Scene {
   private choiceNodes: ChoiceNode[] = [];
   private audioEnabled = true;
   private speechRate = 0.88;
+  private testMode = false;
   private disposed = false;
 
   constructor() {
@@ -30,38 +31,40 @@ export class ChallengeScene extends Phaser.Scene {
 
   create(): void {
     this.cameras.main.setBackgroundColor("#ffffff");
-    this.add.rectangle(430, 210, 840, 390, 0xfaf9f3).setStrokeStyle(2, 0xd8d2c6);
+    this.add.rectangle(430, 210, 840, 390, 0xf0f8ff).setStrokeStyle(2, 0xbfdbfe);
 
-    this.typeText = this.add.text(30, 30, "", {
+    this.typeText = this.add.text(30, 26, "", {
       fontFamily: "Trebuchet MS, sans-serif",
-      color: "#49656f",
-      fontSize: "16px"
+      color: "#0099cc",
+      fontSize: "13px",
+      fontStyle: "bold"
     });
 
-    this.promptText = this.add.text(30, 58, "", {
+    this.promptText = this.add.text(30, 52, "", {
       fontFamily: "Trebuchet MS, sans-serif",
-      color: "#18343f",
-      fontSize: "23px",
+      color: "#0a3d5c",
+      fontSize: "22px",
       wordWrap: { width: 790 }
     });
 
     this.hintText = this.add.text(30, 300, "", {
       fontFamily: "Trebuchet MS, sans-serif",
-      color: "#8c5a14",
-      fontSize: "17px",
+      color: "#92400e",
+      fontSize: "16px",
       wordWrap: { width: 790 }
     });
 
-    this.metaText = this.add.text(30, 352, "", {
+    this.metaText = this.add.text(30, 356, "", {
       fontFamily: "Trebuchet MS, sans-serif",
-      color: "#23414e",
-      fontSize: "16px",
+      color: "#475569",
+      fontSize: "15px",
       wordWrap: { width: 790 }
     });
 
     gameEvents.on("command-next", this.startRound, this);
     gameEvents.on("command-pronounce", this.pronounceCurrent, this);
     gameEvents.on("command-audio-settings", this.applyAudioSettings, this);
+    gameEvents.on("command-set-mode", this.applyModeSettings, this);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanup, this);
     this.events.once(Phaser.Scenes.Events.DESTROY, this.cleanup, this);
 
@@ -88,29 +91,47 @@ export class ChallengeScene extends Phaser.Scene {
     this.metaText.setText(`Definition: ${this.level.definition}`);
     this.hintText.setText("");
 
-    const startY = 130;
+    const CHOICE_LETTERS = ["A", "B", "C", "D"];
+    const startY = 128;
     this.level.choices.forEach((choice, index) => {
-      const y = startY + index * 54;
-      const bg = this.add.rectangle(430, y, 770, 44, 0xffffff).setStrokeStyle(1, 0x3d6f73);
-      const label = this.add.text(60, y - 12, choice, {
+      const y = startY + index * 56;
+      const letter = CHOICE_LETTERS[index] ?? String(index + 1);
+
+      const bg = this.add.rectangle(430, y, 770, 46, 0xffffff).setStrokeStyle(1.5, 0xbfdbfe);
+
+      const badgeBg = this.add.rectangle(74, y, 28, 28, 0xdbeafe);
+      const badgeLabel = this.add.text(74 - 5, y - 9, letter, {
         fontFamily: "Trebuchet MS, sans-serif",
-        color: "#18343f",
-        fontSize: "18px",
-        wordWrap: { width: 720 }
+        color: "#0a3d5c",
+        fontSize: "14px",
+        fontStyle: "bold"
       });
-      const container = this.add.container(0, 0, [bg, label]).setSize(770, 44).setInteractive(
-        new Phaser.Geom.Rectangle(45, y - 22, 770, 44),
-        Phaser.Geom.Rectangle.Contains
-      );
+
+      const label = this.add.text(114, y - 11, choice, {
+        fontFamily: "Trebuchet MS, sans-serif",
+        color: "#0a3d5c",
+        fontSize: "18px",
+        wordWrap: { width: 670 }
+      });
+
+      const container = this.add
+        .container(0, 0, [bg, badgeBg, badgeLabel, label])
+        .setSize(770, 46)
+        .setInteractive(
+          new Phaser.Geom.Rectangle(45, y - 23, 770, 46),
+          Phaser.Geom.Rectangle.Contains
+        );
 
       container.on("pointerover", () => {
         if (!this.complete) {
-          bg.setFillStyle(0xf0fffb);
+          bg.setFillStyle(0xdbeafe);
+          badgeBg.setFillStyle(0x93c5fd);
         }
       });
       container.on("pointerout", () => {
         if (!this.complete) {
           bg.setFillStyle(0xffffff);
+          badgeBg.setFillStyle(0xdbeafe);
         }
       });
       container.on("pointerdown", () => this.onChoice(choice));
@@ -132,13 +153,46 @@ export class ChallengeScene extends Phaser.Scene {
     this.tries += 1;
     const isCorrect = choice === this.level.answer;
 
+    if (this.testMode) {
+      this.complete = true;
+      if (isCorrect) {
+        this.playSuccessCue();
+        applyCorrect(this.level, 1);
+        this.choiceNodes.forEach((node) => {
+          if (node.value === choice) {
+            node.bg.setFillStyle(0xdcfce7);
+            node.bg.setStrokeStyle(2, 0x4ade80);
+          }
+        });
+      } else {
+        this.playMissCue();
+        breakStreak();
+        applyFailedRound(this.level, 1);
+        this.choiceNodes.forEach((node) => {
+          if (node.value === this.level?.answer) {
+            node.bg.setFillStyle(0xfef3c7);
+            node.bg.setStrokeStyle(2, 0xf59e0b);
+          }
+          node.container.disableInteractive();
+        });
+      }
+      gameEvents.emit("question-complete", { correct: isCorrect, answer: this.level.answer, tries: 1 });
+      this.time.delayedCall(900, () => {
+        if (this.canRender()) {
+          this.startRound();
+        }
+      });
+      return;
+    }
+
     if (isCorrect) {
       this.complete = true;
       this.playSuccessCue();
       const reward = applyCorrect(this.level, this.tries);
       this.choiceNodes.forEach((node) => {
         if (node.value === choice) {
-          node.bg.setFillStyle(0xe0f7f2);
+          node.bg.setFillStyle(0xdcfce7);
+          node.bg.setStrokeStyle(2, 0x4ade80);
         }
       });
       this.speak(this.level.answer, this.level.contextSentence);
@@ -176,7 +230,8 @@ export class ChallengeScene extends Phaser.Scene {
     this.hintText.setText(`Coach Mode: ${this.level.coach}`);
     this.choiceNodes.forEach((node) => {
       if (node.value === this.level?.answer) {
-        node.bg.setFillStyle(0xfff2df);
+        node.bg.setFillStyle(0xfef3c7);
+        node.bg.setStrokeStyle(2, 0xf59e0b);
       }
       node.container.disableInteractive();
     });
@@ -269,6 +324,10 @@ export class ChallengeScene extends Phaser.Scene {
     speakWord(word, contextSentence, this.speechRate);
   }
 
+  private applyModeSettings(payload: { testMode: boolean }): void {
+    this.testMode = payload.testMode;
+  }
+
   private applyAudioSettings(payload: { enabled?: boolean; rate?: number }): void {
     if (typeof payload.enabled === "boolean") {
       this.audioEnabled = payload.enabled;
@@ -286,6 +345,7 @@ export class ChallengeScene extends Phaser.Scene {
     gameEvents.off("command-next", this.startRound, this);
     gameEvents.off("command-pronounce", this.pronounceCurrent, this);
     gameEvents.off("command-audio-settings", this.applyAudioSettings, this);
+    gameEvents.off("command-set-mode", this.applyModeSettings, this);
   }
 
   private canRender(): boolean {

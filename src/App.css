@@ -74,6 +74,41 @@ body {
   background: #f0f9ff;
 }
 
+.mode-toggle {
+  display: flex;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 3px;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.mode-toggle button {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.75);
+  border-radius: 16px;
+  padding: 0.25rem 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mode-toggle button.active {
+  background: white;
+  color: var(--accent-dark);
+}
+
+.mode-toggle button:hover:not(.active):not(:disabled) {
+  color: white;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.mode-toggle button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .stats {
   display: flex;
   gap: 0.5rem;
@@ -141,6 +176,29 @@ body {
 .helper-text {
   font-size: 0.82rem;
   color: var(--ink-light);
+}
+
+.test-start-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.test-start-row select {
+  width: auto;
+  margin-bottom: 0;
+}
+
+.test-start-row button {
+  background: linear-gradient(135deg, #0099cc, #0a3d5c);
+  color: white;
+  border: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.test-start-row button:hover:enabled {
+  background: linear-gradient(135deg, #0088bb, #082f47);
 }
 
 .game-frame {
