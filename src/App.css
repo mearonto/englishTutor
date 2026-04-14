@@ -296,6 +296,65 @@ button.danger:hover:enabled {
   border-left-color: var(--bad-accent);
 }
 
+.lottery-prizes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin: 0.8rem 0;
+}
+
+.prize-card {
+  background: #f1f5f9;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex: 1;
+  min-width: 80px;
+  transition: opacity 0.3s;
+}
+
+.prize-card.drawing {
+  animation: prize-shuffle 0.8s ease-in-out;
+}
+
+.prize-card.winner {
+  background: #fef3c7;
+  border-color: #f59e0b;
+  animation: prize-win 0.4s ease-out forwards;
+}
+
+.prize-card.loser {
+  opacity: 0.35;
+}
+
+@keyframes prize-shuffle {
+  0%, 100% { transform: translateY(0); }
+  20% { transform: translateY(-5px); }
+  50% { transform: translateY(5px); }
+  80% { transform: translateY(-3px); }
+}
+
+@keyframes prize-win {
+  0% { transform: scale(1); }
+  55% { transform: scale(1.2); }
+  100% { transform: scale(1.1); }
+}
+
+.lottery-result {
+  text-align: center;
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--ok-text);
+  background: var(--ok-bg);
+  border-radius: 10px;
+  padding: 0.55rem 1rem;
+  margin: 0.3rem 0 0.6rem;
+}
+
 .test-history {
   display: flex;
   flex-direction: column;
@@ -401,6 +460,7 @@ button.danger:hover:enabled {
 
 select,
 input[type="password"],
+input[type="number"],
 input[type="file"] {
   width: 100%;
   border: 1.5px solid var(--border);
@@ -414,7 +474,8 @@ input[type="file"] {
 }
 
 select:focus,
-input[type="password"]:focus {
+input[type="password"]:focus,
+input[type="number"]:focus {
   outline: 2px solid var(--accent);
   border-color: var(--accent);
 }
@@ -450,7 +511,8 @@ input[type="password"]:focus {
     padding: 0 0.8rem;
   }
 
-  .actions button:nth-child(2) {
+  .actions button:nth-child(2),
+  .actions button:nth-child(5) {
     grid-column: span 2;
   }
 

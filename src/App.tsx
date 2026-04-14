@@ -10,6 +10,7 @@ import {
   purchase,
   refreshAfterContentImport,
   resetAll,
+  spendTokens,
   subscribe
 } from "./game/store";
 import { importLevelsFromCsv, importLevelsFromJson, reportToCsv } from "./game/teacher";
@@ -18,6 +19,8 @@ import type { PlayerState } from "./game/types";
 const AUDIO_SETTINGS_KEY = "word-quest-audio-settings-v1";
 const TEACHER_PASSWORD_KEY = "word-quest-teacher-password-v1";
 const TEST_HISTORY_KEY = "word-quest-test-history-v1";
+const LOTTERY_COST_KEY = "word-quest-lottery-cost-v1";
+const DEFAULT_LOTTERY_COST = 50;
 const DEFAULT_TEACHER_PASSWORD = "2222";
 const SPEED_OPTIONS = [
   { label: "Slow", value: 0.75 },
@@ -35,6 +38,16 @@ type TestState = {
 };
 
 type Mode = "practice" | "test";
+
+type LotteryPrize = { id: string; label: string; weight: number };
+
+const LOTTERY_PRIZES: LotteryPrize[] = [
+  { id: "lollipop", label: "棒棒糖", weight: 30 },
+  { id: "chocolate", label: "巧克力", weight: 25 },
+  { id: "jelly", label: "果冻", weight: 25 },
+  { id: "cash5", label: "现金 ¥5", weight: 15 },
+  { id: "cash10", label: "现金 ¥10", weight: 5 }
+];
 
 type TestRecord = {
   id: string;
@@ -64,6 +77,10 @@ function App() {
   const [testLength, setTestLength] = useState<10 | 20 | 50>(10);
   const [mode, setMode] = useState<Mode>("practice");
   const modeRef = useRef<Mode>("practice");
+  const [lotteryOpen, setLotteryOpen] = useState(false);
+  const [lotteryCost, setLotteryCost] = useState<number>(() => loadLotteryCost());
+  const [lastPrize, setLastPrize] = useState<LotteryPrize | null>(null);
+  const [drawing, setDrawing] = useState(false);
   const testStartTime = useRef<number>(0);
   const testWrongWords = useRef<string[]>([]);
   const [testHistory, setTestHistory] = useState<TestRecord[]>(() => loadTestHistory());
@@ -267,6 +284,17 @@ function App() {
     gameEvents.emit("command-next");
   };
 
+  const drawLottery = () => {
+    const result = spendTokens(lotteryCost);
+    if (!result.ok) return;
+    setDrawing(true);
+    setLastPrize(null);
+    setTimeout(() => {
+      setLastPrize(pickPrize(LOTTERY_PRIZES));
+      setDrawing(false);
+    }, 800);
+  };
+
   const clearTestHistory = () => {
     localStorage.removeItem(TEST_HISTORY_KEY);
     setTestHistory([]);
@@ -403,7 +431,57 @@ function App() {
         )}
         <button onClick={() => setShopOpen(true)}>Open Camp Shop</button>
         <button onClick={openTeacherMode}>Teacher Mode</button>
+        <button
+          onClick={() => { setLotteryOpen(true); setLastPrize(null); }}
+          disabled={state.tokens < lotteryCost}
+        >
+          Lottery ({lotteryCost} tokens)
+        </button>
       </section>
+
+      {lotteryOpen && (
+        <section className="shop-modal" role="dialog" aria-label="Lottery">
+          <div className="shop-content">
+            <h2>Lottery</h2>
+            <p className="helper-text">
+              Cost: {lotteryCost} tokens — you have {state.tokens}
+            </p>
+            <div className="lottery-prizes">
+              {LOTTERY_PRIZES.map((prize) => (
+                <div
+                  key={prize.id}
+                  className={[
+                    "prize-card",
+                    drawing ? "drawing" : "",
+                    lastPrize?.id === prize.id ? "winner" : "",
+                    lastPrize && lastPrize.id !== prize.id ? "loser" : ""
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                >
+                  {prize.label}
+                </div>
+              ))}
+            </div>
+            {lastPrize && (
+              <div className="lottery-result">You won: {lastPrize.label}!</div>
+            )}
+            <div className="teacher-actions">
+              <button onClick={drawLottery} disabled={drawing || state.tokens < lotteryCost}>
+                {drawing ? "Drawing…" : `Draw (${lotteryCost} tokens)`}
+              </button>
+              <button
+                onClick={() => {
+                  setLotteryOpen(false);
+                  setLastPrize(null);
+                }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
 
       {shopOpen && (
         <section className="shop-modal" role="dialog" aria-label="Camp Shop">
@@ -520,6 +598,23 @@ function App() {
                   </>
                 )}
                 <hr />
+                <h3>Lottery Settings</h3>
+                <label htmlFor="lotteryCostInput" className="field-label">
+                  Tokens per Draw
+                </label>
+                <input
+                  id="lotteryCostInput"
+                  type="number"
+                  min="1"
+                  max="9999"
+                  value={lotteryCost}
+                  onChange={(event) => {
+                    const val = Math.max(1, Number(event.target.value));
+                    setLotteryCost(val);
+                    saveLotteryCost(val);
+                  }}
+                />
+                <hr />
                 <h3>Audio Settings</h3>
                 <label className="toggle-row">
                   <input
@@ -619,6 +714,26 @@ function dateStamp(): string {
   const mm = String(now.getMonth() + 1).padStart(2, "0");
   const dd = String(now.getDate()).padStart(2, "0");
   return `${yyyy}${mm}${dd}`;
+}
+
+function loadLotteryCost(): number {
+  const raw = localStorage.getItem(LOTTERY_COST_KEY);
+  const n = raw ? Number(raw) : DEFAULT_LOTTERY_COST;
+  return n > 0 ? n : DEFAULT_LOTTERY_COST;
+}
+
+function saveLotteryCost(cost: number): void {
+  localStorage.setItem(LOTTERY_COST_KEY, String(cost));
+}
+
+function pickPrize(prizes: LotteryPrize[]): LotteryPrize {
+  const total = prizes.reduce((sum, p) => sum + p.weight, 0);
+  let rand = Math.random() * total;
+  for (const prize of prizes) {
+    rand -= prize.weight;
+    if (rand <= 0) return prize;
+  }
+  return prizes[prizes.length - 1];
 }
 
 function loadTestHistory(): TestRecord[] {

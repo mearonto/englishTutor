@@ -136,6 +136,15 @@ export function purchase(itemId: string): { ok: boolean; message: string } {
   return { ok: true, message: `Purchased ${item.label}.` };
 }
 
+export function spendTokens(amount: number): { ok: boolean; message: string } {
+  if (state.tokens < amount) {
+    return { ok: false, message: "Not enough tokens." };
+  }
+  state = { ...state, tokens: state.tokens - amount };
+  emit();
+  return { ok: true, message: "" };
+}
+
 export function resetAll(): void {
   clearState();
   state = defaultState();
