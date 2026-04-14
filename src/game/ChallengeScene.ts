@@ -157,7 +157,7 @@ export class ChallengeScene extends Phaser.Scene {
       this.complete = true;
       if (isCorrect) {
         this.playSuccessCue();
-        applyCorrect(this.level, 1);
+        applyCorrect(this.level, 1, true);
         this.choiceNodes.forEach((node) => {
           if (node.value === choice) {
             node.bg.setFillStyle(0xdcfce7);

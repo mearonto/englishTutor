@@ -5,6 +5,7 @@ import { gameEvents } from "./game/events";
 import { SHOP_ITEMS } from "./game/levels";
 import { createGame } from "./game/createGame";
 import {
+  addTokens,
   buildReport,
   getState,
   purchase,
@@ -156,8 +157,12 @@ function App() {
           saveTestRecord(record);
           setTestHistory(loadTestHistory());
           gameEvents.emit("command-set-mode", { testMode: false });
+          const allCorrect = correct === prev.target;
+          const tokenBonus = correct * 2 + (allCorrect ? prev.target : 0);
+          addTokens(tokenBonus);
+          const bonusNote = allCorrect ? ` Perfect score bonus: +${prev.target} tokens!` : "";
           setFeedback({
-            message: `Test complete: ${correct}/${prev.target} correct (${pct}%).`,
+            message: `Test complete: ${correct}/${prev.target} correct (${pct}%). +${tokenBonus} tokens.${bonusNote}`,
             good: pct >= 70
           });
           return { ...prev, answered, correct, running: false, finished: true };

@@ -62,7 +62,7 @@ export function rewardForAttempt(correct: boolean, triesUsed: number): Reward {
     return { xp: 1, stars: 0, tokens: 0 };
   }
   if (triesUsed === 1) {
-    return { xp: 10, stars: 3, tokens: 2 };
+    return { xp: 10, stars: 3, tokens: 1 };
   }
   if (triesUsed === 2) {
     return { xp: 7, stars: 2, tokens: 1 };
@@ -70,7 +70,7 @@ export function rewardForAttempt(correct: boolean, triesUsed: number): Reward {
   return { xp: 5, stars: 1, tokens: 1 };
 }
 
-export function applyCorrect(level: Level, tries: number): Reward {
+export function applyCorrect(level: Level, tries: number, suppressTokens = false): Reward {
   const reward = rewardForAttempt(true, tries);
   const mastery3 = { ...state.mastery3 };
   if (level.grade === 3) {
@@ -81,7 +81,7 @@ export function applyCorrect(level: Level, tries: number): Reward {
     ...state,
     xp: state.xp + reward.xp,
     stars: state.stars + reward.stars,
-    tokens: state.tokens + reward.tokens,
+    tokens: state.tokens + (suppressTokens ? 0 : reward.tokens),
     streak: state.streak + 1,
     mastery3,
     learned: {
@@ -134,6 +134,12 @@ export function purchase(itemId: string): { ok: boolean; message: string } {
   };
   emit();
   return { ok: true, message: `Purchased ${item.label}.` };
+}
+
+export function addTokens(amount: number): void {
+  if (amount <= 0) return;
+  state = { ...state, tokens: state.tokens + amount };
+  emit();
 }
 
 export function spendTokens(amount: number): { ok: boolean; message: string } {
