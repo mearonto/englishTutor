@@ -88,7 +88,7 @@ export class ChallengeScene extends Phaser.Scene {
 
     this.typeText.setText(`Grade ${this.level.grade} • ${this.level.type}`);
     this.promptText.setText(this.level.prompt);
-    this.metaText.setText(this.testMode ? "" : `Definition: ${this.level.definition}`);
+    this.metaText.setText("");
     this.hintText.setText("");
 
     const CHOICE_LETTERS = ["A", "B", "C", "D"];
