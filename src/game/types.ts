@@ -1,5 +1,7 @@
 export type Grade = 3 | 4;
 
+export type Subject = "english" | "astronomy";
+
 export type SkillType =
   | "spelling"
   | "homophone"
@@ -8,11 +10,15 @@ export type SkillType =
   | "multiple-meaning"
   | "word-relationships"
   | "compound-word"
-  | "context-clues";
+  | "context-clues"
+  | "solar-system"
+  | "stars"
+  | "fun-fact"
+  | "astronomy-vocab";
 
 export interface Level {
   id: string;
-  grade: Grade;
+  grade: number;
   type: SkillType;
   word: string;
   prompt: string;
@@ -33,6 +39,7 @@ export interface PlayerState {
   mastery3: Record<string, number>;
   learned: Record<string, number>;
   inventory: string[];
+  subject: Subject;
 }
 
 export interface ShopItem {

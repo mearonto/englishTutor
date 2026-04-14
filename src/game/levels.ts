@@ -1,3 +1,4 @@
+import { ASTRONOMY_LEVELS } from "./astronomyLevels";
 import type { Level, ShopItem, SkillType } from "./types";
 
 const CUSTOM_LEVELS_KEY = "word-quest-custom-levels-v1";
@@ -205,6 +206,10 @@ const bulkWordLevels: Level[] = buildBulkWordLevels();
 
 export function getLevels(): Level[] {
   return [...BASE_LEVELS, ...bulkWordLevels, ...customLevels];
+}
+
+export function getAstronomyLevels(): Level[] {
+  return ASTRONOMY_LEVELS;
 }
 
 export function getCustomLevelsCount(): number {

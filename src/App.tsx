@@ -11,6 +11,7 @@ import {
   purchase,
   refreshAfterContentImport,
   resetAll,
+  setSubject,
   spendTokens,
   subscribe
 } from "./game/store";
@@ -453,7 +454,7 @@ function App() {
         {mode === "practice" ? (
           <>
             <div className="progress-wrap">
-              <span>Practice Mode</span>
+              <span>{state.subject === "astronomy" ? "Astronomy Practice" : "Practice Mode"}</span>
               <span>
                 Streak: <strong>{state.streak}</strong>
               </span>
@@ -473,6 +474,9 @@ function App() {
                 </>
               )}
             </div>
+            {state.subject === "astronomy" && !testState.running && !testState.finished && (
+              <span style={{ fontSize: "0.8rem", color: "#0099cc", fontWeight: 700 }}>🔭 Astronomy</span>
+            )}
             {testState.finished ? (
               <div className="zone-message">
                 Final Score: {finalScore}% ({testState.correct}/{testState.target})
@@ -642,6 +646,40 @@ function App() {
               </>
             ) : (
               <>
+                <h3>Learning Subject</h3>
+                <div className="mode-toggle" style={{ background: "rgba(0,100,180,0.08)", marginBottom: "1rem" }}>
+                  <button
+                    className={state.subject === "english" ? "active" : ""}
+                    onClick={() => {
+                      if (state.subject !== "english") {
+                        setSubject("english");
+                        setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
+                        setCanGoNext(false);
+                        setFeedback({ message: "", good: false });
+                        gameEvents.emit("command-set-mode", { testMode: false });
+                        gameEvents.emit("command-next");
+                      }
+                    }}
+                  >
+                    English
+                  </button>
+                  <button
+                    className={state.subject === "astronomy" ? "active" : ""}
+                    onClick={() => {
+                      if (state.subject !== "astronomy") {
+                        setSubject("astronomy");
+                        setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
+                        setCanGoNext(false);
+                        setFeedback({ message: "", good: false });
+                        gameEvents.emit("command-set-mode", { testMode: false });
+                        gameEvents.emit("command-next");
+                      }
+                    }}
+                  >
+                    Astronomy
+                  </button>
+                </div>
+                <hr />
                 <p>Import custom word packs (.json or .csv) and export learner progress reports.</p>
                 <label htmlFor="packUpload" className="field-label">
                   Import Word Pack

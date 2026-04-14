@@ -86,7 +86,11 @@ export class ChallengeScene extends Phaser.Scene {
       return;
     }
 
-    this.typeText.setText(`Grade ${this.level.grade} • ${this.level.type}`);
+    this.typeText.setText(
+      this.level.grade === 0
+        ? `Astronomy • ${this.level.type}`
+        : `Grade ${this.level.grade} • ${this.level.type}`
+    );
     this.promptText.setText(this.level.prompt);
     this.metaText.setText("");
     this.hintText.setText("");

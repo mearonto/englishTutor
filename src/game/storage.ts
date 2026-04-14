@@ -11,7 +11,8 @@ export function defaultState(): PlayerState {
     gradeUnlocked: 3,
     mastery3: {},
     learned: {},
-    inventory: []
+    inventory: [],
+    subject: "english"
   };
 }
 

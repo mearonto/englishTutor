@@ -216,7 +216,7 @@ export type ReportShape = {
   };
   levelProgress: Array<{
     id: string;
-    grade: 3 | 4;
+    grade: number;
     type: string;
     word: string;
     attempts: number;

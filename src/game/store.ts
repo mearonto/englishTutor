@@ -1,6 +1,6 @@
-import { getCustomLevelsCount, getLevels, SHOP_ITEMS } from "./levels";
+import { getAstronomyLevels, getCustomLevelsCount, getLevels, SHOP_ITEMS } from "./levels";
 import { clearState, defaultState, loadState, saveState } from "./storage";
-import type { Level, PlayerState, Reward } from "./types";
+import type { Level, PlayerState, Reward, Subject } from "./types";
 
 type Listener = (state: PlayerState) => void;
 
@@ -47,14 +47,25 @@ export function maybeUnlockGrade4(): void {
 }
 
 function availableLevels(): Level[] {
+  if (state.subject === "astronomy") {
+    const levels = getAstronomyLevels();
+    return levels.sort((a, b) => (state.learned[a.id] ?? 0) - (state.learned[b.id] ?? 0));
+  }
   const unlocked = getLevels().filter((level) => level.grade <= state.gradeUnlocked);
   return unlocked.sort((a, b) => (state.learned[a.id] ?? 0) - (state.learned[b.id] ?? 0));
 }
 
 export function pickNextLevel(): Level {
-  maybeUnlockGrade4();
+  if (state.subject === "english") {
+    maybeUnlockGrade4();
+  }
   const pool = availableLevels();
   return pool[Math.floor(Math.random() * pool.length)];
+}
+
+export function setSubject(subject: Subject): void {
+  state = { ...state, subject };
+  emit();
 }
 
 export function rewardForAttempt(correct: boolean, triesUsed: number): Reward {
