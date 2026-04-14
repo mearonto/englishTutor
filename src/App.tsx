@@ -292,24 +292,17 @@ function App() {
     return [{ id: "replay", label: "再来一次", weight: replayWeight }, ...prizes];
   };
 
-  const performDraw = (prizes: LotteryPrize[], free: boolean) => {
-    if (!free) {
-      const result = spendTokens(lotteryCost);
-      if (!result.ok) return;
-    }
+  const drawLottery = () => {
+    const result = spendTokens(lotteryCost);
+    if (!result.ok) return;
     setDrawing(true);
     setLastPrize(null);
+    const prizes = getEffectivePrizes(storedPrizes);
     setTimeout(() => {
-      const prize = pickPrize(prizes);
-      setLastPrize(prize);
+      setLastPrize(pickPrize(prizes));
       setDrawing(false);
-      if (prize.id === "replay") {
-        setTimeout(() => performDraw(prizes, true), 1200);
-      }
     }, 800);
   };
-
-  const drawLottery = () => performDraw(getEffectivePrizes(storedPrizes), false);
 
   const updatePrize = (index: number, field: "label" | "weight", value: string | number) => {
     const updated = storedPrizes.map((p, i) => (i === index ? { ...p, [field]: value } : p));
@@ -502,9 +495,7 @@ function App() {
               </div>
               {lastPrize && (
                 <div className="lottery-result">
-                  {lastPrize.id === "replay"
-                    ? "再来一次！正在重新抽奖…"
-                    : `恭喜获得：${lastPrize.label}！`}
+                  {lastPrize.id === "replay" ? "再来一次！" : `恭喜获得：${lastPrize.label}！`}
                 </div>
               )}
               <div className="teacher-actions">
