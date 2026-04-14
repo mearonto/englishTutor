@@ -108,6 +108,8 @@ function App() {
     answered: 0,
     correct: 0
   });
+  const [bonusTokenInput, setBonusTokenInput] = useState(0);
+  const [bonusTokenMessage, setBonusTokenMessage] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [changePasswordMessage, setChangePasswordMessage] = useState("");
@@ -737,6 +739,37 @@ function App() {
                   ))}
                 </div>
                 <button onClick={addPrize}>+ 添加奖品</button>
+                <hr />
+                <h3>Bonus Tokens</h3>
+                <label htmlFor="bonusTokenInput" className="field-label">
+                  Award tokens to student
+                </label>
+                <input
+                  id="bonusTokenInput"
+                  type="number"
+                  min="1"
+                  max="9999"
+                  value={bonusTokenInput || ""}
+                  onChange={(e) => setBonusTokenInput(Math.max(0, Number(e.target.value)))}
+                  placeholder="Enter amount"
+                />
+                {bonusTokenMessage && (
+                  <p className="inline-note good">{bonusTokenMessage}</p>
+                )}
+                <div className="teacher-actions">
+                  <button
+                    onClick={() => {
+                      if (bonusTokenInput <= 0) return;
+                      addTokens(bonusTokenInput);
+                      setBonusTokenMessage(`+${bonusTokenInput} tokens awarded!`);
+                      setBonusTokenInput(0);
+                      setTimeout(() => setBonusTokenMessage(""), 3000);
+                    }}
+                    disabled={bonusTokenInput <= 0}
+                  >
+                    Award Tokens
+                  </button>
+                </div>
                 <hr />
                 <h3>Audio Settings</h3>
                 <label className="toggle-row">
