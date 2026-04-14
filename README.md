@@ -24,6 +24,8 @@ npm run preview
 - Phaser challenge loop with supportive retries (hint, distractor removal, coach mode).
 - React HUD for XP, stars, tokens, streak, grade unlock, and mastery progress.
 - Grade 3 and Grade 4 starter content with Canadian spellings.
+- Integrated large academic vocabulary bank (from your provided list) as playable spelling challenges.
+- Test Mode draws from the integrated vocabulary bank as part of normal question selection.
 - Word relationship challenges (synonyms and antonyms).
 - Compound word challenges (combining base words).
 - Context clue paragraph inference challenges.

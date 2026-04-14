@@ -54,8 +54,7 @@ function availableLevels(): Level[] {
 export function pickNextLevel(): Level {
   maybeUnlockGrade4();
   const pool = availableLevels();
-  const maxWindow = Math.min(pool.length, 4);
-  return pool[Math.floor(Math.random() * maxWindow)];
+  return pool[Math.floor(Math.random() * pool.length)];
 }
 
 export function rewardForAttempt(correct: boolean, triesUsed: number): Reward {
