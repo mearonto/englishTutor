@@ -1360,5 +1360,1159 @@ export const ASTRONOMY_LEVELS: Level[] = [
     contextSentence: "NASA astronauts go through two years of basic training before being assigned to a mission.",
     hints: ["The word comes from Greek for 'star sailor'.", "NASA astronauts train for at least two years before their first mission."],
     coach: "Astronaut comes from Greek words meaning 'star sailor.' NASA astronauts train for two years learning everything from spacewalks to spacecraft systems to Russian. About 1 in 12,000 applicants is selected — one of the most competitive jobs on Earth!"
+  },
+
+  // ── Solar System (extra 10) ────────────────────────────────────────
+  {
+    id: "astro-ss-16",
+    grade: 0,
+    type: "solar-system",
+    word: "hydrogen and helium",
+    prompt: "What two gases make up most of the Sun?",
+    choices: ["Oxygen and nitrogen", "Hydrogen and helium", "Carbon dioxide and methane", "Hydrogen and oxygen"],
+    answer: "Hydrogen and helium",
+    definition: "The Sun is made of about 73% hydrogen and 25% helium, with tiny amounts of other elements.",
+    contextSentence: "The Sun converts hydrogen into helium through nuclear fusion, releasing enormous energy.",
+    hints: ["These are the two lightest elements in the universe.", "Nuclear fusion in the Sun converts one into the other."],
+    coach: "The Sun is about 73% hydrogen and 25% helium. In its core, hydrogen atoms fuse together to make helium — and that fusion releases the light and heat that warms Earth!"
+  },
+  {
+    id: "astro-ss-17",
+    grade: 0,
+    type: "solar-system",
+    word: "sol",
+    prompt: "What is a 'sol' on Mars?",
+    choices: ["A Martian year", "One Martian day (about 24 hours and 37 minutes)", "A Martian moon", "A dust storm on Mars"],
+    answer: "One Martian day (about 24 hours and 37 minutes)",
+    definition: "A sol is the term for a Martian day, which is about 24 hours and 37 minutes — very similar to an Earth day.",
+    contextSentence: "NASA engineers track Mars rover missions in 'sols' rather than Earth days.",
+    hints: ["It is the length of one day on Mars.", "It is only about 37 minutes longer than an Earth day."],
+    coach: "Mars rovers count their mission days in 'sols' — Martian days. Each sol is 24 hours and 37 minutes long. A Martian year (one orbit of the Sun) lasts 687 Earth days!"
+  },
+  {
+    id: "astro-ss-18",
+    grade: 0,
+    type: "solar-system",
+    word: "Valles Marineris",
+    prompt: "What is the largest canyon in our solar system?",
+    choices: ["Grand Canyon (Earth)", "Valles Marineris (Mars)", "Eos Chasma (Mars)", "Mariner Valley (Venus)"],
+    answer: "Valles Marineris (Mars)",
+    definition: "Valles Marineris is a vast canyon system on Mars, stretching about 4,000 km long and up to 7 km deep — ten times longer than the Grand Canyon.",
+    contextSentence: "Valles Marineris is so long it could stretch across the entire United States.",
+    hints: ["It is on Mars.", "It is about 4,000 km long — roughly the width of the United States."],
+    coach: "Valles Marineris on Mars is the biggest canyon in the solar system — 4,000 km long and 7 km deep. The Grand Canyon is only 446 km long by comparison. Scientists believe it formed as Mars's crust cracked and pulled apart billions of years ago."
+  },
+  {
+    id: "astro-ss-19",
+    grade: 0,
+    type: "solar-system",
+    word: "iron oxide",
+    prompt: "Why does Mars appear red?",
+    choices: ["It is covered in lava", "Its surface is rich in iron oxide (rust)", "It reflects red light from the Sun", "Its atmosphere is full of red dust from space"],
+    answer: "Its surface is rich in iron oxide (rust)",
+    definition: "Mars gets its red colour from iron oxide (rust) that covers much of its rocky surface and dust.",
+    contextSentence: "Mars is nicknamed 'The Red Planet' because of the rust-coloured dust and rocks covering its surface.",
+    hints: ["Think about what happens to iron when it gets wet on Earth.", "The same chemical that makes rust orange also colours Mars."],
+    coach: "Mars is called the Red Planet because its surface is covered in iron oxide — rust! Just like a rusty nail, the iron in Mars's rocks reacted with oxygen billions of years ago and turned red."
+  },
+  {
+    id: "astro-ss-20",
+    grade: 0,
+    type: "solar-system",
+    word: "Europa",
+    prompt: "Why are scientists excited about Jupiter's moon Europa?",
+    choices: [
+      "It has a breathable atmosphere like Earth",
+      "It has a vast liquid water ocean under its icy surface",
+      "It is the largest moon in the solar system",
+      "It has active volcanoes that produce oxygen"
+    ],
+    answer: "It has a vast liquid water ocean under its icy surface",
+    definition: "Europa has a thick icy shell covering a global liquid water ocean, warmed by tidal forces from Jupiter's gravity. It is considered one of the best candidates for extraterrestrial life.",
+    contextSentence: "NASA's Europa Clipper mission, launched in 2024, will investigate whether Europa's ocean could support life.",
+    hints: ["Its surface is covered in cracked ice.", "It may have more liquid water than all of Earth's oceans combined."],
+    coach: "Europa is one of Jupiter's moons with a liquid ocean hidden under miles of ice! Jupiter's gravity squeezes Europa, creating heat that keeps water liquid. Scientists think it could potentially harbour life. NASA launched the Europa Clipper in 2024 to investigate!"
+  },
+  {
+    id: "astro-ss-21",
+    grade: 0,
+    type: "solar-system",
+    word: "terrestrial planets",
+    prompt: "What are the four inner rocky planets called?",
+    choices: ["Gas giants", "Ice giants", "Terrestrial planets", "Dwarf planets"],
+    answer: "Terrestrial planets",
+    definition: "The four inner planets — Mercury, Venus, Earth, and Mars — are called terrestrial planets. They have solid, rocky surfaces.",
+    contextSentence: "All four terrestrial planets have solid surfaces that spacecraft or rovers could land on.",
+    hints: ["'Terrestrial' comes from the Latin word for Earth.", "They all have solid rocky surfaces."],
+    coach: "Mercury, Venus, Earth, and Mars are called terrestrial (Earth-like) planets because they all have solid, rocky surfaces. The outer four planets (Jupiter, Saturn, Uranus, Neptune) are giant planets made mostly of gas or ice."
+  },
+  {
+    id: "astro-ss-22",
+    grade: 0,
+    type: "solar-system",
+    word: "gas giants and ice giants",
+    prompt: "How are Jupiter and Saturn different from Uranus and Neptune?",
+    choices: [
+      "Jupiter and Saturn are smaller",
+      "Jupiter and Saturn are gas giants made mostly of hydrogen and helium; Uranus and Neptune are ice giants with more water and methane",
+      "Jupiter and Saturn are solid; Uranus and Neptune are liquid",
+      "They orbit in opposite directions"
+    ],
+    answer: "Jupiter and Saturn are gas giants made mostly of hydrogen and helium; Uranus and Neptune are ice giants with more water and methane",
+    definition: "Gas giants (Jupiter, Saturn) are composed mainly of hydrogen and helium. Ice giants (Uranus, Neptune) have more water, methane, and ammonia ices.",
+    contextSentence: "The blue-green colour of Uranus and Neptune comes from methane gas absorbing red light.",
+    hints: ["Jupiter and Saturn are the two largest planets.", "The blue-green colour of Uranus and Neptune is a clue to their different composition."],
+    coach: "All four outer planets are giant planets, but they split into two types: gas giants (Jupiter and Saturn — mostly hydrogen and helium) and ice giants (Uranus and Neptune — more icy compounds). Their blue-green colour comes from methane!"
+  },
+  {
+    id: "astro-ss-23",
+    grade: 0,
+    type: "solar-system",
+    word: "star",
+    prompt: "What actually is the Sun?",
+    choices: ["A very large planet", "A giant ball of fire floating in space", "A star — a massive ball of gas powered by nuclear fusion", "A very hot moon"],
+    answer: "A star — a massive ball of gas powered by nuclear fusion",
+    definition: "The Sun is a star — a massive, luminous sphere of plasma held together by gravity, powered by nuclear fusion in its core.",
+    contextSentence: "The Sun is an ordinary star; it looks so much bigger and brighter than other stars only because it is much closer to us.",
+    hints: ["The twinkling points of light in the night sky are the same type of object as the Sun.", "Nuclear fusion in its core generates its energy."],
+    coach: "The Sun is a star — the same kind of object as the points of light you see twinkling at night! It looks so much bigger and brighter only because it's 4.24 light-years closer to us than the next nearest star."
+  },
+  {
+    id: "astro-ss-24",
+    grade: 0,
+    type: "solar-system",
+    word: "greenhouse effect",
+    prompt: "What makes Venus so much hotter than Mercury, even though Mercury is closer to the Sun?",
+    choices: [
+      "Venus has more volcanoes",
+      "Venus's thick CO₂ atmosphere creates an extreme greenhouse effect that traps heat",
+      "Venus rotates faster, generating more heat",
+      "Venus is bigger, so it holds more heat"
+    ],
+    answer: "Venus's thick CO₂ atmosphere creates an extreme greenhouse effect that traps heat",
+    definition: "Venus has a thick atmosphere of mostly carbon dioxide that traps heat like a giant greenhouse, raising its surface temperature to 465°C.",
+    contextSentence: "The greenhouse effect on Venus is so extreme that the surface would melt lead.",
+    hints: ["Carbon dioxide acts like a blanket, trapping heat.", "Venus's atmosphere is about 90 times thicker than Earth's."],
+    coach: "Venus teaches us about runaway greenhouse effects. Its thick CO₂ atmosphere traps so much heat that the surface is 465°C — hotter than Mercury, even though Mercury is closer to the Sun. It's a warning about what can happen when greenhouse gases build up!"
+  },
+  {
+    id: "astro-ss-25",
+    grade: 0,
+    type: "solar-system",
+    word: "giant impact hypothesis",
+    prompt: "How do scientists think Earth's Moon formed?",
+    choices: [
+      "The Moon was always there when Earth formed",
+      "Earth captured the Moon from the asteroid belt",
+      "A Mars-sized object collided with early Earth, and the debris formed the Moon",
+      "The Moon broke off from Earth as it cooled"
+    ],
+    answer: "A Mars-sized object collided with early Earth, and the debris formed the Moon",
+    definition: "The giant impact hypothesis proposes that a Mars-sized body called Theia struck early Earth about 4.5 billion years ago, ejecting material that coalesced into the Moon.",
+    contextSentence: "Rock samples brought back by Apollo astronauts support the idea that the Moon formed from Earth's own material.",
+    hints: ["It is called the 'giant impact' hypothesis.", "Apollo Moon rocks have a similar composition to Earth's crust."],
+    coach: "Scientists think the Moon formed from a giant collision! About 4.5 billion years ago, a Mars-sized rock called Theia smashed into early Earth. The debris ejected into orbit gradually clumped together to form the Moon — and Apollo rock samples back this up!"
+  },
+
+  // ── Stars & Galaxies (extra 10) ───────────────────────────────────
+  {
+    id: "astro-sg-13",
+    grade: 0,
+    type: "stars-galaxies",
+    word: "nuclear fusion",
+    prompt: "What process powers a star like our Sun?",
+    choices: ["Nuclear fission (splitting atoms)", "Chemical burning", "Nuclear fusion (combining hydrogen atoms)", "Electrical energy"],
+    answer: "Nuclear fusion (combining hydrogen atoms)",
+    definition: "Nuclear fusion occurs in a star's core when hydrogen atoms are forced together under extreme heat and pressure to form helium, releasing enormous energy.",
+    contextSentence: "The Sun converts about 600 million tonnes of hydrogen into helium every second through nuclear fusion.",
+    hints: ["It is the joining of atoms, not the splitting of them.", "The Sun converts 600 million tonnes of hydrogen per second."],
+    coach: "Stars shine through nuclear fusion — smashing hydrogen atoms together to make helium. The tiny bit of mass lost in this process converts to huge amounts of energy (E=mc²). The Sun has enough hydrogen fuel to last another 5 billion years!"
+  },
+  {
+    id: "astro-sg-14",
+    grade: 0,
+    type: "stars-galaxies",
+    word: "neutron star",
+    prompt: "What is a neutron star?",
+    choices: [
+      "A very young star just starting to shine",
+      "The incredibly dense, city-sized remnant left after a massive star explodes as a supernova",
+      "A star with no light of its own",
+      "A star orbiting a black hole"
+    ],
+    answer: "The incredibly dense, city-sized remnant left after a massive star explodes as a supernova",
+    definition: "A neutron star is what remains after a massive star explodes as a supernova. It packs more mass than the Sun into a sphere only about 20 km across.",
+    contextSentence: "A teaspoon of neutron star material would weigh about a billion tonnes.",
+    hints: ["It is the aftermath of a supernova explosion.", "It is city-sized but incredibly dense."],
+    coach: "When a massive star explodes as a supernova, its core collapses into a neutron star — a ball of neutrons only 20 km across but containing more mass than our Sun. It's the densest thing we can see in the universe (besides black holes)."
+  },
+  {
+    id: "astro-sg-15",
+    grade: 0,
+    type: "stars-galaxies",
+    word: "Polaris",
+    prompt: "Why is Polaris (the North Star) special to navigators?",
+    choices: [
+      "It is the brightest star in the sky",
+      "It sits almost directly above Earth's North Pole and always points north",
+      "It is the closest star to Earth",
+      "It changes colour every night"
+    ],
+    answer: "It sits almost directly above Earth's North Pole and always points north",
+    definition: "Polaris appears almost motionless in the sky because it is aligned nearly directly above Earth's North Pole. Sailors have used it for navigation for thousands of years.",
+    contextSentence: "No matter where you are in the Northern Hemisphere, Polaris always appears in the same direction — north.",
+    hints: ["It sits above Earth's North Pole.", "Sailors used it to navigate for thousands of years."],
+    coach: "Polaris is the North Star — it appears almost exactly above Earth's North Pole, so it always points north. Sailors without GPS used it to navigate for centuries. It isn't the brightest star, but it's one of the most useful!"
+  },
+  {
+    id: "astro-sg-16",
+    grade: 0,
+    type: "stars-galaxies",
+    word: "galaxy types",
+    prompt: "Which of the following is NOT a recognised type of galaxy?",
+    choices: ["Spiral", "Elliptical", "Irregular", "Triangular"],
+    answer: "Triangular",
+    definition: "Galaxies are classified as spiral (like the Milky Way), elliptical (oval-shaped), or irregular (no defined shape). There is no 'triangular' galaxy type.",
+    contextSentence: "The Milky Way and Andromeda are both spiral galaxies, while some smaller satellite galaxies are irregular.",
+    hints: ["The three main types are spiral, elliptical, and irregular.", "Our Milky Way is one of the main types — a spiral."],
+    coach: "Galaxies come in three main shapes: spiral (like the Milky Way, with graceful arms), elliptical (smooth oval blobs, often the largest galaxies), and irregular (no set shape). There's no such thing as a triangular galaxy!"
+  },
+  {
+    id: "astro-sg-17",
+    grade: 0,
+    type: "stars-galaxies",
+    word: "200–400 billion",
+    prompt: "Roughly how many stars are in the Milky Way galaxy?",
+    choices: ["About 1 million", "About 1 billion", "Between 200 and 400 billion", "About 1 trillion"],
+    answer: "Between 200 and 400 billion",
+    definition: "Scientists estimate the Milky Way contains between 200 and 400 billion stars, though counting them all precisely is impossible.",
+    contextSentence: "If you counted one star per second, it would take thousands of years to count all the stars in the Milky Way.",
+    hints: ["It is far more than a billion.", "Our Sun is just one of hundreds of billions of stars in it."],
+    coach: "The Milky Way has between 200 and 400 billion stars. If you counted one per second non-stop, it would take over 6,000 years just to reach 200 billion. And the Milky Way is just one of an estimated 2 trillion galaxies in the observable universe!"
+  },
+  {
+    id: "astro-sg-18",
+    grade: 0,
+    type: "stars-galaxies",
+    word: "own light",
+    prompt: "What is the key difference between a star and a planet?",
+    choices: [
+      "Stars are bigger than planets",
+      "Stars produce their own light through nuclear fusion; planets only reflect light from a star",
+      "Stars are made of gas; planets are solid",
+      "Stars orbit planets; planets orbit moons"
+    ],
+    answer: "Stars produce their own light through nuclear fusion; planets only reflect light from a star",
+    definition: "Stars generate their own energy through nuclear fusion and emit light. Planets have no nuclear fusion — they shine by reflecting light from their star.",
+    contextSentence: "When you see a planet like Venus shining brightly in the sky, you are seeing reflected sunlight, not Venus's own light.",
+    hints: ["The Sun is a star — it makes its own light.", "Planets like Venus shine by bouncing the Sun's light toward us."],
+    coach: "A star makes its own light through nuclear fusion in its core. A planet just reflects the light from its nearby star. Venus looks bright in the sky not because it glows — it's reflecting sunlight off its thick clouds!"
+  },
+  {
+    id: "astro-sg-19",
+    grade: 0,
+    type: "stars-galaxies",
+    word: "binary star",
+    prompt: "What is a binary star system?",
+    choices: [
+      "A star with two planets",
+      "Two stars that orbit each other",
+      "A star that appears double because of a lens effect",
+      "A star that explodes twice"
+    ],
+    answer: "Two stars that orbit each other",
+    definition: "A binary star system consists of two stars gravitationally bound to each other, orbiting their common centre of mass.",
+    contextSentence: "More than half of all stars in the Milky Way are in binary or multiple star systems.",
+    hints: ["'Binary' means two.", "More than half of all stars have a companion star."],
+    coach: "A binary star is two stars locked in a gravitational dance, orbiting each other. More than half of all stars in the Milky Way have a companion! If Earth were in a binary system, we'd see two suns in the sky — just like the planet Tatooine in Star Wars!"
+  },
+  {
+    id: "astro-sg-20",
+    grade: 0,
+    type: "stars-galaxies",
+    word: "planetary nebula",
+    prompt: "What is a planetary nebula?",
+    choices: [
+      "A cloud of gas around a newly forming planet",
+      "The glowing shell of gas puffed off by a dying Sun-like star",
+      "A nebula near all the planets in our solar system",
+      "Rings of gas around a gas giant"
+    ],
+    answer: "The glowing shell of gas puffed off by a dying Sun-like star",
+    definition: "A planetary nebula forms when a Sun-like star nears the end of its life, gently expelling its outer layers as a glowing shell, leaving a white dwarf at the centre.",
+    contextSentence: "Despite the name, planetary nebulae have nothing to do with planets — early astronomers thought they looked like planets through small telescopes.",
+    hints: ["Despite the name, it has nothing to do with planets.", "It is what a Sun-like star leaves behind as it dies."],
+    coach: "Planetary nebulae are stunning glowing shells of gas left by dying Sun-like stars. Despite the name (early astronomers thought they looked like planet discs), they are the beautiful death glow of stars. Our Sun will make one in about 5 billion years!"
+  },
+  {
+    id: "astro-sg-21",
+    grade: 0,
+    type: "stars-galaxies",
+    word: "galactic year",
+    prompt: "How long does it take our solar system to orbit once around the centre of the Milky Way?",
+    choices: ["About 1,000 years", "About 1 million years", "About 225–250 million years", "About 1 billion years"],
+    answer: "About 225–250 million years",
+    definition: "Our solar system travels around the Milky Way's centre at about 828,000 km/h, completing one orbit roughly every 225–250 million years — called a galactic year.",
+    contextSentence: "The last time our solar system was in this position in the Milky Way, dinosaurs were just beginning to walk on Earth.",
+    hints: ["It is called a 'galactic year' or 'cosmic year'.", "The last time we were in this spot, dinosaurs were just appearing on Earth."],
+    coach: "Our solar system orbits the Milky Way's centre at 828,000 km/h — but the galaxy is so huge it takes 225–250 million years for one lap. That's called a galactic year. The last galactic year ago, dinosaurs were just appearing on Earth!"
+  },
+  {
+    id: "astro-sg-22",
+    grade: 0,
+    type: "stars-galaxies",
+    word: "Orion Nebula",
+    prompt: "What is special about the Orion Nebula (M42)?",
+    choices: [
+      "It is the remains of a star that exploded near Earth",
+      "It is a stellar nursery where new stars are actively forming, visible to the naked eye",
+      "It is a type of black hole",
+      "It is the farthest object visible to the naked eye"
+    ],
+    answer: "It is a stellar nursery where new stars are actively forming, visible to the naked eye",
+    definition: "The Orion Nebula is a giant star-forming region about 1,344 light-years away. It is one of the few nebulae visible without a telescope.",
+    contextSentence: "You can see the Orion Nebula as a fuzzy patch in the 'sword' hanging from Orion's belt on a clear night.",
+    hints: ["Look for a fuzzy patch in the constellation Orion.", "New stars are being born inside it right now."],
+    coach: "The Orion Nebula is a giant cloud of gas and dust 1,344 light-years away where hundreds of new stars are being born right now. Look just below Orion's Belt for the fuzzy middle 'star' in Orion's sword — that fuzzy glow is the nebula, visible to the naked eye!"
+  },
+
+  // ── Space Exploration (extra 10) ──────────────────────────────────
+  {
+    id: "astro-se-16",
+    grade: 0,
+    type: "space-exploration",
+    word: "6 months",
+    prompt: "How long do astronauts typically stay on the International Space Station for one mission?",
+    choices: ["About 2 weeks", "About 1 month", "About 6 months", "About 2 years"],
+    answer: "About 6 months",
+    definition: "ISS crew members typically stay for about six months, giving scientists time to study the long-term effects of microgravity on the human body.",
+    contextSentence: "During a 6-month stay, an astronaut's body can lose bone density and muscle mass, which is why they exercise for 2 hours every day.",
+    hints: ["Astronauts exercise 2 hours a day to counter bone and muscle loss.", "Some missions have lasted over a year as experiments."],
+    coach: "ISS astronauts usually stay about 6 months. Living in microgravity weakens bones and muscles because the body doesn't need to work against gravity. That's why astronauts exercise for 2 hours every single day — to stay healthy for their return to Earth!"
+  },
+  {
+    id: "astro-se-17",
+    grade: 0,
+    type: "space-exploration",
+    word: "Laika",
+    prompt: "What was the name of the first living creature sent to orbit Earth?",
+    choices: ["Laika", "Belka", "Ham", "Enos"],
+    answer: "Laika",
+    definition: "Laika was a Soviet space dog launched aboard Sputnik 2 on November 3, 1957, becoming the first animal to orbit Earth.",
+    contextSentence: "Laika proved that living creatures could survive being launched into space and orbit Earth.",
+    hints: ["She was a dog launched by the Soviet Union in 1957.", "Her mission proved living creatures could reach orbit."],
+    coach: "Laika was a stray dog from Moscow chosen by Soviet scientists to be the first living creature to orbit Earth in 1957. Her mission showed that animals could survive launch into space, paving the way for human spaceflight."
+  },
+  {
+    id: "astro-se-18",
+    grade: 0,
+    type: "space-exploration",
+    word: "launch window",
+    prompt: "What is a 'launch window' in rocketry?",
+    choices: [
+      "The window astronauts look out of during launch",
+      "A specific time period when launching achieves the best path to the mission destination",
+      "The hatch through which astronauts enter the rocket",
+      "The time between ignition and liftoff"
+    ],
+    answer: "A specific time period when launching achieves the best path to the mission destination",
+    definition: "A launch window is the period of time during which a rocket must launch to reach its destination (such as the ISS or Moon) using the least fuel.",
+    contextSentence: "If a rocket misses its launch window, it must wait for the next opportunity, which could be hours, days, or even months away.",
+    hints: ["Planets and space stations are always moving.", "Miss it and you have to wait for the next opportunity."],
+    coach: "A launch window is the narrow time slot when a rocket must launch to reach its target efficiently. The ISS is moving at 27,000 km/h — you have to launch at just the right moment so the rocket and station meet up in orbit. Miss the window and you wait for the next one!"
+  },
+  {
+    id: "astro-se-19",
+    grade: 0,
+    type: "space-exploration",
+    word: "Crew Dragon",
+    prompt: "What was SpaceX's Crew Dragon the first to do, in 2020?",
+    choices: [
+      "Land on Mars",
+      "Be the first US commercial spacecraft to carry NASA astronauts to the ISS",
+      "Orbit the Moon",
+      "Launch the Hubble Space Telescope"
+    ],
+    answer: "Be the first US commercial spacecraft to carry NASA astronauts to the ISS",
+    definition: "SpaceX Crew Dragon became the first commercially built and operated spacecraft to carry NASA astronauts to the ISS, launching on May 30, 2020.",
+    contextSentence: "After the Space Shuttle retired in 2011, the US relied on Russian Soyuz rockets to reach the ISS until Crew Dragon flew in 2020.",
+    hints: ["It launched on a Falcon 9 rocket.", "NASA had been paying Russia for rides to the ISS since the Shuttle retired."],
+    coach: "SpaceX Crew Dragon launched NASA astronauts Bob Behnken and Doug Hurley to the ISS in 2020 — the first time Americans flew to space from American soil since the Space Shuttle retired in 2011. It was the first commercial crewed spacecraft!"
+  },
+  {
+    id: "astro-se-20",
+    grade: 0,
+    type: "space-exploration",
+    word: "gimbaled engines",
+    prompt: "How do rockets steer themselves in space where there is no air to push against?",
+    choices: [
+      "They use large fins like aircraft",
+      "They tilt (gimbal) their rocket engines to direct the thrust and change direction",
+      "They use a steering wheel connected to the engines",
+      "They cannot steer — they only go straight"
+    ],
+    answer: "They tilt (gimbal) their rocket engines to direct the thrust and change direction",
+    definition: "Rockets steer by gimbaling (tilting) their engines to redirect the thrust vector, which turns the rocket. Small thrusters called RCS jets are used for fine adjustments in space.",
+    contextSentence: "Rocket engine gimbaling is like tilting an outboard motor on a boat to steer — just pointing the engine changes direction.",
+    hints: ["Think of tilting an outboard motor on a boat to steer it.", "There is no air in space, so fins don't work."],
+    coach: "In space there's no air for fins or wings to work. Rockets steer by tilting (gimbaling) their engines so the thrust pushes at an angle. Small thrusters called reaction control system (RCS) jets provide fine adjustments for docking and maneuvering."
+  },
+  {
+    id: "astro-se-21",
+    grade: 0,
+    type: "space-exploration",
+    word: "solid rocket booster",
+    prompt: "What is a solid rocket booster (SRB)?",
+    choices: [
+      "A liquid-fuel engine that powers the main stage",
+      "A packed cylinder of solid propellant that provides extra thrust at launch and then falls away",
+      "An engine used only in deep space",
+      "A booster that can be steered independently"
+    ],
+    answer: "A packed cylinder of solid propellant that provides extra thrust at launch and then falls away",
+    definition: "Solid rocket boosters contain solid propellant and provide extra thrust during the early phase of launch. Once their fuel burns out, they separate from the rocket.",
+    contextSentence: "The Space Shuttle used two solid rocket boosters that were recovered from the ocean and reused.",
+    hints: ["The Space Shuttle used two of these strapped to its sides.", "They burn solid fuel, like a giant firework."],
+    coach: "Solid rocket boosters are like giant fireworks strapped to a rocket — they provide a huge extra push at launch. The Space Shuttle had two SRBs that burned for about 2 minutes, then fell away and were recovered from the ocean to be refurbished and reused!"
+  },
+  {
+    id: "astro-se-22",
+    grade: 0,
+    type: "space-exploration",
+    word: "sleeping bag",
+    prompt: "How do astronauts sleep on the International Space Station?",
+    choices: [
+      "In normal beds with blankets",
+      "In sleeping bags attached to the wall, because there is no up or down in microgravity",
+      "Sitting in chairs with seatbelts",
+      "They cannot sleep in space"
+    ],
+    answer: "In sleeping bags attached to the wall, because there is no up or down in microgravity",
+    definition: "On the ISS, astronauts sleep in small crew quarters and use sleeping bags anchored to the wall. In microgravity, 'up' and 'down' have no meaning.",
+    contextSentence: "Astronauts must also wear earplugs because the ISS is quite noisy from the ventilation fans.",
+    hints: ["In microgravity there is no up or down, so sleeping on the floor, wall, or ceiling is all the same.", "They attach their sleeping bags to the wall to stay in place."],
+    coach: "In microgravity there is no 'floor' — sleeping bags are attached to the wall, floor, or ceiling and it doesn't matter! Astronauts sleep in small private crew quarters and wear ear plugs because the ISS's ventilation fans are surprisingly noisy."
+  },
+  {
+    id: "astro-se-23",
+    grade: 0,
+    type: "space-exploration",
+    word: "heat shield",
+    prompt: "Why do spacecraft need heat shields to return to Earth?",
+    choices: [
+      "To protect from the cold of space",
+      "To protect from intense heat caused by friction as they slam through the atmosphere at high speed",
+      "To protect from radiation in the Van Allen Belt",
+      "To protect from micrometeorites"
+    ],
+    answer: "To protect from intense heat caused by friction as they slam through the atmosphere at high speed",
+    definition: "Heat shields are made of special ablative materials that absorb and carry away the extreme heat generated when a spacecraft re-enters the atmosphere at thousands of km/h.",
+    contextSentence: "Orion's heat shield is the largest ever built, designed to withstand temperatures of around 2,760°C.",
+    hints: ["Re-entry creates enormous friction with the atmosphere.", "The spacecraft can heat to over 1,600°C — as hot as lava."],
+    coach: "Returning spacecraft hit the atmosphere at up to 40,000 km/h, creating temperatures hotter than the Sun's surface. Heat shields are made of special materials (often carbon-based) that char and ablate (burn away) to absorb that heat before it reaches the crew."
+  },
+  {
+    id: "astro-se-24",
+    grade: 0,
+    type: "space-exploration",
+    word: "GPS",
+    prompt: "How does GPS (Global Positioning System) know where you are on Earth?",
+    choices: [
+      "It uses radio towers on the ground",
+      "It uses signals from a network of satellites orbiting Earth to calculate your exact position",
+      "It uses the Sun's position in the sky",
+      "It uses the Earth's magnetic field"
+    ],
+    answer: "It uses signals from a network of satellites orbiting Earth to calculate your exact position",
+    definition: "GPS works by receiving signals from at least 4 of the 31 satellites in the GPS constellation. Your device calculates its position from the tiny differences in the arrival times of those signals.",
+    contextSentence: "GPS satellites orbit at about 20,200 km altitude and transmit precise timing signals.",
+    hints: ["You need to receive signals from at least 4 satellites.", "GPS satellites orbit at about 20,200 km altitude."],
+    coach: "GPS is space technology used every day! A network of 31 satellites orbits Earth at 20,200 km. Your phone receives signals from 4 or more satellites and calculates its location from the tiny differences in signal arrival times — accurate to a few metres!"
+  },
+  {
+    id: "astro-se-25",
+    grade: 0,
+    type: "space-exploration",
+    word: "launch abort system",
+    prompt: "What is the launch abort system (LAS) on a crewed spacecraft?",
+    choices: [
+      "A system that cancels the launch if the weather is bad",
+      "Rockets that can pull the crew capsule away from a failing rocket to safety in milliseconds",
+      "A parachute system for landing",
+      "The fuel that is not used if the mission is cancelled"
+    ],
+    answer: "Rockets that can pull the crew capsule away from a failing rocket to safety in milliseconds",
+    definition: "The launch abort system is a tower of small rockets on top of the crew capsule that can fire to pull the capsule away from a failing rocket in under one second.",
+    contextSentence: "The LAS on the Orion capsule can pull the crew to safety in less than a second if the rocket fails during launch.",
+    hints: ["It sits on top of the crew capsule like a spike.", "It must react faster than a human can blink."],
+    coach: "The launch abort system is a crew escape system — if the rocket starts to fail during launch, small but extremely powerful rockets pull the crew capsule away to safety in under one second. It's never been needed in an actual emergency, but knowing it's there lets astronauts launch with confidence!"
+  },
+
+  // ── NASA & KSC (extra 10) ─────────────────────────────────────────
+  {
+    id: "astro-ksc-19",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "John Glenn",
+    prompt: "Who was the first American to orbit Earth, completing three orbits in 1962?",
+    choices: ["Alan Shepard", "John Glenn", "Gus Grissom", "Scott Carpenter"],
+    answer: "John Glenn",
+    definition: "John Glenn orbited Earth three times on February 20, 1962, aboard Friendship 7, becoming a national hero. He later returned to space at age 77.",
+    contextSentence: "John Glenn's orbit of Earth proved that American astronauts could match what the Soviets had achieved.",
+    hints: ["He flew on the Mercury spacecraft named Friendship 7.", "He also became the oldest person to fly in space at age 77 in 1998."],
+    coach: "John Glenn was the first American to orbit Earth in 1962, completing 3 orbits in about 5 hours. He became a national hero! He returned to space in 1998 at age 77 aboard the Space Shuttle — making him the oldest person to fly in space."
+  },
+  {
+    id: "astro-ksc-20",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "Valentina Tereshkova",
+    prompt: "Who was the first woman to travel to space?",
+    choices: ["Sally Ride", "Valentina Tereshkova", "Christa McAuliffe", "Mae Jemison"],
+    answer: "Valentina Tereshkova",
+    definition: "Soviet cosmonaut Valentina Tereshkova became the first woman in space on June 16, 1963, orbiting Earth 48 times over nearly three days.",
+    contextSentence: "Tereshkova orbited Earth 48 times — more orbits than all US Mercury astronauts combined.",
+    hints: ["She was a Soviet cosmonaut, not a NASA astronaut.", "She flew 20 years before the first American woman in space."],
+    coach: "Valentina Tereshkova of the Soviet Union was the first woman in space in 1963 — she completed 48 orbits in under 3 days. Sally Ride became the first American woman in space 20 years later in 1983. Today about 15% of NASA's active astronauts are women."
+  },
+  {
+    id: "astro-ksc-21",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "Houston",
+    prompt: "Where is NASA's Mission Control that directs human spaceflight missions after launch?",
+    choices: ["Cape Canaveral, Florida", "Houston, Texas (Johnson Space Center)", "Huntsville, Alabama", "Washington, D.C."],
+    answer: "Houston, Texas (Johnson Space Center)",
+    definition: "NASA's Johnson Space Center in Houston hosts Mission Control, where teams direct human spaceflight missions from launch through landing.",
+    contextSentence: "The phrase 'Houston, we've had a problem' comes from Apollo 13, calling Mission Control in Houston.",
+    hints: ["Apollo 13 called 'Houston, we've had a problem.'", "It is home to NASA's astronaut training facilities."],
+    coach: "'Houston, we've had a problem' — the famous Apollo 13 line! The astronauts were calling NASA's Johnson Space Center in Houston, Texas, where Mission Control directs every human spaceflight mission. Johnson Space Center is also where astronauts train for missions."
+  },
+  {
+    id: "astro-ksc-22",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "12",
+    prompt: "How many people have walked on the Moon in total?",
+    choices: ["3", "6", "12", "24"],
+    answer: "12",
+    definition: "Twelve astronauts walked on the Moon during six successful Apollo landings (Apollo 11, 12, 14, 15, 16, and 17) between 1969 and 1972.",
+    contextSentence: "The last humans to walk on the Moon were Gene Cernan and Harrison Schmitt during Apollo 17 in December 1972.",
+    hints: ["Six Apollo missions landed on the Moon.", "Each landing carried two astronauts to the surface."],
+    coach: "Twelve astronauts walked on the Moon — two per landing across Apollo 11, 12, 14, 15, 16, and 17. The last person to walk on the Moon was Gene Cernan in December 1972. The Artemis program aims to send the next humans — including the first woman — to the Moon."
+  },
+  {
+    id: "astro-ksc-23",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "Challenger",
+    prompt: "What happened to the Space Shuttle Challenger on January 28, 1986?",
+    choices: [
+      "It successfully completed its first mission",
+      "It disintegrated 73 seconds after launch due to a failed O-ring seal",
+      "It was damaged on landing and retired",
+      "It was struck by a meteorite in orbit"
+    ],
+    answer: "It disintegrated 73 seconds after launch due to a failed O-ring seal",
+    definition: "Space Shuttle Challenger broke apart 73 seconds after launch on January 28, 1986, due to a failed O-ring seal in its right solid rocket booster. All seven crew members were lost.",
+    contextSentence: "Teacher Christa McAuliffe was among the seven crew members lost in the Challenger disaster.",
+    hints: ["It happened 73 seconds after liftoff.", "A teacher named Christa McAuliffe was on board."],
+    coach: "The Space Shuttle Challenger tragedy on January 28, 1986 was one of NASA's darkest days. The shuttle broke apart 73 seconds after launch because a rubber O-ring seal failed in cold weather. All 7 crew members were lost, including teacher Christa McAuliffe. NASA learned vital safety lessons from this tragedy."
+  },
+  {
+    id: "astro-ksc-24",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "Starship",
+    prompt: "What is SpaceX's Starship rocket designed to do?",
+    choices: [
+      "Launch small satellites into low Earth orbit",
+      "Carry up to 100 people to the Moon and Mars as a fully reusable spacecraft",
+      "Replace the GPS satellite network",
+      "Serve as a space station in orbit"
+    ],
+    answer: "Carry up to 100 people to the Moon and Mars as a fully reusable spacecraft",
+    definition: "SpaceX Starship is a massive, fully reusable launch system designed to carry large crews and cargo to the Moon, Mars, and beyond.",
+    contextSentence: "Starship is the tallest rocket ever built at about 121 metres — taller than the famous Saturn V.",
+    hints: ["At 121 metres, it is even taller than the Saturn V rocket.", "SpaceX intends to use it for NASA's Artemis lunar lander."],
+    coach: "Starship is SpaceX's mega-rocket — taller than Saturn V at 121 metres! It's designed to be fully reusable (both stages land and fly again), carry up to 100 people, and eventually take humans to Mars. NASA selected a version of Starship as the Artemis lunar lander!"
+  },
+  {
+    id: "astro-ksc-25",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "6 orbiters",
+    prompt: "How many Space Shuttle orbiter vehicles were built by NASA?",
+    choices: ["3", "4", "5", "6"],
+    answer: "6",
+    definition: "NASA built six Space Shuttle orbiters: Enterprise (test only), Columbia, Challenger, Discovery, Atlantis, and Endeavour.",
+    contextSentence: "Enterprise was used only for flight tests; Columbia was the first to fly in space in 1981.",
+    hints: ["One was used only for landing tests and never went to space.", "Challenger and Columbia were lost in accidents."],
+    coach: "Six orbiters were built: Enterprise (atmospheric test only), Columbia (first to fly), Challenger (lost 1986), Discovery, Atlantis, and Endeavour. Discovery, Atlantis, and Endeavour are now on display at museums. You can see Discovery at the Smithsonian near Washington D.C.!"
+  },
+  {
+    id: "astro-ksc-26",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "Buzz Aldrin",
+    prompt: "What role did Buzz Aldrin play in the Apollo 11 mission?",
+    choices: [
+      "He piloted the command module orbiting the Moon",
+      "He was the second person to walk on the Moon alongside Neil Armstrong",
+      "He was the Mission Control flight director",
+      "He designed the Saturn V rocket"
+    ],
+    answer: "He was the second person to walk on the Moon alongside Neil Armstrong",
+    definition: "Buzz Aldrin was the lunar module pilot on Apollo 11. He stepped onto the Moon about 20 minutes after Neil Armstrong, becoming the second human to walk on the Moon.",
+    contextSentence: "Buzz Aldrin famously described the lunar landscape as 'magnificent desolation.'",
+    hints: ["He stepped onto the Moon about 20 minutes after Neil Armstrong.", "He described the Moon's surface as 'magnificent desolation.'"],
+    coach: "Buzz Aldrin was the Lunar Module Pilot on Apollo 11, the second person to walk on the Moon. He stepped out about 20 minutes after Armstrong and described the view as 'magnificent desolation.' The third crew member, Michael Collins, orbited above in the command module the whole time."
+  },
+  {
+    id: "astro-ksc-27",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "Lunar Gateway",
+    prompt: "What is the Lunar Gateway?",
+    choices: [
+      "The hatch astronauts use to exit the Orion capsule on the Moon",
+      "A small space station planned to orbit the Moon as a base for lunar and deep-space exploration",
+      "A name for the launch pad used for Artemis missions",
+      "The Lunar Roving Vehicle used in the Apollo program"
+    ],
+    answer: "A small space station planned to orbit the Moon as a base for lunar and deep-space exploration",
+    definition: "The Lunar Gateway is an international space station planned to orbit the Moon, serving as a staging post for lunar surface missions and future deep-space exploration.",
+    contextSentence: "The Lunar Gateway will be built by NASA and international partners, and will support Artemis missions to the lunar surface.",
+    hints: ["It is like an ISS, but in lunar orbit instead of Earth orbit.", "It will support Artemis missions to the Moon's surface."],
+    coach: "The Lunar Gateway will be a small space station orbiting the Moon — like a pit stop in lunar orbit! Astronauts will travel from Earth to the Gateway, then take a lander down to the surface. It will also serve as a stepping stone for eventual missions to Mars."
+  },
+  {
+    id: "astro-ksc-28",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "Go / No-Go",
+    prompt: "What does a 'Go/No-Go poll' mean during a rocket launch countdown?",
+    choices: [
+      "A public vote on whether to launch",
+      "Each team controller reporting whether their system is ready to launch or not",
+      "A test of the rocket's steering system",
+      "The final countdown from 10 to 0"
+    ],
+    answer: "Each team controller reporting whether their system is ready to launch or not",
+    definition: "A Go/No-Go poll is when the launch director asks each controller team to report their system status. Every team must report 'Go' for the launch to proceed.",
+    contextSentence: "If even one critical system is 'No-Go', the launch will be held or scrubbed.",
+    hints: ["Every controller team must say 'Go' before launch.", "If any critical team says 'No-Go', the launch is stopped."],
+    coach: "Before every launch, the launch director polls every controller team: 'Are you Go or No-Go for launch?' Every single team must say 'Go.' If anyone has a problem — weather, systems, safety — they say 'No-Go' and the launch stops. Safety always comes first!"
+  },
+
+  // ── Earth & Space (extra 10) ──────────────────────────────────────
+  {
+    id: "astro-es-11",
+    grade: 0,
+    type: "earth-space",
+    word: "1 AU",
+    prompt: "What is 1 Astronomical Unit (AU)?",
+    choices: [
+      "The distance from Earth to the Moon",
+      "The average distance from Earth to the Sun — about 150 million km",
+      "The distance light travels in one year",
+      "The diameter of the Milky Way"
+    ],
+    answer: "The average distance from Earth to the Sun — about 150 million km",
+    definition: "One Astronomical Unit (AU) is defined as the average distance between Earth and the Sun — approximately 150 million km — used to measure distances within our solar system.",
+    contextSentence: "Jupiter is about 5.2 AU from the Sun; Neptune is about 30 AU away.",
+    hints: ["It is used to measure distances within our solar system.", "Jupiter is about 5 of these from the Sun."],
+    coach: "1 AU = the average Earth-Sun distance = about 150 million km. It's a convenient unit for describing solar system distances. Jupiter is 5.2 AU from the Sun; Neptune is 30 AU away. Beyond the solar system, astronomers switch to light-years!"
+  },
+  {
+    id: "astro-es-12",
+    grade: 0,
+    type: "earth-space",
+    word: "magnetosphere",
+    prompt: "How does Earth's magnetic field protect life on our planet?",
+    choices: [
+      "It holds the atmosphere in place",
+      "It deflects harmful charged particles from the Sun (solar wind) away from Earth",
+      "It powers the rotation of Earth",
+      "It keeps the Moon in orbit"
+    ],
+    answer: "It deflects harmful charged particles from the Sun (solar wind) away from Earth",
+    definition: "Earth's magnetosphere acts as a shield, deflecting most of the solar wind (a stream of charged particles from the Sun) that would otherwise strip away the atmosphere.",
+    contextSentence: "Without Earth's magnetic field, the solar wind would gradually erode the atmosphere, as likely happened on Mars billions of years ago.",
+    hints: ["Mars lost much of its atmosphere when its magnetic field weakened.", "The Northern and Southern Lights are caused by particles that do get through near the poles."],
+    coach: "Earth's magnetic field is an invisible shield that deflects the solar wind away from our planet. Without it, the solar wind would slowly erode our atmosphere — probably what happened to Mars. The Northern Lights are caused by solar particles that slip through near Earth's magnetic poles!"
+  },
+  {
+    id: "astro-es-13",
+    grade: 0,
+    type: "earth-space",
+    word: "satellite",
+    prompt: "What is a satellite?",
+    choices: [
+      "Only human-made objects launched by rockets",
+      "Any object that orbits a larger body — including natural ones like moons and artificial ones like the ISS",
+      "A type of telescope",
+      "A rocket stage that separates after launch"
+    ],
+    answer: "Any object that orbits a larger body — including natural ones like moons and artificial ones like the ISS",
+    definition: "A satellite is any object that orbits a larger body due to gravity. Natural satellites are moons; artificial satellites are human-made and include communications satellites, weather satellites, and the ISS.",
+    contextSentence: "There are over 8,000 active and inactive satellites in orbit around Earth.",
+    hints: ["The Moon is a natural satellite of Earth.", "There are over 8,000 objects orbiting Earth made by humans."],
+    coach: "A satellite is anything that orbits a larger body. The Moon is Earth's natural satellite. Human-made satellites include GPS satellites, weather satellites, TV satellites, and the ISS. There are now over 8,000 artificial objects orbiting Earth!"
+  },
+  {
+    id: "astro-es-14",
+    grade: 0,
+    type: "earth-space",
+    word: "meteor shower",
+    prompt: "What causes a meteor shower?",
+    choices: [
+      "A comet hitting the Moon, scattering fragments toward Earth",
+      "Earth passing through the trail of dust and debris left behind by a comet",
+      "A cluster of asteroids breaking apart in the asteroid belt",
+      "Solar flares sending particles toward Earth"
+    ],
+    answer: "Earth passing through the trail of dust and debris left behind by a comet",
+    definition: "Meteor showers occur when Earth's orbit crosses a stream of debris (mostly tiny particles) left behind by a comet. These particles burn up as meteors in the atmosphere.",
+    contextSentence: "The Perseid meteor shower every August happens when Earth crosses the debris trail of Comet Swift-Tuttle.",
+    hints: ["It happens at the same time each year because Earth's orbit is predictable.", "The Perseids in August come from Comet Swift-Tuttle's debris."],
+    coach: "Meteor showers happen when Earth plows through a stream of comet debris. The particles burn up in the atmosphere, creating dozens or even hundreds of shooting stars per hour. The Perseid shower in August is one of the best — up to 100 meteors per hour!"
+  },
+  {
+    id: "astro-es-15",
+    grade: 0,
+    type: "earth-space",
+    word: "greenhouse gases",
+    prompt: "What is the greenhouse effect on Earth?",
+    choices: [
+      "The glass walls of plant greenhouses reflecting sunlight",
+      "Gases like CO₂ and water vapour trapping heat in Earth's atmosphere, warming the planet",
+      "A ring of clouds around Earth reflecting sunlight back to space",
+      "The process by which plants produce oxygen"
+    ],
+    answer: "Gases like CO₂ and water vapour trapping heat in Earth's atmosphere, warming the planet",
+    definition: "The greenhouse effect is when atmospheric gases (CO₂, water vapour, methane) absorb outgoing heat from Earth's surface and re-radiate it back, keeping Earth warm enough for life.",
+    contextSentence: "Without any greenhouse effect Earth would be about 33°C colder — too cold for most life. Too much causes runaway warming, as seen on Venus.",
+    hints: ["It is similar to how glass in a greenhouse traps warmth.", "Without it Earth would be a frozen planet."],
+    coach: "The greenhouse effect keeps Earth at a liveable temperature — without any greenhouse gases, Earth would average -18°C! Gases like CO₂ and water vapour act like a blanket, trapping heat. The problem is that too much CO₂ (like on Venus) creates runaway warming."
+  },
+  {
+    id: "astro-es-16",
+    grade: 0,
+    type: "earth-space",
+    word: "400 km",
+    prompt: "At roughly what altitude does the International Space Station orbit Earth?",
+    choices: ["40 km", "400 km", "4,000 km", "40,000 km"],
+    answer: "400 km",
+    definition: "The ISS orbits at about 400 km altitude, within a region called low Earth orbit (LEO), completing each orbit in about 90 minutes.",
+    contextSentence: "At 400 km altitude, the ISS travels at 7.7 km/s and orbits Earth 16 times per day.",
+    hints: ["It is in low Earth orbit (LEO).", "At this height it completes an orbit every 90 minutes."],
+    coach: "The ISS orbits at about 400 km up — low enough that Earth still looks big and curved below. At 7.7 km/s it completes an orbit every 90 minutes and sees 16 sunrises and sunsets every day! You can see the ISS from Earth with your naked eye as a bright moving star."
+  },
+  {
+    id: "astro-es-17",
+    grade: 0,
+    type: "earth-space",
+    word: "23 hours 56 minutes",
+    prompt: "How long does Earth actually take to complete one full rotation relative to distant stars?",
+    choices: ["Exactly 24 hours", "23 hours 56 minutes", "24 hours 6 minutes", "25 hours"],
+    answer: "23 hours 56 minutes",
+    definition: "Earth's true rotation period (sidereal day) is 23 hours and 56 minutes. The 24-hour solar day is slightly longer because Earth also moves along its orbit, requiring a bit of extra rotation for the Sun to return to the same position.",
+    contextSentence: "The extra 4 minutes per day means Earth rotates about 361° per solar day rather than exactly 360°.",
+    hints: ["Earth has to rotate slightly more than 360° each solar day because it also moves along its orbit.", "The difference adds up to one full extra rotation per year."],
+    coach: "Earth takes 23 hours 56 minutes to rotate 360° (a sidereal day). But we experience a 24-hour solar day because Earth also moves along its orbit, so it needs to rotate a tiny bit extra for the Sun to return to the same spot. Over a year, those extra 4 minutes add up to one whole extra rotation!"
+  },
+  {
+    id: "astro-es-18",
+    grade: 0,
+    type: "earth-space",
+    word: "71%",
+    prompt: "What percentage of Earth's surface is covered by water?",
+    choices: ["30%", "50%", "71%", "90%"],
+    answer: "71%",
+    definition: "About 71% of Earth's surface is covered by water — mostly oceans. This is why Earth is often called the 'Blue Planet' and why it looks blue from space.",
+    contextSentence: "From space, astronauts can immediately see why Earth is called the Blue Planet — most of it is ocean.",
+    hints: ["Astronauts call Earth the 'Blue Planet' for this reason.", "Less than 30% of Earth's surface is land."],
+    coach: "About 71% of Earth's surface is water, mostly oceans — that's why Earth looks like a blue marble from space! This abundance of liquid water is one of the things that makes Earth unique in the solar system and perfect for life."
+  },
+  {
+    id: "astro-es-19",
+    grade: 0,
+    type: "earth-space",
+    word: "stratosphere",
+    prompt: "What is special about the stratosphere, the layer of atmosphere above the troposphere?",
+    choices: [
+      "It is where all weather and clouds occur",
+      "It contains the ozone layer and is where supersonic aircraft and some weather balloons fly",
+      "It is where the ISS orbits",
+      "It is mostly water vapour"
+    ],
+    answer: "It contains the ozone layer and is where supersonic aircraft and some weather balloons fly",
+    definition: "The stratosphere extends from about 12 to 50 km altitude. It contains the protective ozone layer and has very little weather disturbance, making it ideal for some aircraft.",
+    contextSentence: "The Concorde supersonic airliner flew in the lower stratosphere to avoid turbulence.",
+    hints: ["The ozone layer is found here.", "Commercial aircraft fly near the bottom of it."],
+    coach: "The stratosphere sits above the weather layer (troposphere) from about 12 to 50 km up. It's very stable with no turbulence — the ozone layer is here, absorbing harmful UV rays. The Concorde supersonic jet flew here to avoid weather. Weather balloons float up into the stratosphere too!"
+  },
+  {
+    id: "astro-es-20",
+    grade: 0,
+    type: "earth-space",
+    word: "Van Allen belts",
+    prompt: "What are the Van Allen belts?",
+    choices: [
+      "Asteroid belts between Earth and the Moon",
+      "Zones of energetic charged particles trapped by Earth's magnetic field",
+      "Rings of debris around Earth from old satellites",
+      "Cloud layers in Earth's upper atmosphere"
+    ],
+    answer: "Zones of energetic charged particles trapped by Earth's magnetic field",
+    definition: "The Van Allen belts are two doughnut-shaped zones of high-energy charged particles trapped by Earth's magnetic field, discovered in 1958 by the Explorer 1 satellite.",
+    contextSentence: "Apollo missions had to pass through the Van Allen belts quickly to limit astronauts' radiation exposure.",
+    hints: ["They are zones of radiation trapped by Earth's magnetic field.", "Apollo missions had to pass through them on the way to the Moon."],
+    coach: "The Van Allen belts are two doughnut-shaped regions of high-energy radiation particles trapped around Earth by our magnetic field. They're mostly harmless at normal altitudes, but Apollo astronauts had to travel through them quickly on the way to the Moon to limit radiation exposure."
+  },
+
+  // ── Fun Facts (extra 10) ──────────────────────────────────────────
+  {
+    id: "astro-ff-11",
+    grade: 0,
+    type: "fun-fact",
+    word: "3.8 cm per year",
+    prompt: "The Moon is slowly moving away from Earth — but how fast?",
+    choices: ["It is getting closer, not farther", "About 1 mm per year", "About 3.8 cm per year", "About 10 m per year"],
+    answer: "About 3.8 cm per year",
+    definition: "The Moon moves about 3.8 cm farther from Earth every year due to tidal interactions transferring momentum from Earth's rotation to the Moon's orbit.",
+    contextSentence: "Scientists measured the Moon's recession rate precisely using laser reflectors left by Apollo astronauts.",
+    hints: ["Laser beams fired at Apollo reflectors on the Moon measure the distance precisely.", "It is roughly the speed at which your fingernails grow."],
+    coach: "The Moon moves about 3.8 cm farther from Earth every year — roughly the rate your fingernails grow. Apollo astronauts left mirrors on the Moon, and scientists bounce lasers off them to measure this precisely. Four billion years ago the Moon was much closer — it would have looked enormous in the sky!"
+  },
+  {
+    id: "astro-ff-12",
+    grade: 0,
+    type: "fun-fact",
+    word: "all planets fit between Earth and Moon",
+    prompt: "Which surprising fact is true about the distance between Earth and the Moon?",
+    choices: [
+      "The Sun would fit between Earth and the Moon",
+      "All eight planets of our solar system would fit in the gap between Earth and the Moon",
+      "Only Earth and Mars would fit in that gap",
+      "The distance equals one light-year"
+    ],
+    answer: "All eight planets of our solar system would fit in the gap between Earth and the Moon",
+    definition: "The average distance from Earth to the Moon is about 384,400 km. The combined diameter of all 8 planets is about 380,000 km — just slightly less than that gap.",
+    contextSentence: "If you lined up all eight planets side by side, they would almost exactly fill the space between Earth and the Moon.",
+    hints: ["The gap is about 384,400 km.", "Add up the diameters of all 8 planets and you get about 380,000 km."],
+    coach: "Here's a mind-blowing fact: if you lined up all 8 planets of the solar system side by side, they would fit in the gap between Earth and the Moon — with about 4,000 km to spare! The universe is incredibly vast and most of space is… empty space."
+  },
+  {
+    id: "astro-ff-13",
+    grade: 0,
+    type: "fun-fact",
+    word: "4 million tonnes per second",
+    prompt: "How much mass does the Sun lose every second through nuclear fusion and solar wind?",
+    choices: ["About 1 kg per second", "About 1,000 tonnes per second", "About 4 million tonnes per second", "About 1 billion tonnes per second"],
+    answer: "About 4 million tonnes per second",
+    definition: "The Sun converts about 4 million tonnes of mass into energy every second through nuclear fusion (E=mc²), yet it is so massive it will shine for another 5 billion years.",
+    contextSentence: "Despite losing 4 million tonnes per second, the Sun has enough mass to keep shining for about 5 more billion years.",
+    hints: ["This mass becomes pure energy via E=mc².", "Despite this loss rate, the Sun will shine for 5 more billion years."],
+    coach: "The Sun burns 4 million tonnes of mass every second, converting it to energy via Einstein's E=mc². That sounds like a lot — but the Sun is so enormously massive that it can sustain this for 10 billion years total. It's already halfway through its life!"
+  },
+  {
+    id: "astro-ff-14",
+    grade: 0,
+    type: "fun-fact",
+    word: "metallic smell",
+    prompt: "What do astronauts report that outer space smells like after a spacewalk?",
+    choices: [
+      "Fresh air and flowers",
+      "Nothing — space has no smell",
+      "A burned metal or seared steak smell on their spacesuits",
+      "A sweet candy smell"
+    ],
+    answer: "A burned metal or seared steak smell on their spacesuits",
+    definition: "Astronauts returning from spacewalks report that their suits and equipment smell like burned metal, seared steak, or welding fumes — likely from atomic oxygen reacting with materials.",
+    contextSentence: "Astronaut Don Pettit described the smell as 'distinct' — like metal and a hot barbecue.",
+    hints: ["Astronauts notice it when they bring equipment back inside after a spacewalk.", "Scientists think it is caused by atomic oxygen reacting with the suit materials."],
+    coach: "You can't smell space directly (you'd need air!), but astronauts report that equipment brought in from spacewalks smells like burned metal or seared steak. Scientists think atomic oxygen in low Earth orbit reacts with the suit materials, creating the strange smell. Space has a signature scent!"
+  },
+  {
+    id: "astro-ff-15",
+    grade: 0,
+    type: "fun-fact",
+    word: "naked eye",
+    prompt: "Can you see the International Space Station with just your eyes (no telescope)?",
+    choices: [
+      "No, it is too small and far away",
+      "Only with binoculars",
+      "Yes — it appears as a bright, fast-moving star crossing the sky in a few minutes",
+      "Only from the equator"
+    ],
+    answer: "Yes — it appears as a bright, fast-moving star crossing the sky in a few minutes",
+    definition: "The ISS is large enough and reflective enough to appear as a bright moving star visible to the naked eye, traveling across the sky in about 5–6 minutes.",
+    contextSentence: "The ISS is one of the brightest objects in the night sky — sometimes brighter than Venus.",
+    hints: ["The ISS is the size of a football field, making it reflective enough to see.", "NASA has a free tool called 'Spot the Station' to tell you when to look."],
+    coach: "Yes! The ISS moves at 27,000 km/h and crosses the sky in about 5 minutes, visible as a bright, steady (non-blinking) moving star. It can be brighter than Venus! NASA's free 'Spot the Station' website tells you exactly when to look out your window — try it!"
+  },
+  {
+    id: "astro-ff-16",
+    grade: 0,
+    type: "fun-fact",
+    word: "176 Earth days",
+    prompt: "On Mercury, a solar day (sunrise to next sunrise) is actually longer than its year. How long is a solar day on Mercury?",
+    choices: ["29 Earth days", "88 Earth days", "176 Earth days", "365 Earth days"],
+    answer: "176 Earth days",
+    definition: "Mercury rotates very slowly — once every 59 Earth days — but it also orbits the Sun in just 88 days. The combination means a solar day on Mercury lasts 176 Earth days, twice its year.",
+    contextSentence: "On Mercury, the Sun would appear to sometimes stop and reverse direction in the sky due to its unusual rotation–orbit ratio.",
+    hints: ["Mercury's year is 88 Earth days.", "Its solar day is exactly twice as long as its year."],
+    coach: "Mercury has a 3:2 spin-orbit resonance — it rotates 3 times for every 2 orbits. This makes its solar day (sunrise to sunrise) 176 Earth days long — twice its year of 88 days! From Mercury's surface the Sun would appear to sometimes briefly reverse direction across the sky!"
+  },
+  {
+    id: "astro-ff-17",
+    grade: 0,
+    type: "fun-fact",
+    word: "taller in space",
+    prompt: "What happens to an astronaut's height during a long stay in space?",
+    choices: [
+      "They shrink because of the pressure in spacesuits",
+      "They grow up to 5 cm taller because the spine decompresses without gravity",
+      "Their height stays exactly the same",
+      "They grow shorter because microgravity compresses the spine"
+    ],
+    answer: "They grow up to 5 cm taller because the spine decompresses without gravity",
+    definition: "Without gravity compressing the spine, the discs between vertebrae expand. Astronauts can grow up to 5 cm taller during long-duration spaceflight, though they return to normal height after returning to Earth.",
+    contextSentence: "NASA accounts for this when designing spacesuits — they need to fit both on the ground and in orbit.",
+    hints: ["On Earth, gravity compresses the fluid-filled discs in your spine all day.", "NASA has to design spacesuits that fit astronauts who are taller in orbit than on the ground."],
+    coach: "In space, with no gravity squishing your spine down, the discs between vertebrae expand — astronauts can grow up to 5 cm taller! NASA designs spacesuits to fit astronauts in their 'space height.' They shrink back to normal soon after returning to Earth's gravity."
+  },
+  {
+    id: "astro-ff-18",
+    grade: 0,
+    type: "fun-fact",
+    word: "more stars than sand",
+    prompt: "Which comparison is scientifically accurate?",
+    choices: [
+      "There are more grains of sand on Earth's beaches than stars in the observable universe",
+      "There are more stars in the observable universe than grains of sand on all of Earth's beaches",
+      "The number of stars and grains of sand are about equal",
+      "Scientists have no way to estimate either number"
+    ],
+    answer: "There are more stars in the observable universe than grains of sand on all of Earth's beaches",
+    definition: "Astronomers estimate there are around 10²⁴ (1 septillion) stars in the observable universe — significantly more than the estimated 7.5×10¹⁸ grains of sand on Earth's beaches.",
+    contextSentence: "There are roughly 100 times more stars in the observable universe than grains of sand on all of Earth's beaches combined.",
+    hints: ["Astronomers estimate about 1 septillion stars exist.", "That is a '1' followed by 24 zeros."],
+    coach: "There are an estimated 1 septillion (10²⁴) stars in the observable universe — that's about 100 times more stars than grains of sand on ALL of Earth's beaches combined. The universe is incomprehensibly huge, and our Sun is just one ordinary star among all of them!"
+  },
+  {
+    id: "astro-ff-19",
+    grade: 0,
+    type: "fun-fact",
+    word: "Pluto's incomplete orbit",
+    prompt: "Has Pluto completed even one orbit around the Sun since it was discovered?",
+    choices: [
+      "Yes — it completed its first orbit in 1980",
+      "Yes — it completed its orbit in 2006 when it was reclassified",
+      "No — Pluto was discovered in 1930 and won't complete its first orbit until around 2178",
+      "Yes — Pluto orbits the Sun once every 50 years"
+    ],
+    answer: "No — Pluto was discovered in 1930 and won't complete its first orbit until around 2178",
+    definition: "Pluto takes 248 Earth years to orbit the Sun. It was discovered in 1930 and won't complete even one orbit since its discovery until approximately 2178.",
+    contextSentence: "Pluto's orbit is also elliptical — it sometimes gets closer to the Sun than Neptune.",
+    hints: ["Pluto takes 248 Earth years to orbit the Sun once.", "It was discovered in 1930."],
+    coach: "Pluto was discovered in 1930 — and it won't finish even one orbit since then until about 2178! Pluto takes 248 Earth years per orbit. It was also technically closer to the Sun than Neptune from 1979 to 1999, because its orbit is tilted and very elliptical."
+  },
+  {
+    id: "astro-ff-20",
+    grade: 0,
+    type: "fun-fact",
+    word: "Titan's methane rain",
+    prompt: "What falls as rain on Saturn's moon Titan?",
+    choices: ["Water", "Lava", "Liquid methane", "Liquid nitrogen"],
+    answer: "Liquid methane",
+    definition: "Titan has a thick atmosphere and a weather cycle similar to Earth, but instead of water, liquid methane rains from clouds, fills rivers, and forms lakes on its frigid surface (−179°C).",
+    contextSentence: "Titan's methane lakes and rivers make it the only place in the solar system besides Earth with stable liquid on its surface.",
+    hints: ["Titan is the only moon with a thick atmosphere.", "The temperature is far too cold for water to be liquid — about −179°C."],
+    coach: "Titan is a bizarre moon with actual rivers, lakes, and rain — but made of liquid methane, not water! It's −179°C there, far too cold for water. Titan is the only place besides Earth with stable liquid on its surface. NASA's Dragonfly mission will send a drone to Titan in the 2030s!"
+  },
+
+  // ── Astronomy Vocabulary (extra 10) ──────────────────────────────
+  {
+    id: "astro-voc-13",
+    grade: 0,
+    type: "astronomy-vocab",
+    word: "artificial satellite",
+    prompt: "What is an artificial satellite?",
+    choices: [
+      "A moon that formed naturally around a planet",
+      "A human-made object launched into orbit around Earth or another body",
+      "A piece of space debris",
+      "A telescope floating in space"
+    ],
+    answer: "A human-made object launched into orbit around Earth or another body",
+    definition: "An artificial satellite is any human-made object intentionally placed in orbit. They are used for communications, navigation, weather monitoring, and Earth observation.",
+    contextSentence: "There are thousands of active artificial satellites orbiting Earth right now.",
+    hints: ["Sputnik 1 was the first one ever launched, in 1957.", "Your GPS and TV broadcasts likely rely on one."],
+    coach: "Artificial satellites are human-made objects in orbit — as opposed to natural satellites like moons. The first was Sputnik 1 in 1957. Today there are thousands in orbit used for GPS, internet, weather forecasting, TV, and spying on Earth for scientific purposes!"
+  },
+  {
+    id: "astro-voc-14",
+    grade: 0,
+    type: "astronomy-vocab",
+    word: "thrust",
+    prompt: "What is thrust in rocketry?",
+    choices: [
+      "The weight of the rocket",
+      "The forward push force produced by a rocket engine",
+      "The drag force on the rocket from air",
+      "The fuel load in the rocket"
+    ],
+    answer: "The forward push force produced by a rocket engine",
+    definition: "Thrust is the force produced by a rocket engine that pushes the rocket forward. It works by expelling exhaust gases backwards at high speed (Newton's third law).",
+    contextSentence: "The Saturn V rocket produced about 34.5 million newtons of thrust at liftoff — equivalent to 160 million horsepower.",
+    hints: ["It is produced by expelling hot gases backwards very fast.", "Newton's third law: every action has an equal and opposite reaction."],
+    coach: "Thrust is the push from a rocket engine. It works by Newton's Third Law — expel gas backwards fast, and the rocket gets pushed forward. The Saturn V had 34.5 million newtons of thrust — equivalent to 160 million horsepower!"
+  },
+  {
+    id: "astro-voc-15",
+    grade: 0,
+    type: "astronomy-vocab",
+    word: "payload",
+    prompt: "What is the 'payload' of a rocket?",
+    choices: [
+      "The rocket engines",
+      "The fuel tank",
+      "The cargo the rocket is delivering to space — astronauts, satellites, or science experiments",
+      "The launch pad equipment"
+    ],
+    answer: "The cargo the rocket is delivering to space — astronauts, satellites, or science experiments",
+    definition: "The payload is whatever a rocket is designed to carry to space — it could be a crew capsule, satellite, space telescope, or science cargo.",
+    contextSentence: "The payload fairing is the nose cone that protects the payload during launch through the atmosphere.",
+    hints: ["It is the reason the rocket is flying in the first place.", "A nose cone called a 'fairing' protects it during launch."],
+    coach: "The payload is the 'point' of the mission — whatever you're sending to space. It could be astronauts in a crew capsule, a weather satellite, a space telescope, or cargo for the ISS. The rest of the rocket (engines, tanks, structure) exists purely to deliver the payload!"
+  },
+  {
+    id: "astro-voc-16",
+    grade: 0,
+    type: "astronomy-vocab",
+    word: "solar wind",
+    prompt: "What is the solar wind?",
+    choices: [
+      "Wind from storms on the Sun's surface",
+      "Light from the Sun pushing on spacecraft",
+      "A continuous stream of charged particles (electrons and protons) flowing outward from the Sun",
+      "Heat radiation from the Sun"
+    ],
+    answer: "A continuous stream of charged particles (electrons and protons) flowing outward from the Sun",
+    definition: "The solar wind is a continuous flow of charged particles (mostly electrons and protons) emitted from the Sun's outer atmosphere at speeds of 400–800 km/s.",
+    contextSentence: "Solar wind pushes on comet tails, always pointing them away from the Sun regardless of the comet's direction of travel.",
+    hints: ["It pushes comet tails away from the Sun.", "Earth's magnetic field deflects most of it."],
+    coach: "The solar wind is a constant stream of charged particles blowing outward from the Sun at hundreds of km/s. It pushes comet tails away from the Sun (that's why tails always point away from the Sun, even when the comet is moving away). Earth's magnetic field deflects most solar wind — protecting us!"
+  },
+  {
+    id: "astro-voc-17",
+    grade: 0,
+    type: "astronomy-vocab",
+    word: "lunar phases",
+    prompt: "What causes the Moon to appear to change shape (phases) over the course of a month?",
+    choices: [
+      "The Moon grows and shrinks",
+      "Earth's shadow falls on different parts of the Moon",
+      "We see different portions of the Moon's sunlit side as it orbits Earth",
+      "The Moon rotates to show us different faces"
+    ],
+    answer: "We see different portions of the Moon's sunlit side as it orbits Earth",
+    definition: "Lunar phases occur because as the Moon orbits Earth, we see varying amounts of its sunlit half. The cycle from new moon to full moon and back takes about 29.5 days.",
+    contextSentence: "A new moon occurs when the Moon is between Earth and the Sun; a full moon occurs when Earth is between the Moon and Sun.",
+    hints: ["Half the Moon is always lit by the Sun; we just see different portions of that half.", "A full lunar cycle takes about 29.5 days."],
+    coach: "The Moon doesn't actually change shape — half of it is always lit by the Sun. As the Moon orbits Earth, we see more or less of that lit half. New moon = we see the dark side; full moon = we see the fully lit side. A complete cycle takes 29.5 days — a lunar month!"
+  },
+  {
+    id: "astro-voc-18",
+    grade: 0,
+    type: "astronomy-vocab",
+    word: "apogee and perigee",
+    prompt: "What do 'apogee' and 'perigee' mean for an orbit around Earth?",
+    choices: [
+      "The speed at the start and end of a mission",
+      "The farthest and closest points of an orbit around Earth",
+      "The launch and landing sites of a spacecraft",
+      "Two types of rocket engines"
+    ],
+    answer: "The farthest and closest points of an orbit around Earth",
+    definition: "Perigee is the closest point in an orbit around Earth; apogee is the farthest point. Most orbits are slightly elliptical, not perfectly circular.",
+    contextSentence: "The Moon's perigee is about 356,000 km from Earth; its apogee is about 406,000 km — that's why the Moon sometimes looks bigger (supermoon).",
+    hints: ["'Peri-' means near; 'ap-' means away from in Greek.", "A 'supermoon' occurs when a full moon coincides with perigee."],
+    coach: "Perigee = closest point; apogee = farthest point in an orbit around Earth. (For orbits around the Sun, it's perihelion and aphelion.) A 'supermoon' happens when a full moon coincides with perigee — the Moon is at its closest so it looks bigger and brighter than usual!"
+  },
+  {
+    id: "astro-voc-19",
+    grade: 0,
+    type: "astronomy-vocab",
+    word: "liftoff",
+    prompt: "What is 'liftoff' in a rocket launch?",
+    choices: [
+      "When the launch is cancelled",
+      "The moment a rocket's engines produce enough thrust to overcome its weight and it leaves the launch pad",
+      "When the rocket reaches orbit",
+      "When the rocket separates into stages"
+    ],
+    answer: "The moment a rocket's engines produce enough thrust to overcome its weight and it leaves the launch pad",
+    definition: "Liftoff is the moment a rocket's thrust exceeds its weight (gravity pulling it down) and it begins to rise from the launch pad.",
+    contextSentence: "For liftoff, a rocket must produce more thrust than its own weight, which can be millions of kilograms.",
+    hints: ["The thrust must exceed the rocket's weight for this to happen.", "It is T-0 in the countdown."],
+    coach: "Liftoff happens at the exact moment the rocket's engines produce more thrust than the rocket weighs. For a Saturn V weighing 2.8 million kg, the engines had to push harder than 2.8 million kg-worth of force just to lift off the pad! Once off the pad, the rocket accelerates as it burns fuel and gets lighter."
+  },
+  {
+    id: "astro-voc-20",
+    grade: 0,
+    type: "astronomy-vocab",
+    word: "propulsion",
+    prompt: "What does 'propulsion' mean in the context of spaceflight?",
+    choices: [
+      "The weight of a spacecraft",
+      "The system that generates thrust to move a spacecraft through space",
+      "The heat shield on a spacecraft",
+      "The navigation computers of a rocket"
+    ],
+    answer: "The system that generates thrust to move a spacecraft through space",
+    definition: "Propulsion refers to the means by which a spacecraft produces thrust — chemical rockets, ion engines, solar sails, and nuclear systems are all forms of spacecraft propulsion.",
+    contextSentence: "Most rockets today use chemical propulsion, burning liquid or solid fuel to generate thrust.",
+    hints: ["It refers to the way the spacecraft generates thrust.", "Chemical rocket engines are the most common type used today."],
+    coach: "Propulsion is how a spacecraft moves. Most use chemical propulsion — burning fuel and oxidizer creates hot gas that shoots out the back, pushing the rocket forward. Future propulsion systems may include ion engines (slow but very efficient), nuclear engines, or even solar sails pushed by sunlight!"
+  },
+  {
+    id: "astro-voc-21",
+    grade: 0,
+    type: "astronomy-vocab",
+    word: "launch vehicle",
+    prompt: "What is a launch vehicle?",
+    choices: [
+      "The crawler-transporter that moves rockets to the launch pad",
+      "A rocket designed to carry a spacecraft or payload from Earth's surface to space",
+      "The capsule that carries astronauts",
+      "A vehicle used to recover astronauts after splashdown"
+    ],
+    answer: "A rocket designed to carry a spacecraft or payload from Earth's surface to space",
+    definition: "A launch vehicle is a rocket system used to lift a spacecraft, satellite, or other payload from Earth's surface into space or orbit.",
+    contextSentence: "The SLS is NASA's launch vehicle for Artemis missions; Falcon 9 is SpaceX's primary launch vehicle.",
+    hints: ["It is the rocket, not the spacecraft that sits on top of it.", "SLS and Falcon 9 are examples."],
+    coach: "A launch vehicle is the rocket that gets things to space — it's the engine and fuel system, not the spacecraft itself. The Saturn V was Apollo's launch vehicle; the SLS is Artemis's launch vehicle; Falcon 9 is SpaceX's most-used launch vehicle. Without launch vehicles, nothing gets to space!"
+  },
+  {
+    id: "astro-voc-22",
+    grade: 0,
+    type: "astronomy-vocab",
+    word: "astronomer",
+    prompt: "What does an astronomer do?",
+    choices: [
+      "Designs and builds rockets",
+      "Trains astronauts for space missions",
+      "Studies stars, planets, galaxies, and other objects and events in the universe",
+      "Forecasts space weather for GPS systems"
+    ],
+    answer: "Studies stars, planets, galaxies, and other objects and events in the universe",
+    definition: "An astronomer is a scientist who uses telescopes and other instruments to observe, study, and explain objects and phenomena in the universe.",
+    contextSentence: "Modern astronomers often analyse telescope data on computers rather than looking through eyepieces directly.",
+    hints: ["The word comes from Greek: 'astron' (star) + 'nomos' (law or arrangement).", "They use telescopes, both on Earth and in space."],
+    coach: "Astronomers study everything in the universe — planets, stars, galaxies, black holes, dark matter, and more. Today most astronomers spend their time analysing data from telescopes on computers, not looking through eyepieces. It's one of the oldest sciences, going back thousands of years!"
   }
 ];
