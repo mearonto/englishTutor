@@ -13,6 +13,10 @@ npm run preview    # Preview the production build locally
 
 There are no automated tests in this project.
 
+## Commit Rules
+
+When implementing a user-requested feature change, make **one single commit at the end** after all files are modified and the build passes. Do not commit after each individual file change.
+
 ## Architecture Overview
 
 This is **Word Quest: Northern Trails**, a Grade 3/4 vocabulary game for children built with **React + TypeScript + Phaser 3**, bundled by Vite.
