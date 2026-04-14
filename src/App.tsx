@@ -20,6 +20,7 @@ const AUDIO_SETTINGS_KEY = "word-quest-audio-settings-v1";
 const TEACHER_PASSWORD_KEY = "word-quest-teacher-password-v1";
 const TEST_HISTORY_KEY = "word-quest-test-history-v1";
 const LOTTERY_COST_KEY = "word-quest-lottery-cost-v1";
+const LOTTERY_PRIZES_KEY = "word-quest-lottery-prizes-v1";
 const DEFAULT_LOTTERY_COST = 50;
 const DEFAULT_TEACHER_PASSWORD = "2222";
 const SPEED_OPTIONS = [
@@ -41,7 +42,7 @@ type Mode = "practice" | "test";
 
 type LotteryPrize = { id: string; label: string; weight: number };
 
-const LOTTERY_PRIZES: LotteryPrize[] = [
+const DEFAULT_STORED_PRIZES: LotteryPrize[] = [
   { id: "lollipop", label: "棒棒糖", weight: 30 },
   { id: "chocolate", label: "巧克力", weight: 25 },
   { id: "jelly", label: "果冻", weight: 25 },
@@ -79,6 +80,7 @@ function App() {
   const modeRef = useRef<Mode>("practice");
   const [lotteryOpen, setLotteryOpen] = useState(false);
   const [lotteryCost, setLotteryCost] = useState<number>(() => loadLotteryCost());
+  const [storedPrizes, setStoredPrizes] = useState<LotteryPrize[]>(() => loadStoredPrizes());
   const [lastPrize, setLastPrize] = useState<LotteryPrize | null>(null);
   const [drawing, setDrawing] = useState(false);
   const testStartTime = useRef<number>(0);
@@ -284,15 +286,47 @@ function App() {
     gameEvents.emit("command-next");
   };
 
-  const drawLottery = () => {
-    const result = spendTokens(lotteryCost);
-    if (!result.ok) return;
+  const getEffectivePrizes = (prizes: LotteryPrize[]): LotteryPrize[] => {
+    const total = prizes.reduce((sum, p) => sum + p.weight, 0);
+    const replayWeight = Math.max(0, 100 - total);
+    return [{ id: "replay", label: "再来一次", weight: replayWeight }, ...prizes];
+  };
+
+  const performDraw = (prizes: LotteryPrize[], free: boolean) => {
+    if (!free) {
+      const result = spendTokens(lotteryCost);
+      if (!result.ok) return;
+    }
     setDrawing(true);
     setLastPrize(null);
     setTimeout(() => {
-      setLastPrize(pickPrize(LOTTERY_PRIZES));
+      const prize = pickPrize(prizes);
+      setLastPrize(prize);
       setDrawing(false);
+      if (prize.id === "replay") {
+        setTimeout(() => performDraw(prizes, true), 1200);
+      }
     }, 800);
+  };
+
+  const drawLottery = () => performDraw(getEffectivePrizes(storedPrizes), false);
+
+  const updatePrize = (index: number, field: "label" | "weight", value: string | number) => {
+    const updated = storedPrizes.map((p, i) => (i === index ? { ...p, [field]: value } : p));
+    setStoredPrizes(updated);
+    saveStoredPrizes(updated);
+  };
+
+  const removePrize = (index: number) => {
+    const updated = storedPrizes.filter((_, i) => i !== index);
+    setStoredPrizes(updated);
+    saveStoredPrizes(updated);
+  };
+
+  const addPrize = () => {
+    const updated = [...storedPrizes, { id: `prize-${Date.now()}`, label: "新奖品", weight: 0 }];
+    setStoredPrizes(updated);
+    saveStoredPrizes(updated);
   };
 
   const clearTestHistory = () => {
@@ -439,49 +473,57 @@ function App() {
         </button>
       </section>
 
-      {lotteryOpen && (
-        <section className="shop-modal" role="dialog" aria-label="Lottery">
-          <div className="shop-content">
-            <h2>Lottery</h2>
-            <p className="helper-text">
-              Cost: {lotteryCost} tokens — you have {state.tokens}
-            </p>
-            <div className="lottery-prizes">
-              {LOTTERY_PRIZES.map((prize) => (
-                <div
-                  key={prize.id}
-                  className={[
-                    "prize-card",
-                    drawing ? "drawing" : "",
-                    lastPrize?.id === prize.id ? "winner" : "",
-                    lastPrize && lastPrize.id !== prize.id ? "loser" : ""
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                >
-                  {prize.label}
+      {lotteryOpen && (() => {
+        const effectivePrizes = getEffectivePrizes(storedPrizes);
+        return (
+          <section className="shop-modal" role="dialog" aria-label="Lottery">
+            <div className="shop-content">
+              <h2>抽奖</h2>
+              <p className="helper-text">
+                消耗 {lotteryCost} tokens — 当前持有 {state.tokens}
+              </p>
+              <div className="lottery-prizes">
+                {effectivePrizes.map((prize) => (
+                  <div
+                    key={prize.id}
+                    className={[
+                      "prize-card",
+                      drawing ? "drawing" : "",
+                      lastPrize?.id === prize.id ? "winner" : "",
+                      lastPrize && lastPrize.id !== prize.id ? "loser" : ""
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                  >
+                    <div className="prize-label">{prize.label}</div>
+                    <div className="prize-pct">{prize.weight}%</div>
+                  </div>
+                ))}
+              </div>
+              {lastPrize && (
+                <div className="lottery-result">
+                  {lastPrize.id === "replay"
+                    ? "再来一次！正在重新抽奖…"
+                    : `恭喜获得：${lastPrize.label}！`}
                 </div>
-              ))}
+              )}
+              <div className="teacher-actions">
+                <button onClick={drawLottery} disabled={drawing || state.tokens < lotteryCost}>
+                  {drawing ? "抽奖中…" : `抽奖（${lotteryCost} tokens）`}
+                </button>
+                <button
+                  onClick={() => {
+                    setLotteryOpen(false);
+                    setLastPrize(null);
+                  }}
+                >
+                  关闭
+                </button>
+              </div>
             </div>
-            {lastPrize && (
-              <div className="lottery-result">You won: {lastPrize.label}!</div>
-            )}
-            <div className="teacher-actions">
-              <button onClick={drawLottery} disabled={drawing || state.tokens < lotteryCost}>
-                {drawing ? "Drawing…" : `Draw (${lotteryCost} tokens)`}
-              </button>
-              <button
-                onClick={() => {
-                  setLotteryOpen(false);
-                  setLastPrize(null);
-                }}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </section>
-      )}
+          </section>
+        );
+      })()}
 
       {shopOpen && (
         <section className="shop-modal" role="dialog" aria-label="Camp Shop">
@@ -614,6 +656,38 @@ function App() {
                     saveLotteryCost(val);
                   }}
                 />
+                <label className="field-label">Prizes</label>
+                <div className="prize-editor">
+                  <div className="prize-row replay-row">
+                    <span>再来一次</span>
+                    <span>{Math.max(0, 100 - storedPrizes.reduce((s, p) => s + p.weight, 0))}%</span>
+                    <span className="helper-text">自动补齐</span>
+                  </div>
+                  {storedPrizes.map((prize, i) => (
+                    <div key={prize.id} className="prize-row">
+                      <input
+                        type="text"
+                        value={prize.label}
+                        onChange={(e) => updatePrize(i, "label", e.target.value)}
+                        placeholder="奖品名称"
+                      />
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={prize.weight}
+                        onChange={(e) =>
+                          updatePrize(i, "weight", Math.max(0, Number(e.target.value)))
+                        }
+                      />
+                      <span>%</span>
+                      <button className="danger" onClick={() => removePrize(i)}>
+                        删除
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <button onClick={addPrize}>+ 添加奖品</button>
                 <hr />
                 <h3>Audio Settings</h3>
                 <label className="toggle-row">
@@ -714,6 +788,21 @@ function dateStamp(): string {
   const mm = String(now.getMonth() + 1).padStart(2, "0");
   const dd = String(now.getDate()).padStart(2, "0");
   return `${yyyy}${mm}${dd}`;
+}
+
+function loadStoredPrizes(): LotteryPrize[] {
+  try {
+    const raw = localStorage.getItem(LOTTERY_PRIZES_KEY);
+    if (!raw) return DEFAULT_STORED_PRIZES.map((p) => ({ ...p }));
+    const parsed = JSON.parse(raw) as LotteryPrize[];
+    return parsed.length > 0 ? parsed : DEFAULT_STORED_PRIZES.map((p) => ({ ...p }));
+  } catch {
+    return DEFAULT_STORED_PRIZES.map((p) => ({ ...p }));
+  }
+}
+
+function saveStoredPrizes(prizes: LotteryPrize[]): void {
+  localStorage.setItem(LOTTERY_PRIZES_KEY, JSON.stringify(prizes));
 }
 
 function loadLotteryCost(): number {
