@@ -248,6 +248,14 @@ function App() {
     setFeedback({ message: "Exported CSV progress report.", good: true });
   };
 
+  const quitTest = () => {
+    setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
+    setCanGoNext(false);
+    setFeedback({ message: "", good: false });
+    gameEvents.emit("command-set-mode", { testMode: false });
+    gameEvents.emit("command-next");
+  };
+
   const startTest = () => {
     const target = testLength;
     testStartTime.current = Date.now();
@@ -389,7 +397,7 @@ function App() {
             Next Challenge
           </button>
         ) : testState.running ? (
-          <button disabled>Test in Progress…</button>
+          <button className="danger" onClick={quitTest}>Quit Test</button>
         ) : (
           <button onClick={startTest}>{testState.finished ? "New Test" : "Start Test"}</button>
         )}
