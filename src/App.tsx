@@ -83,6 +83,7 @@ function App() {
   const [storedPrizes, setStoredPrizes] = useState<LotteryPrize[]>(() => loadStoredPrizes());
   const [lastPrize, setLastPrize] = useState<LotteryPrize | null>(null);
   const [drawing, setDrawing] = useState(false);
+  const [highlightIndex, setHighlightIndex] = useState(-1);
   const testStartTime = useRef<number>(0);
   const testWrongWords = useRef<string[]>([]);
   const [testHistory, setTestHistory] = useState<TestRecord[]>(() => loadTestHistory());
@@ -295,13 +296,42 @@ function App() {
   const drawLottery = () => {
     const result = spendTokens(lotteryCost);
     if (!result.ok) return;
+
+    const prizes = getEffectivePrizes(storedPrizes);
+    const winner = pickPrize(prizes);
+    const winnerIndex = prizes.findIndex((p) => p.id === winner.id);
+    const n = prizes.length;
+
+    // Build cycling sequence: 4 full rotations ending exactly on winnerIndex
+    const seq: number[] = [];
+    for (let i = 0; i < n * 4 + winnerIndex + 1; i++) {
+      seq.push(i % n);
+    }
+
+    // Delays: fast → gradually slower
+    const delays = seq.map((_, i) => {
+      const t = i / seq.length;
+      if (t < 0.45) return 65;
+      if (t < 0.7) return 130;
+      return Math.round(200 + ((t - 0.7) / 0.3) * 320);
+    });
+
     setDrawing(true);
     setLastPrize(null);
-    const prizes = getEffectivePrizes(storedPrizes);
-    setTimeout(() => {
-      setLastPrize(pickPrize(prizes));
-      setDrawing(false);
-    }, 800);
+    setHighlightIndex(-1);
+
+    let step = 0;
+    const tick = () => {
+      setHighlightIndex(seq[step]);
+      if (step === seq.length - 1) {
+        setLastPrize(winner);
+        setDrawing(false);
+      } else {
+        step++;
+        setTimeout(tick, delays[step]);
+      }
+    };
+    setTimeout(tick, delays[0]);
   };
 
   const updatePrize = (index: number, field: "label" | "weight", value: string | number) => {
@@ -476,14 +506,14 @@ function App() {
                 消耗 {lotteryCost} tokens — 当前持有 {state.tokens}
               </p>
               <div className="lottery-prizes">
-                {effectivePrizes.map((prize) => (
+                {effectivePrizes.map((prize, index) => (
                   <div
                     key={prize.id}
                     className={[
                       "prize-card",
-                      drawing ? "drawing" : "",
-                      lastPrize?.id === prize.id ? "winner" : "",
-                      lastPrize && lastPrize.id !== prize.id ? "loser" : ""
+                      drawing && highlightIndex === index ? "highlighted" : "",
+                      !drawing && lastPrize?.id === prize.id ? "winner" : "",
+                      !drawing && lastPrize && lastPrize.id !== prize.id ? "loser" : ""
                     ]
                       .filter(Boolean)
                       .join(" ")}
@@ -506,6 +536,7 @@ function App() {
                   onClick={() => {
                     setLotteryOpen(false);
                     setLastPrize(null);
+                    setHighlightIndex(-1);
                   }}
                 >
                   关闭

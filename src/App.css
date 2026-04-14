@@ -312,7 +312,7 @@ button.danger:hover:enabled {
   text-align: center;
   flex: 1;
   min-width: 72px;
-  transition: opacity 0.3s;
+  transition: transform 0.06s ease, background 0.06s, border-color 0.06s, opacity 0.3s;
 }
 
 .prize-label {
@@ -326,30 +326,31 @@ button.danger:hover:enabled {
   color: var(--ink-light);
 }
 
-.prize-card.drawing {
-  animation: prize-shuffle 0.8s ease-in-out;
+.prize-card.highlighted {
+  background: #dbeafe;
+  border-color: #3b82f6;
+  transform: scale(1.1);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+  transition: transform 0.05s ease, background 0.05s, border-color 0.05s;
 }
 
 .prize-card.winner {
   background: #fef3c7;
   border-color: #f59e0b;
-  animation: prize-win 0.4s ease-out forwards;
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.3);
+  animation: prize-win 0.5s ease-out forwards;
 }
 
 .prize-card.loser {
   opacity: 0.35;
-}
-
-@keyframes prize-shuffle {
-  0%, 100% { transform: translateY(0); }
-  20% { transform: translateY(-5px); }
-  50% { transform: translateY(5px); }
-  80% { transform: translateY(-3px); }
+  transition: opacity 0.3s;
 }
 
 @keyframes prize-win {
-  0% { transform: scale(1); }
-  55% { transform: scale(1.2); }
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.22); }
+  60%  { transform: scale(1.08); }
+  80%  { transform: scale(1.15); }
   100% { transform: scale(1.1); }
 }
 
