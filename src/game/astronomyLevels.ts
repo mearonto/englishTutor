@@ -1,5 +1,16 @@
 import type { Level } from "./types";
 
+export const ASTRONOMY_CATEGORY_LABELS: Record<string, string> = {
+  all: "All Categories",
+  "solar-system": "Solar System",
+  "stars-galaxies": "Stars & Galaxies",
+  "space-exploration": "Space Exploration",
+  "nasa-ksc": "NASA & Kennedy Space Center",
+  "earth-space": "Earth & Space",
+  "fun-fact": "Fun Facts",
+  "astronomy-vocab": "Astronomy Vocabulary"
+};
+
 export const ASTRONOMY_LEVELS: Level[] = [
   // ── Solar System ──────────────────────────────────────────────────
   {
@@ -10,10 +21,10 @@ export const ASTRONOMY_LEVELS: Level[] = [
     prompt: "Which planet is the largest in our solar system?",
     choices: ["Saturn", "Jupiter", "Neptune", "Uranus"],
     answer: "Jupiter",
-    definition: "The largest planet in our solar system, a giant made of gas.",
-    contextSentence: "Jupiter is so large that all other planets could fit inside it.",
-    hints: ["It is a gas giant and the fifth planet from the Sun.", "It has a giant storm called the Great Red Spot."],
-    coach: "Jupiter is the biggest planet. It is a gas giant — so large that 1,300 Earths could fit inside it!"
+    definition: "The largest planet in our solar system, a gas giant.",
+    contextSentence: "Jupiter is so large that more than 1,300 Earths could fit inside it.",
+    hints: ["It is the fifth planet from the Sun.", "It has a famous giant storm called the Great Red Spot."],
+    coach: "Jupiter is the biggest planet — a gas giant so large that 1,300 Earths could fit inside it!"
   },
   {
     id: "astro-ss-02",
@@ -24,9 +35,9 @@ export const ASTRONOMY_LEVELS: Level[] = [
     choices: ["Venus", "Earth", "Mercury", "Mars"],
     answer: "Mercury",
     definition: "The smallest planet and the one closest to the Sun.",
-    contextSentence: "Mercury completes one orbit around the Sun in just 88 days.",
+    contextSentence: "Mercury completes one orbit around the Sun in just 88 Earth days.",
     hints: ["It is the smallest planet in our solar system.", "It has almost no atmosphere and is covered in craters."],
-    coach: "Mercury is the closest planet to the Sun. Its year is only 88 Earth days long!"
+    coach: "Mercury is the closest planet to the Sun — its year is only 88 Earth days long!"
   },
   {
     id: "astro-ss-03",
@@ -36,10 +47,10 @@ export const ASTRONOMY_LEVELS: Level[] = [
     prompt: "Which planet is famous for its spectacular ring system?",
     choices: ["Jupiter", "Uranus", "Neptune", "Saturn"],
     answer: "Saturn",
-    definition: "The sixth planet from the Sun, known for its large, bright rings made of ice and rock.",
-    contextSentence: "Saturn's rings are made of billions of chunks of ice and rock.",
+    definition: "The sixth planet from the Sun, known for its beautiful rings made of ice and rock.",
+    contextSentence: "Saturn's rings are made of billions of chunks of ice and rock orbiting the planet.",
     hints: ["It is the second largest planet.", "Its rings are visible through a small telescope."],
-    coach: "Saturn is famous for its beautiful rings. The rings are made of ice and rock orbiting the planet."
+    coach: "Saturn is famous for its beautiful rings made of ice and rock. Its rings stretch out nearly 300,000 km from the planet!"
   },
   {
     id: "astro-ss-04",
@@ -50,22 +61,22 @@ export const ASTRONOMY_LEVELS: Level[] = [
     choices: ["7", "8", "9", "10"],
     answer: "8",
     definition: "Our solar system has eight official planets: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune.",
-    contextSentence: "In 2006, Pluto was reclassified as a dwarf planet, leaving 8 planets.",
-    hints: ["Pluto was removed from the list in 2006.", "Count from Mercury to Neptune."],
-    coach: "There are 8 planets: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune. Pluto is now a dwarf planet."
+    contextSentence: "In 2006 Pluto was reclassified as a dwarf planet, leaving 8 planets.",
+    hints: ["Pluto was removed from the list in 2006.", "Count from Mercury all the way out to Neptune."],
+    coach: "There are 8 planets: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune. Pluto is now called a dwarf planet."
   },
   {
     id: "astro-ss-05",
     grade: 0,
     type: "solar-system",
     word: "Venus",
-    prompt: "Which is the hottest planet in our solar system?",
-    choices: ["Mercury", "Venus", "Earth", "Mars"],
+    prompt: "Which is the hottest planet in our solar system, even though it is not the closest to the Sun?",
+    choices: ["Mercury", "Venus", "Mars", "Jupiter"],
     answer: "Venus",
-    definition: "The second planet from the Sun and the hottest planet, due to its thick greenhouse atmosphere.",
-    contextSentence: "Venus is hotter than Mercury even though it is farther from the Sun.",
+    definition: "The second planet from the Sun and the hottest planet, thanks to its thick greenhouse atmosphere.",
+    contextSentence: "Venus's surface temperature is around 465°C — hot enough to melt lead.",
     hints: ["It is the second planet from the Sun.", "Its thick atmosphere traps heat like a greenhouse."],
-    coach: "Venus is the hottest planet at around 465°C. Its thick atmosphere traps heat — even hotter than Mercury!"
+    coach: "Venus is the hottest planet at about 465°C. Its thick atmosphere traps heat — even hotter than Mercury which is closer to the Sun!"
   },
   {
     id: "astro-ss-06",
@@ -77,21 +88,21 @@ export const ASTRONOMY_LEVELS: Level[] = [
     answer: "The Asteroid Belt",
     definition: "A region between Mars and Jupiter containing millions of rocky objects called asteroids.",
     contextSentence: "The Asteroid Belt is home to millions of space rocks of all sizes.",
-    hints: ["It is a region full of rocky objects orbiting the Sun.", "Ceres, the largest dwarf planet, is found here."],
-    coach: "The Asteroid Belt sits between Mars and Jupiter. It contains millions of rocky objects called asteroids."
+    hints: ["It is a region full of rocky objects orbiting the Sun.", "The dwarf planet Ceres is found here."],
+    coach: "The Asteroid Belt sits between Mars and Jupiter and contains millions of rocky objects called asteroids."
   },
   {
     id: "astro-ss-07",
     grade: 0,
     type: "solar-system",
     word: "365.25 days",
-    prompt: "How long does Earth take to complete one orbit around the Sun?",
+    prompt: "How long does Earth take to complete one full orbit around the Sun?",
     choices: ["24 hours", "30 days", "365.25 days", "100 days"],
     answer: "365.25 days",
     definition: "Earth takes about 365.25 days (one year) to travel all the way around the Sun.",
-    contextSentence: "The extra 0.25 day is why we add a leap day every four years.",
-    hints: ["It is the length of one year.", "The extra quarter day explains why we have leap years."],
-    coach: "Earth takes 365.25 days to orbit the Sun. Every four years we add a leap day to catch up with that extra quarter day!"
+    contextSentence: "The extra 0.25 day per year is why we add a leap day every four years.",
+    hints: ["It is the length of one calendar year.", "The extra quarter day explains why we have leap years."],
+    coach: "Earth takes 365.25 days to orbit the Sun. Every four years we add a 'leap day' (Feb 29) to keep our calendar aligned!"
   },
   {
     id: "astro-ss-08",
@@ -99,11 +110,11 @@ export const ASTRONOMY_LEVELS: Level[] = [
     type: "solar-system",
     word: "dwarf planet",
     prompt: "What is Pluto classified as?",
-    choices: ["A planet", "A moon", "A dwarf planet", "An asteroid"],
+    choices: ["A major planet", "A moon", "A dwarf planet", "An asteroid"],
     answer: "A dwarf planet",
-    definition: "A dwarf planet orbits the Sun and has enough mass to be round, but has not cleared its orbit of other objects.",
+    definition: "A dwarf planet orbits the Sun, is round, but has not cleared its orbit of other objects.",
     contextSentence: "Pluto was reclassified as a dwarf planet in 2006 by the International Astronomical Union.",
-    hints: ["It is in the Kuiper Belt beyond Neptune.", "It was removed from the list of major planets in 2006."],
+    hints: ["It lives in the Kuiper Belt beyond Neptune.", "It was removed from the list of major planets in 2006."],
     coach: "Pluto is a dwarf planet. It orbits the Sun but shares its neighbourhood with many other icy objects in the Kuiper Belt."
   },
   {
@@ -111,13 +122,13 @@ export const ASTRONOMY_LEVELS: Level[] = [
     grade: 0,
     type: "solar-system",
     word: "Uranus",
-    prompt: "Which planet rotates on its side, with its axis tilted almost 98°?",
+    prompt: "Which planet rotates on its side, with its axis tilted nearly 98°?",
     choices: ["Saturn", "Neptune", "Uranus", "Jupiter"],
     answer: "Uranus",
-    definition: "Uranus is unique because its axis is tilted so far that it essentially rolls around the Sun on its side.",
-    contextSentence: "A season on Uranus can last over 20 years because of its extreme tilt.",
-    hints: ["It is an ice giant, the seventh planet from the Sun.", "Its extreme tilt means each pole faces the Sun for decades."],
-    coach: "Uranus is tilted nearly sideways at 98°, so it rolls around the Sun like a ball. Each pole has 42 years of sunlight followed by 42 years of darkness!"
+    definition: "Uranus is unique because its axis is tilted so far it essentially rolls around the Sun on its side.",
+    contextSentence: "A single season on Uranus can last over 20 years due to its extreme tilt.",
+    hints: ["It is an ice giant, the seventh planet from the Sun.", "Each pole faces the Sun for about 42 years at a time."],
+    coach: "Uranus is tilted at 98° — it rolls around the Sun on its side! Each pole gets 42 years of sunlight then 42 years of darkness."
   },
   {
     id: "astro-ss-10",
@@ -127,103 +138,928 @@ export const ASTRONOMY_LEVELS: Level[] = [
     prompt: "What is the name of Earth's only natural satellite?",
     choices: ["Titan", "Europa", "Phobos", "Moon"],
     answer: "Moon",
-    definition: "The Moon is a natural satellite that orbits Earth, about 384,400 km away.",
-    contextSentence: "The Moon causes the ocean tides on Earth because of its gravity.",
+    definition: "The Moon is Earth's natural satellite, about 384,400 km away.",
+    contextSentence: "The Moon's gravity pulls on Earth's oceans, creating the tides.",
     hints: ["It lights up the night sky and goes through phases.", "Humans first landed on it in 1969."],
-    coach: "Earth has one natural satellite: the Moon. Its gravity pulls on Earth's oceans, creating tides."
+    coach: "Earth has one natural satellite: the Moon. Its gravity creates our ocean tides, and humans first walked on it during Apollo 11 in 1969."
+  },
+  {
+    id: "astro-ss-11",
+    grade: 0,
+    type: "solar-system",
+    word: "Ganymede",
+    prompt: "What is the largest moon in our solar system?",
+    choices: ["Europa", "Titan", "Ganymede", "Io"],
+    answer: "Ganymede",
+    definition: "Ganymede is Jupiter's largest moon and the largest moon in the solar system — even bigger than the planet Mercury.",
+    contextSentence: "Ganymede is so large that it has its own magnetic field.",
+    hints: ["It orbits Jupiter.", "It is even larger than the planet Mercury."],
+    coach: "Ganymede orbits Jupiter and is the largest moon in the solar system — bigger than Mercury! It even has its own magnetic field."
+  },
+  {
+    id: "astro-ss-12",
+    grade: 0,
+    type: "solar-system",
+    word: "Kuiper Belt",
+    prompt: "What is the Kuiper Belt?",
+    choices: ["A ring around Saturn", "A region beyond Neptune full of icy objects and dwarf planets", "The asteroid belt between Mars and Jupiter", "A cloud of comets surrounding the whole solar system"],
+    answer: "A region beyond Neptune full of icy objects and dwarf planets",
+    definition: "The Kuiper Belt is a region of the solar system beyond Neptune containing many icy objects, including Pluto.",
+    contextSentence: "Many short-period comets originate in the Kuiper Belt.",
+    hints: ["Pluto is found here.", "It begins just beyond the orbit of Neptune."],
+    coach: "The Kuiper Belt is a disc of icy objects beyond Neptune. Pluto lives here, along with many other dwarf planets and icy bodies."
+  },
+  {
+    id: "astro-ss-13",
+    grade: 0,
+    type: "solar-system",
+    word: "Phobos and Deimos",
+    prompt: "What are the names of Mars's two small moons?",
+    choices: ["Titan and Triton", "Phobos and Deimos", "Io and Europa", "Callisto and Ganymede"],
+    answer: "Phobos and Deimos",
+    definition: "Phobos and Deimos are the two small, potato-shaped moons of Mars.",
+    contextSentence: "Phobos orbits so close to Mars that it circles the planet three times a day.",
+    hints: ["Their names mean 'Fear' and 'Dread' in Greek.", "They are very small and potato-shaped."],
+    coach: "Mars has two tiny moons: Phobos ('Fear') and Deimos ('Dread'). Phobos orbits Mars so fast it rises in the west and sets in the east!"
+  },
+  {
+    id: "astro-ss-14",
+    grade: 0,
+    type: "solar-system",
+    word: "Neptune",
+    prompt: "Which planet is farthest from the Sun in our solar system?",
+    choices: ["Uranus", "Saturn", "Neptune", "Pluto"],
+    answer: "Neptune",
+    definition: "Neptune is the eighth and farthest planet from the Sun, an ice giant with the strongest winds in the solar system.",
+    contextSentence: "Neptune takes 165 Earth years to complete one orbit around the Sun.",
+    hints: ["It is an ice giant, blue in colour.", "One year on this planet equals 165 Earth years."],
+    coach: "Neptune is the farthest planet from the Sun. It has the strongest winds in the solar system — up to 2,100 km/h — and one year there takes 165 Earth years!"
+  },
+  {
+    id: "astro-ss-15",
+    grade: 0,
+    type: "solar-system",
+    word: "Mercury → Gemini → Apollo",
+    prompt: "In what order do the planets appear from closest to farthest from the Sun?",
+    choices: [
+      "Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune",
+      "Mercury, Earth, Venus, Mars, Jupiter, Saturn, Neptune, Uranus",
+      "Venus, Mercury, Earth, Mars, Saturn, Jupiter, Uranus, Neptune",
+      "Mercury, Venus, Mars, Earth, Jupiter, Saturn, Uranus, Neptune"
+    ],
+    answer: "Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune",
+    definition: "The eight planets in order from closest to farthest from the Sun.",
+    contextSentence: "A helpful way to remember: My Very Educated Mother Just Served Us Nachos.",
+    hints: ["The mnemonic 'My Very Educated Mother Just Served Us Nachos' can help.", "Earth is the third planet."],
+    coach: "In order: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune. Remember with: My Very Educated Mother Just Served Us Nachos!"
   },
 
-  // ── Stars ──────────────────────────────────────────────────────────
+  // ── Stars & Galaxies ──────────────────────────────────────────────
   {
-    id: "astro-st-01",
+    id: "astro-sg-01",
     grade: 0,
-    type: "stars",
+    type: "stars-galaxies",
     word: "yellow dwarf",
     prompt: "What type of star is our Sun?",
     choices: ["Red giant", "White dwarf", "Yellow dwarf", "Blue supergiant"],
     answer: "Yellow dwarf",
     definition: "A yellow dwarf (G-type star) is a medium-sized star with a surface temperature around 5,500°C.",
-    contextSentence: "Our Sun is a yellow dwarf star in the middle of its life cycle.",
+    contextSentence: "Our Sun is a yellow dwarf star about halfway through its 10-billion-year life.",
     hints: ["It is a medium-sized, middle-aged star.", "It is also called a G-type main-sequence star."],
-    coach: "The Sun is a yellow dwarf star. It is about halfway through its 10-billion-year life. When it runs out of fuel, it will expand into a red giant."
+    coach: "The Sun is a yellow dwarf star. It is about halfway through its 10-billion-year life. When it runs out of fuel, it will swell into a red giant."
   },
   {
-    id: "astro-st-02",
+    id: "astro-sg-02",
     grade: 0,
-    type: "stars",
+    type: "stars-galaxies",
     word: "Proxima Centauri",
     prompt: "What is the closest star to our solar system (other than the Sun)?",
     choices: ["Sirius", "Betelgeuse", "Proxima Centauri", "Vega"],
     answer: "Proxima Centauri",
-    definition: "Proxima Centauri is a red dwarf star about 4.24 light-years from Earth, the nearest known star beyond our Sun.",
-    contextSentence: "Even at the speed of light, it would take over 4 years to reach Proxima Centauri.",
-    hints: ["It is part of the Alpha Centauri star system.", "It is a small red dwarf star."],
-    coach: "Proxima Centauri is our nearest stellar neighbour at 4.24 light-years away. Despite being so close, it would take tens of thousands of years to travel there!"
+    definition: "Proxima Centauri is a red dwarf star about 4.24 light-years from Earth.",
+    contextSentence: "Even at the speed of light it would take over 4 years to reach Proxima Centauri.",
+    hints: ["It is part of the Alpha Centauri star system.", "It is a small, dim red dwarf star."],
+    coach: "Proxima Centauri is our nearest stellar neighbour at 4.24 light-years. At the speed of light it would take 4 years to get there — and our fastest rockets would take tens of thousands of years!"
   },
   {
-    id: "astro-st-03",
+    id: "astro-sg-03",
     grade: 0,
-    type: "stars",
+    type: "stars-galaxies",
     word: "supernova",
-    prompt: "What happens when a very massive star runs out of fuel?",
-    choices: ["It slowly fades out", "It explodes in a massive supernova", "It becomes a comet", "It splits into two stars"],
-    answer: "It explodes in a massive supernova",
+    prompt: "What is the huge explosion called when a massive star runs out of fuel?",
+    choices: ["A solar flare", "A supernova", "A comet impact", "A pulsar burst"],
+    answer: "A supernova",
     definition: "A supernova is an enormous explosion that occurs when a massive star collapses at the end of its life.",
     contextSentence: "A supernova can briefly outshine an entire galaxy of billions of stars.",
     hints: ["It is one of the most powerful explosions in the universe.", "It can leave behind a neutron star or black hole."],
-    coach: "When a massive star runs out of fuel, it collapses and explodes as a supernova — one of the brightest events in the universe!"
+    coach: "When a massive star runs out of fuel, it explodes as a supernova — one of the brightest events in the universe!"
   },
   {
-    id: "astro-st-04",
+    id: "astro-sg-04",
     grade: 0,
-    type: "stars",
+    type: "stars-galaxies",
     word: "Sirius",
     prompt: "What is the brightest star visible in the night sky as seen from Earth?",
     choices: ["Polaris", "Betelgeuse", "Sirius", "Vega"],
     answer: "Sirius",
-    definition: "Sirius, also called the Dog Star, is the brightest star in the night sky, about 8.6 light-years from Earth.",
-    contextSentence: "Sirius is so bright that ancient Egyptians used it to predict the annual Nile flood.",
-    hints: ["It is in the constellation Canis Major (the Big Dog).", "Ancient Egyptians considered it very important."],
+    definition: "Sirius, the Dog Star, is the brightest star in the night sky, about 8.6 light-years from Earth.",
+    contextSentence: "Ancient Egyptians used Sirius's rising to predict the annual Nile flood.",
+    hints: ["It is in the constellation Canis Major (the Big Dog).", "It is also called the Dog Star."],
     coach: "Sirius is the brightest star in the night sky. It is called the Dog Star because it is in the constellation Canis Major (the Big Dog)."
   },
   {
-    id: "astro-st-05",
+    id: "astro-sg-05",
     grade: 0,
-    type: "stars",
+    type: "stars-galaxies",
     word: "Milky Way",
-    prompt: "What is the name of the galaxy that contains our solar system?",
+    prompt: "What is the name of the galaxy our solar system lives in?",
     choices: ["Andromeda", "Triangulum", "Sombrero", "The Milky Way"],
     answer: "The Milky Way",
     definition: "The Milky Way is a spiral galaxy containing our solar system, home to over 200 billion stars.",
-    contextSentence: "On a clear night, far from city lights, you can see the Milky Way as a glowing band across the sky.",
-    hints: ["It looks like a glowing band of stars across the night sky.", "It is a spiral galaxy with a supermassive black hole at its centre."],
-    coach: "We live in the Milky Way galaxy. It is a spiral galaxy with over 200 billion stars — and our Sun is just one of them!"
+    contextSentence: "On a clear night far from city lights you can see the Milky Way as a glowing band across the sky.",
+    hints: ["It looks like a glowing band of stars on dark nights.", "It is a spiral galaxy with a supermassive black hole at its centre."],
+    coach: "We live in the Milky Way — a spiral galaxy with over 200 billion stars. Our Sun is just one of them, about halfway out from the centre."
   },
   {
-    id: "astro-st-06",
+    id: "astro-sg-06",
     grade: 0,
-    type: "stars",
+    type: "stars-galaxies",
     word: "blue",
     prompt: "What colour are the hottest stars?",
     choices: ["Red", "Yellow", "Orange", "Blue"],
     answer: "Blue",
-    definition: "Blue stars are the hottest stars, with surface temperatures above 25,000°C. Red stars are the coolest.",
-    contextSentence: "A blue star is much hotter than our yellow Sun.",
-    hints: ["Think of a flame: which part is hottest — the red part or the blue part?", "Cooler stars appear red or orange; hotter stars appear white or blue."],
-    coach: "In stars, blue means hot and red means cool. Blue stars are the hottest, then white, then yellow, then orange, then red."
+    definition: "Blue stars are the hottest, with surface temperatures above 25,000°C. Red stars are the coolest.",
+    contextSentence: "A blue star burns much hotter than our yellow Sun.",
+    hints: ["Think of a flame: which part is hottest — red or blue?", "Cooler stars appear red or orange; hotter ones appear white or blue."],
+    coach: "In stars, blue = hot and red = cool. Blue stars are the hottest, then white, yellow, orange, and finally red — the coolest."
   },
   {
-    id: "astro-st-07",
+    id: "astro-sg-07",
     grade: 0,
-    type: "stars",
+    type: "stars-galaxies",
     word: "black hole",
     prompt: "What is a black hole?",
-    choices: ["A star with no light", "A gap between galaxies", "A region where gravity is so strong that nothing, not even light, can escape", "A dark planet"],
-    answer: "A region where gravity is so strong that nothing, not even light, can escape",
-    definition: "A black hole is a region of space where gravity is so intense that nothing — not even light — can escape from it.",
+    choices: ["A star with no light output", "A gap between galaxies", "A region where gravity is so strong nothing — not even light — can escape", "A dark planet"],
+    answer: "A region where gravity is so strong nothing — not even light — can escape",
+    definition: "A black hole is a region of space where gravity is so intense that nothing, not even light, can escape.",
     contextSentence: "Black holes often form when a massive star collapses at the end of its life.",
-    hints: ["Even light cannot escape from it.", "They often form from the remains of massive stars."],
-    coach: "A black hole is a place in space where gravity is so strong that not even light can escape. That's why it looks completely black!"
+    hints: ["Even light cannot escape from it.", "They often form from collapsed massive stars."],
+    coach: "A black hole has gravity so strong that not even light can escape — that's why it looks completely black!"
+  },
+  {
+    id: "astro-sg-08",
+    grade: 0,
+    type: "stars-galaxies",
+    word: "red giant",
+    prompt: "What happens to a Sun-like star when it runs out of hydrogen fuel in its core?",
+    choices: ["It instantly goes dark", "It explodes as a supernova", "It swells into a red giant", "It becomes a black hole"],
+    answer: "It swells into a red giant",
+    definition: "A red giant is a large, cool star in a late stage of life — a Sun-like star expands enormously after its core fuel runs out.",
+    contextSentence: "In about 5 billion years our Sun will expand into a red giant, engulfing the inner planets.",
+    hints: ["It is the next stage for our Sun in about 5 billion years.", "The star swells to many times its original size."],
+    coach: "When a Sun-like star uses up its core hydrogen, it puffs up into a red giant. In 5 billion years our Sun will do this, expanding large enough to swallow Earth!"
+  },
+  {
+    id: "astro-sg-09",
+    grade: 0,
+    type: "stars-galaxies",
+    word: "Big Bang",
+    prompt: "According to scientists, how did the universe begin?",
+    choices: ["A star exploded and created everything", "The universe has always existed", "A Big Bang — an extremely hot, dense explosion about 13.8 billion years ago", "Two galaxies collided to create the universe"],
+    answer: "A Big Bang — an extremely hot, dense explosion about 13.8 billion years ago",
+    definition: "The Big Bang theory describes how the universe began as an extremely hot, dense point and has been expanding ever since.",
+    contextSentence: "All the matter, energy, space, and time in the universe began at the Big Bang 13.8 billion years ago.",
+    hints: ["It happened about 13.8 billion years ago.", "The universe has been expanding ever since."],
+    coach: "Scientists believe the universe began with the Big Bang about 13.8 billion years ago — from an incredibly hot, tiny point that rapidly expanded into everything we see today."
+  },
+  {
+    id: "astro-sg-10",
+    grade: 0,
+    type: "stars-galaxies",
+    word: "white dwarf",
+    prompt: "What is left behind after a Sun-like star becomes a red giant and sheds its outer layers?",
+    choices: ["A neutron star", "A black hole", "A white dwarf", "A new blue star"],
+    answer: "A white dwarf",
+    definition: "A white dwarf is the hot, dense remnant of a Sun-like star's core after it has shed its outer layers.",
+    contextSentence: "A white dwarf is about the size of Earth but packs the mass of the Sun.",
+    hints: ["It is roughly the size of Earth.", "Our Sun will eventually become one of these."],
+    coach: "After a Sun-like star sheds its outer layers as a planetary nebula, the leftover core is a white dwarf — Earth-sized but incredibly dense!"
+  },
+  {
+    id: "astro-sg-11",
+    grade: 0,
+    type: "stars-galaxies",
+    word: "constellation",
+    prompt: "What is a constellation?",
+    choices: ["A group of galaxies", "A pattern of stars that appears to form a picture or shape in the night sky", "A type of comet", "A cluster of planets"],
+    answer: "A pattern of stars that appears to form a picture or shape in the night sky",
+    definition: "A constellation is a named pattern of stars as seen from Earth. There are 88 officially recognized constellations.",
+    contextSentence: "Orion the Hunter is one of the most easily recognized constellations.",
+    hints: ["There are 88 official ones recognised by astronomers.", "Examples include Orion, Ursa Major, and Cassiopeia."],
+    coach: "Constellations are patterns of stars in the sky that people have named — like Orion the Hunter or the Big Dipper. There are 88 official constellations."
+  },
+  {
+    id: "astro-sg-12",
+    grade: 0,
+    type: "stars-galaxies",
+    word: "2.5 million light-years",
+    prompt: "How far away is the Andromeda Galaxy from Earth?",
+    choices: ["4.24 light-years", "100 light-years", "About 2.5 million light-years", "About 1 billion light-years"],
+    answer: "About 2.5 million light-years",
+    definition: "The Andromeda Galaxy is about 2.5 million light-years from Earth — the farthest object visible to the naked eye.",
+    contextSentence: "The Andromeda Galaxy is on a collision course with the Milky Way, expected to merge in about 4.5 billion years.",
+    hints: ["It is the nearest large galaxy to our Milky Way.", "It is the farthest thing you can see with just your eyes."],
+    coach: "Andromeda is about 2.5 million light-years away — the farthest object you can see without a telescope. It is heading toward the Milky Way and will merge with us in 4.5 billion years!"
+  },
+
+  // ── Space Exploration ─────────────────────────────────────────────
+  {
+    id: "astro-se-01",
+    grade: 0,
+    type: "space-exploration",
+    word: "Sputnik 1",
+    prompt: "What was the name of the first artificial satellite ever launched into space?",
+    choices: ["Apollo 1", "Sputnik 1", "Explorer 1", "Voyager 1"],
+    answer: "Sputnik 1",
+    definition: "Sputnik 1 was launched by the Soviet Union on October 4, 1957, becoming the first human-made object to orbit Earth.",
+    contextSentence: "Sputnik 1's successful launch started the Space Race between the USA and USSR.",
+    hints: ["It was launched by the Soviet Union in 1957.", "Its name means 'fellow traveller' in Russian."],
+    coach: "Sputnik 1 was the first artificial satellite, launched by the Soviet Union in 1957. It was a metal ball that just beeped as it orbited Earth — and it started the Space Race!"
+  },
+  {
+    id: "astro-se-02",
+    grade: 0,
+    type: "space-exploration",
+    word: "Space Shuttle",
+    prompt: "What was the Space Shuttle?",
+    choices: ["A one-time-use rocket", "A reusable spacecraft that carried astronauts and cargo to orbit", "A Mars rover", "A weather satellite"],
+    answer: "A reusable spacecraft that carried astronauts and cargo to orbit",
+    definition: "The Space Shuttle was NASA's reusable launch system that flew 135 missions from 1981 to 2011.",
+    contextSentence: "The Space Shuttle helped build the International Space Station and launched the Hubble Space Telescope.",
+    hints: ["It could land like an airplane after returning from space.", "It flew 135 missions between 1981 and 2011."],
+    coach: "The Space Shuttle was special because it was reusable — it launched like a rocket, orbited like a spacecraft, and landed like a glider. It flew for 30 years!"
+  },
+  {
+    id: "astro-se-03",
+    grade: 0,
+    type: "space-exploration",
+    word: "ISS",
+    prompt: "What is the International Space Station (ISS)?",
+    choices: ["A space telescope in deep space", "A permanent orbiting laboratory where astronauts from many countries live and do science", "A rocket launch site", "A Mars colony"],
+    answer: "A permanent orbiting laboratory where astronauts from many countries live and do science",
+    definition: "The ISS is a habitable space station in low Earth orbit, continuously crewed since November 2000.",
+    contextSentence: "The ISS orbits Earth about every 90 minutes at an altitude of roughly 400 km.",
+    hints: ["It orbits Earth about every 90 minutes.", "It has been continuously crewed since November 2000."],
+    coach: "The ISS is a football-field-sized laboratory orbiting 400 km above Earth. Astronauts from the US, Russia, Europe, Japan, and Canada have all lived and worked there!"
+  },
+  {
+    id: "astro-se-04",
+    grade: 0,
+    type: "space-exploration",
+    word: "SpaceX Falcon 9",
+    prompt: "Which rocket company regularly launches astronauts to the ISS and is famous for landing its rocket boosters back on Earth?",
+    choices: ["Boeing", "Blue Origin", "SpaceX", "Lockheed Martin"],
+    answer: "SpaceX",
+    definition: "SpaceX, founded by Elon Musk, developed the reusable Falcon 9 rocket that routinely lands its first stage for reuse.",
+    contextSentence: "SpaceX's Falcon 9 was the first orbital rocket to successfully land its booster for reuse.",
+    hints: ["It was founded by Elon Musk.", "Its Falcon 9 rocket lands its first stage back on a drone ship or landing pad."],
+    coach: "SpaceX revolutionized rocketry by landing and reusing rocket boosters. Their Falcon 9 regularly carries astronauts and cargo to the ISS!"
+  },
+  {
+    id: "astro-se-05",
+    grade: 0,
+    type: "space-exploration",
+    word: "orbit",
+    prompt: "How does a rocket reach orbit around Earth?",
+    choices: [
+      "It flies straight up until gravity stops",
+      "It uses wings to glide into orbit",
+      "It goes fast enough sideways that as it falls it keeps missing Earth",
+      "Earth's magnetic field pulls it into orbit"
+    ],
+    answer: "It goes fast enough sideways that as it falls it keeps missing Earth",
+    definition: "Orbital motion means going sideways fast enough that the curve of Earth's surface drops away as fast as you fall.",
+    contextSentence: "The ISS travels at about 7.7 km/s — that's over 27,000 km/h — to stay in orbit.",
+    hints: ["Orbital speed is about 27,000 km/h sideways.", "Isaac Newton described this with his 'cannon ball' thought experiment."],
+    coach: "Orbit is controlled falling! A rocket goes sideways so fast (27,000 km/h) that as it falls, Earth's surface curves away just as fast — so it keeps going around and around."
+  },
+  {
+    id: "astro-se-06",
+    grade: 0,
+    type: "space-exploration",
+    word: "Voyager 1",
+    prompt: "What is Voyager 1 famous for?",
+    choices: [
+      "It was the first spacecraft to land on Mars",
+      "It is the farthest human-made object from Earth, now in interstellar space",
+      "It landed astronauts on the Moon",
+      "It discovered the rings of Saturn"
+    ],
+    answer: "It is the farthest human-made object from Earth, now in interstellar space",
+    definition: "Voyager 1 was launched in 1977, flew past Jupiter and Saturn, and in 2012 became the first human-made object to enter interstellar space.",
+    contextSentence: "Voyager 1 is over 23 billion km from Earth — and still sending data back!",
+    hints: ["It was launched in 1977.", "It crossed into interstellar space (beyond our solar system) in 2012."],
+    coach: "Voyager 1 was launched in 1977 and has been travelling ever since. In 2012 it entered interstellar space — the space between the stars. It is the most distant human-made object ever!"
+  },
+  {
+    id: "astro-se-07",
+    grade: 0,
+    type: "space-exploration",
+    word: "SLS",
+    prompt: "What is the name of NASA's powerful new rocket built for the Artemis Moon program?",
+    choices: ["Saturn V", "Falcon 9", "Space Launch System (SLS)", "Atlas V"],
+    answer: "Space Launch System (SLS)",
+    definition: "The Space Launch System (SLS) is NASA's most powerful rocket, designed to send astronauts to the Moon and eventually Mars.",
+    contextSentence: "SLS launched its first test flight in November 2022, sending the Orion capsule around the Moon.",
+    hints: ["It stands for Space Launch System.", "Its first launch sent an uncrewed Orion capsule around the Moon in 2022."],
+    coach: "The SLS (Space Launch System) is NASA's new mega-rocket for the Artemis program. Its first test flight in 2022 sent the Orion capsule around the Moon — no crew, just a test!"
+  },
+  {
+    id: "astro-se-08",
+    grade: 0,
+    type: "space-exploration",
+    word: "rover",
+    prompt: "What is a space rover?",
+    choices: [
+      "An astronaut who walks in space",
+      "A remote-controlled vehicle designed to explore the surface of other planets",
+      "A type of satellite in deep space",
+      "A rocket booster"
+    ],
+    answer: "A remote-controlled vehicle designed to explore the surface of other planets",
+    definition: "A rover is a space exploration vehicle that moves across the surface of a planet or moon to take photos, collect samples, and conduct experiments.",
+    contextSentence: "NASA's Perseverance rover landed on Mars in February 2021 to search for signs of ancient life.",
+    hints: ["NASA has sent several of these to Mars.", "They move slowly across rocky surfaces and beam data back to Earth."],
+    coach: "Rovers are robotic vehicles we drive on other planets from Earth! Mars rovers like Curiosity and Perseverance move across the Martian surface collecting rock samples and taking pictures."
+  },
+  {
+    id: "astro-se-09",
+    grade: 0,
+    type: "space-exploration",
+    word: "EVA",
+    prompt: "What does EVA stand for in spaceflight?",
+    choices: ["External Vehicle Approach", "Extravehicular Activity (spacewalk)", "Earth Viewing Apparatus", "Emergency Vehicle Alert"],
+    answer: "Extravehicular Activity (spacewalk)",
+    definition: "Extravehicular Activity (EVA) is any activity performed by an astronaut outside a spacecraft, commonly called a spacewalk.",
+    contextSentence: "Astronauts perform EVAs to repair equipment and install hardware on the outside of the ISS.",
+    hints: ["'Extra' means outside; 'vehicular' means the vehicle.", "Most people call it a spacewalk."],
+    coach: "EVA stands for Extravehicular Activity — what most people call a spacewalk. Astronauts wear specially pressurized suits to work outside their spacecraft in the vacuum of space."
+  },
+  {
+    id: "astro-se-10",
+    grade: 0,
+    type: "space-exploration",
+    word: "Hubble Space Telescope",
+    prompt: "What is the Hubble Space Telescope used for?",
+    choices: [
+      "Tracking weather on Earth",
+      "Communicating with astronauts on the ISS",
+      "Observing distant stars, galaxies, and nebulae from orbit",
+      "Guiding rockets during launch"
+    ],
+    answer: "Observing distant stars, galaxies, and nebulae from orbit",
+    definition: "The Hubble Space Telescope has been orbiting Earth since 1990, taking stunning images of the universe free from atmospheric distortion.",
+    contextSentence: "Hubble's images have revealed details of galaxies billions of light-years away.",
+    hints: ["It has been orbiting Earth since 1990.", "It was launched by the Space Shuttle Discovery."],
+    coach: "Hubble orbits Earth above the blurry atmosphere, giving us crystal-clear views of galaxies billions of light-years away. Space Shuttle astronauts even flew up to fix it when it had a faulty mirror!"
+  },
+  {
+    id: "astro-se-11",
+    grade: 0,
+    type: "space-exploration",
+    word: "James Webb Space Telescope",
+    prompt: "What makes the James Webb Space Telescope (JWST) different from Hubble?",
+    choices: [
+      "It orbits Earth closer than Hubble",
+      "It uses infrared light to see further back in time and peer through dust clouds",
+      "It is used to study the Sun",
+      "It can land on asteroids"
+    ],
+    answer: "It uses infrared light to see further back in time and peer through dust clouds",
+    definition: "JWST uses infrared (heat) light to observe the earliest galaxies formed after the Big Bang and to study star-forming regions hidden in dust.",
+    contextSentence: "JWST launched in December 2021 and orbits 1.5 million km from Earth.",
+    hints: ["It launched in December 2021 and orbits 1.5 million km from Earth.", "Infrared light lets it see through gas and dust clouds where stars are born."],
+    coach: "The James Webb Telescope uses infrared light — like night-vision goggles — to see through dust clouds and peer back to some of the very first galaxies formed after the Big Bang!"
+  },
+  {
+    id: "astro-se-12",
+    grade: 0,
+    type: "space-exploration",
+    word: "docking",
+    prompt: "What does 'docking' mean in space exploration?",
+    choices: [
+      "Landing on a planet's surface",
+      "When a spacecraft connects and joins with another spacecraft or space station in orbit",
+      "Returning a capsule to Earth",
+      "Firing the rocket to slow down"
+    ],
+    answer: "When a spacecraft connects and joins with another spacecraft or space station in orbit",
+    definition: "Docking is the process by which two spacecraft join together in space, allowing crew and supplies to transfer between them.",
+    contextSentence: "SpaceX Crew Dragon docks with the ISS to deliver astronauts and supplies.",
+    hints: ["It is needed to deliver astronauts and supplies to the ISS.", "Two spacecraft have to align perfectly to connect."],
+    coach: "Docking is when two spacecraft link together in orbit. It requires incredibly precise flying — at 27,000 km/h, you have to connect two vehicles with millimetre accuracy!"
+  },
+  {
+    id: "astro-se-13",
+    grade: 0,
+    type: "space-exploration",
+    word: "Apollo program",
+    prompt: "What was the main goal of NASA's Apollo program?",
+    choices: [
+      "Build the International Space Station",
+      "Send humans to Mars",
+      "Land humans on the Moon and return them safely to Earth",
+      "Launch the first satellites"
+    ],
+    answer: "Land humans on the Moon and return them safely to Earth",
+    definition: "The Apollo program ran from 1961 to 1972, successfully landing astronauts on the Moon six times.",
+    contextSentence: "Apollo 11 achieved the first Moon landing on July 20, 1969.",
+    hints: ["It achieved its goal in July 1969 with Apollo 11.", "Six missions successfully landed on the Moon between 1969 and 1972."],
+    coach: "The Apollo program's goal was to land humans on the Moon and bring them home safely. Apollo 11 did it first on July 20, 1969 — and five more missions landed successfully after that!"
+  },
+  {
+    id: "astro-se-14",
+    grade: 0,
+    type: "space-exploration",
+    word: "Perseverance",
+    prompt: "What is the name of NASA's Mars rover that landed in Jezero Crater in February 2021?",
+    choices: ["Curiosity", "Spirit", "Perseverance", "Opportunity"],
+    answer: "Perseverance",
+    definition: "Perseverance is NASA's most advanced Mars rover, searching for signs of ancient microbial life and collecting rock samples for future return to Earth.",
+    contextSentence: "Perseverance also carried the Ingenuity helicopter — the first powered aircraft to fly on another planet.",
+    hints: ["It landed in Jezero Crater in February 2021.", "It brought along a small helicopter called Ingenuity."],
+    coach: "Perseverance landed on Mars in 2021 to look for signs of ancient life. It also carried Ingenuity — a tiny helicopter that became the first powered aircraft to fly on another planet!"
+  },
+  {
+    id: "astro-se-15",
+    grade: 0,
+    type: "space-exploration",
+    word: "re-entry",
+    prompt: "What happens during re-entry when a spacecraft returns to Earth?",
+    choices: [
+      "The spacecraft floats gently through the atmosphere",
+      "The spacecraft hits the atmosphere at high speed, creating intense heat from friction",
+      "The spacecraft uses rockets to slow down in space",
+      "The spacecraft glides through the atmosphere without any heating"
+    ],
+    answer: "The spacecraft hits the atmosphere at high speed, creating intense heat from friction",
+    definition: "Re-entry is when a spacecraft returns through Earth's atmosphere. Friction with air molecules creates temperatures of up to 1,650°C, requiring heat shields.",
+    contextSentence: "Heat shields protect astronauts during re-entry, when the capsule can glow like a shooting star.",
+    hints: ["The capsule can glow red-hot from friction with the atmosphere.", "Heat shields are required to protect the crew."],
+    coach: "During re-entry, a spacecraft is going so fast that friction with the atmosphere heats it to 1,650°C — as hot as a volcano! Heat shields protect the astronauts inside."
+  },
+
+  // ── NASA & Kennedy Space Center ───────────────────────────────────
+  {
+    id: "astro-ksc-01",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "NASA",
+    prompt: "What does NASA stand for?",
+    choices: [
+      "National Astronomy and Space Administration",
+      "National Aeronautics and Space Administration",
+      "North American Space Agency",
+      "New Aerospace and Science Authority"
+    ],
+    answer: "National Aeronautics and Space Administration",
+    definition: "NASA is the U.S. government agency responsible for the nation's civilian space program and aerospace research.",
+    contextSentence: "NASA was established in 1958, the year after Sputnik was launched.",
+    hints: ["It is the US government's civilian space agency.", "It was founded in 1958, the year after the Soviet Union launched Sputnik."],
+    coach: "NASA stands for National Aeronautics and Space Administration. It was created in 1958 in response to the Soviet Union launching Sputnik — and it has been exploring space ever since!"
+  },
+  {
+    id: "astro-ksc-02",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "Florida",
+    prompt: "Where is the Kennedy Space Center located?",
+    choices: ["Texas", "California", "Florida, on Merritt Island near Cape Canaveral", "Alabama"],
+    answer: "Florida, on Merritt Island near Cape Canaveral",
+    definition: "Kennedy Space Center (KSC) is NASA's primary launch site, located on Merritt Island, Florida, adjacent to Cape Canaveral.",
+    contextSentence: "KSC has been the launch site for every US human spaceflight mission since the Gemini program.",
+    hints: ["It is near Cape Canaveral on the Atlantic coast.", "Florida's location close to the equator is ideal for rocket launches."],
+    coach: "Kennedy Space Center is on Merritt Island, Florida — right next to Cape Canaveral. Florida's location near the equator gives rockets a speed boost from Earth's rotation, saving fuel!"
+  },
+  {
+    id: "astro-ksc-03",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "Alan Shepard",
+    prompt: "Who was the first American to travel to space?",
+    choices: ["John Glenn", "Neil Armstrong", "Alan Shepard", "Buzz Aldrin"],
+    answer: "Alan Shepard",
+    definition: "Alan Shepard became the first American in space on May 5, 1961, flying a 15-minute suborbital mission on Freedom 7.",
+    contextSentence: "Alan Shepard later walked on the Moon during Apollo 14 and even hit a golf ball on the lunar surface.",
+    hints: ["He flew on the Freedom 7 capsule in May 1961.", "He later walked on the Moon during Apollo 14."],
+    coach: "Alan Shepard was the first American in space (May 1961) — just a 15-minute ride. He later walked on the Moon with Apollo 14 and famously hit a golf ball on the lunar surface!"
+  },
+  {
+    id: "astro-ksc-04",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "Neil Armstrong",
+    prompt: "Who was the first person to walk on the Moon?",
+    choices: ["Buzz Aldrin", "Neil Armstrong", "Michael Collins", "John Glenn"],
+    answer: "Neil Armstrong",
+    definition: "Neil Armstrong became the first human to walk on the Moon on July 20, 1969, during the Apollo 11 mission.",
+    contextSentence: "As he stepped onto the lunar surface, Armstrong said: 'That's one small step for man, one giant leap for mankind.'",
+    hints: ["He said 'One small step for man, one giant leap for mankind.'", "He flew on the Apollo 11 mission."],
+    coach: "Neil Armstrong was the first person to walk on the Moon, on July 20, 1969. He said: 'That's one small step for man, one giant leap for mankind.' Buzz Aldrin followed him 20 minutes later."
+  },
+  {
+    id: "astro-ksc-05",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "1969",
+    prompt: "In what year did Apollo 11 first land humans on the Moon?",
+    choices: ["1965", "1967", "1969", "1972"],
+    answer: "1969",
+    definition: "Apollo 11 landed on the Moon on July 20, 1969, fulfilling President Kennedy's goal of landing humans on the Moon before the end of the 1960s.",
+    contextSentence: "More than 600 million people watched the Moon landing live on television — the largest TV audience at the time.",
+    hints: ["President Kennedy set the goal of reaching the Moon 'before this decade is out'.", "The mission launched on July 16 and landed on July 20."],
+    coach: "July 20, 1969 — one of the most historic days ever! Apollo 11 landed on the Moon, watched by over 600 million people on TV. It happened just 8 years after the US sent its first astronaut to space."
+  },
+  {
+    id: "astro-ksc-06",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "Eagle",
+    prompt: "What was the name of the Apollo 11 lunar module that landed on the Moon?",
+    choices: ["Columbia", "Challenger", "Eagle", "Discovery"],
+    answer: "Eagle",
+    definition: "The Eagle was the Apollo 11 lunar module that carried Neil Armstrong and Buzz Aldrin to the lunar surface.",
+    contextSentence: "Mission Control heard: 'Houston, Tranquility Base here. The Eagle has landed.'",
+    hints: ["Mission Control heard: 'The Eagle has landed.'", "The command module that orbited the Moon was named Columbia."],
+    coach: "The lunar module Eagle landed at Tranquility Base. Neil Armstrong radioed: 'Houston, Tranquility Base here — the Eagle has landed.' Those words are famous worldwide!"
+  },
+  {
+    id: "astro-ksc-07",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "Mercury → Gemini → Apollo",
+    prompt: "In what order did NASA's first three human spaceflight programs occur?",
+    choices: [
+      "Apollo → Gemini → Mercury",
+      "Mercury → Apollo → Gemini",
+      "Mercury → Gemini → Apollo",
+      "Gemini → Mercury → Apollo"
+    ],
+    answer: "Mercury → Gemini → Apollo",
+    definition: "Mercury (1958–1963) sent the first Americans to space; Gemini (1961–1966) developed orbital techniques; Apollo (1961–1972) landed humans on the Moon.",
+    contextSentence: "Each program built on the lessons of the last, leading from a 15-minute flight to a Moon landing in just 8 years.",
+    hints: ["Mercury was the first — single-astronaut capsules.", "Gemini practiced rendezvous and spacewalks before Apollo."],
+    coach: "Mercury sent the first Americans to space, Gemini practiced the skills needed for Moon travel, and Apollo landed on the Moon. Three programs in just 11 years!"
+  },
+  {
+    id: "astro-ksc-08",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "Apollo 13",
+    prompt: "What was Apollo 13 famous for?",
+    choices: [
+      "The first Moon landing",
+      "The first spacewalk",
+      "A near-disaster where an oxygen tank exploded but all three crew members survived",
+      "The first landing on the lunar far side"
+    ],
+    answer: "A near-disaster where an oxygen tank exploded but all three crew members survived",
+    definition: "Apollo 13 (1970) suffered an oxygen tank explosion that crippled the spacecraft. The crew used the lunar module as a lifeboat and returned safely to Earth.",
+    contextSentence: "Apollo 13 commander Jim Lovell radioed: 'Houston, we've had a problem.'",
+    hints: ["It launched in April 1970.", "The crew used the lunar module as a lifeboat to survive."],
+    coach: "Apollo 13 is called 'NASA's finest hour.' An oxygen tank blew up on the way to the Moon, but through teamwork and quick thinking, the crew made it home safely. 'Houston, we've had a problem.'"
+  },
+  {
+    id: "astro-ksc-09",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "Vehicle Assembly Building",
+    prompt: "What is the Vehicle Assembly Building (VAB) at Kennedy Space Center?",
+    choices: [
+      "A museum displaying historic spacecraft",
+      "One of the world's largest buildings, where rockets are assembled before being rolled to the launch pad",
+      "Mission Control for all NASA launches",
+      "A runway where the Space Shuttle landed"
+    ],
+    answer: "One of the world's largest buildings, where rockets are assembled before being rolled to the launch pad",
+    definition: "The VAB is a massive 160-metre-tall building at KSC where rockets including Saturn V, Space Shuttle, and SLS have been assembled.",
+    contextSentence: "The VAB is so large it has its own weather — clouds have formed inside on humid days.",
+    hints: ["It is 160 metres tall — as tall as a 52-story building.", "It is so huge that clouds can form inside on humid days."],
+    coach: "The VAB is so enormous — 160 m tall — that clouds have formed INSIDE it! It's where rockets are fully assembled before crawling to the launch pad on a giant crawler-transporter."
+  },
+  {
+    id: "astro-ksc-10",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "T-minus",
+    prompt: "What does 'T-minus' mean in a launch countdown?",
+    choices: [
+      "The temperature of the rocket fuel",
+      "The number of engines on the rocket",
+      "The time remaining before launch, counting down to zero",
+      "The target altitude of the mission"
+    ],
+    answer: "The time remaining before launch, counting down to zero",
+    definition: "T-minus refers to the time before launch. 'T' stands for 'time', and the number decreases until T-0, which is the moment of liftoff.",
+    contextSentence: "At T-minus 10 seconds, the launch director begins the final countdown.",
+    hints: ["'T' stands for 'time' in a countdown.", "When the countdown reaches T-0, the rocket launches."],
+    coach: "T-minus is counting down to launch! T-minus 60 means 60 seconds to go. T-0 is the moment the rocket fires. Launch controllers hold the count when there are issues and resume when fixed."
+  },
+  {
+    id: "astro-ksc-11",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "Launch Complex 39A",
+    prompt: "What is Launch Complex 39A (LC-39A) at Kennedy Space Center known for?",
+    choices: [
+      "Where astronauts train for spacewalks",
+      "The historic launch pad used by Apollo and the Space Shuttle, now leased by SpaceX",
+      "NASA's headquarters and Mission Control",
+      "The landing strip for returning Space Shuttles"
+    ],
+    answer: "The historic launch pad used by Apollo and the Space Shuttle, now leased by SpaceX",
+    definition: "LC-39A launched Apollo 11 to the Moon and the first Space Shuttle, and is now leased by SpaceX for Falcon 9 and Starship launches.",
+    contextSentence: "LC-39A is one of the most historically significant launch pads in history, having launched missions to the Moon.",
+    hints: ["Apollo 11 launched from this pad on its way to the Moon.", "SpaceX now uses this pad for Falcon 9 and Starship launches."],
+    coach: "Launch Complex 39A is legendary! Apollo 11 lifted off from here in 1969. The Space Shuttle also launched from here. Today SpaceX leases it for Falcon 9 and Starship — history keeps being made on the same pad!"
+  },
+  {
+    id: "astro-ksc-12",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "Artemis",
+    prompt: "What is NASA's Artemis program?",
+    choices: [
+      "A program to study asteroids",
+      "NASA's program to return humans to the Moon and build toward eventual missions to Mars",
+      "A series of Mars rovers",
+      "A space telescope mission"
+    ],
+    answer: "NASA's program to return humans to the Moon and build toward eventual missions to Mars",
+    definition: "Artemis is NASA's current human exploration program, aiming to land the first woman and the next man on the Moon, and to establish a long-term lunar presence.",
+    contextSentence: "Artemis I, the first test flight, circled the Moon in late 2022 without a crew.",
+    hints: ["Artemis is the twin sister of Apollo in Greek mythology.", "It aims to land the first woman on the Moon."],
+    coach: "Artemis is named after Apollo's twin sister in mythology. The program will land the first woman and first person of colour on the Moon, and eventually use the Moon as a stepping stone to Mars!"
+  },
+  {
+    id: "astro-ksc-13",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "Orion",
+    prompt: "What is NASA's Orion spacecraft designed to do?",
+    choices: [
+      "Serve as a permanent space station",
+      "Carry astronauts to the Moon and deep-space destinations",
+      "Land on Mars",
+      "Launch and retrieve satellites"
+    ],
+    answer: "Carry astronauts to the Moon and deep-space destinations",
+    definition: "Orion is NASA's crew capsule for deep-space exploration, designed to carry astronauts beyond low Earth orbit on top of the SLS rocket.",
+    contextSentence: "Orion completed its first uncrewed flight around the Moon during Artemis I in November–December 2022.",
+    hints: ["It rides on top of the SLS rocket.", "It flew its first uncrewed test around the Moon in 2022."],
+    coach: "Orion is NASA's new crew capsule. In 2022 it flew around the Moon and back without a crew as a test. Future Artemis missions will carry astronauts inside Orion all the way to lunar orbit!"
+  },
+  {
+    id: "astro-ksc-14",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "3 days",
+    prompt: "Roughly how long does it take to travel from Earth to the Moon?",
+    choices: ["A few hours", "About 3 days", "About 2 weeks", "About a month"],
+    answer: "About 3 days",
+    definition: "Apollo missions took about 3 days to travel the 384,400 km from Earth to the Moon.",
+    contextSentence: "Apollo 11 launched on July 16, 1969 and reached the Moon on July 19 — a journey of about 3 days.",
+    hints: ["Apollo 11 launched July 16 and arrived at the Moon July 19.", "The Moon is about 384,400 km from Earth."],
+    coach: "The Moon is about 384,400 km away. Travelling at Apollo speeds, the journey takes about 3 days. By comparison, light from the Moon reaches Earth in just 1.3 seconds!"
+  },
+  {
+    id: "astro-ksc-15",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "Launch Control Center",
+    prompt: "What happens inside the Launch Control Center (LCC) at Kennedy Space Center?",
+    choices: [
+      "Rockets are built and tested",
+      "Astronauts practice emergency procedures",
+      "Launch teams monitor all systems and control rocket launches",
+      "Rocket engines are manufactured"
+    ],
+    answer: "Launch teams monitor all systems and control rocket launches",
+    definition: "The Launch Control Center at KSC is where engineers and controllers monitor every system before and during launch, calling 'Go for launch' when all is ready.",
+    contextSentence: "During the famous Apollo 11 launch, over 450 engineers monitored systems from the LCC.",
+    hints: ["It is where engineers call 'Go for launch'.", "It looks like a large room full of computer screens."],
+    coach: "The Launch Control Center is the nerve centre of every launch. Hundreds of engineers watch every rocket system simultaneously. When everything is 'Go', the launch director gives the order to light the engines!"
+  },
+  {
+    id: "astro-ksc-16",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "crawler-transporter",
+    prompt: "How are fully assembled rockets moved from the Vehicle Assembly Building to the launch pad at KSC?",
+    choices: [
+      "They are flown by helicopter",
+      "They are driven on regular roads",
+      "They are rolled on a giant crawler-transporter at about 1.6 km/h",
+      "They are assembled at the launch pad"
+    ],
+    answer: "They are rolled on a giant crawler-transporter at about 1.6 km/h",
+    definition: "The crawler-transporter is a massive vehicle that slowly carries assembled rockets the 6 km from the VAB to the launch pad.",
+    contextSentence: "The crawlerway path from the VAB to the pad is 6 km long and the journey takes about 8 hours.",
+    hints: ["It travels at about 1.6 km/h — walking pace.", "The journey from the VAB to the pad takes about 8 hours."],
+    coach: "The crawler-transporter is one of the largest vehicles ever built. It carries rockets weighing millions of kg at a walking pace (1.6 km/h). The 6 km trip to the launch pad takes about 8 hours!"
+  },
+  {
+    id: "astro-ksc-17",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "spacesuit",
+    prompt: "Why must astronauts wear spacesuits outside their spacecraft?",
+    choices: [
+      "To look official",
+      "Spacesuits provide air to breathe, maintain pressure, and protect from extreme temperatures and radiation",
+      "To communicate with Mission Control",
+      "To help them float in zero gravity"
+    ],
+    answer: "Spacesuits provide air to breathe, maintain pressure, and protect from extreme temperatures and radiation",
+    definition: "Spacesuits are self-contained life-support systems that provide oxygen, maintain pressure, regulate temperature, and shield against radiation and micrometeorites.",
+    contextSentence: "Without a spacesuit in space, a person would lose consciousness in about 15 seconds.",
+    hints: ["Space is a vacuum with no air and extreme temperature swings.", "The suit acts like a personal spacecraft."],
+    coach: "A spacesuit is basically a personal spacecraft! It provides oxygen, keeps pressure around the body, protects from temperatures ranging from -120°C to +120°C, and shields from radiation. Without one, you'd black out in seconds!"
+  },
+  {
+    id: "astro-ksc-18",
+    grade: 0,
+    type: "nasa-ksc",
+    word: "Saturn V",
+    prompt: "What was the Saturn V, used during the Apollo program?",
+    choices: [
+      "A space station module",
+      "The most powerful rocket ever flown, used to launch Apollo astronauts to the Moon",
+      "A type of rover deployed on the Moon",
+      "A navigation computer on board the Apollo capsule"
+    ],
+    answer: "The most powerful rocket ever flown, used to launch Apollo astronauts to the Moon",
+    definition: "Saturn V was a 111-metre-tall rocket that generated 34.5 million newtons of thrust — still the most powerful rocket ever successfully flown.",
+    contextSentence: "Saturn V launched 13 times without losing a single crew member, sending 24 humans to the Moon.",
+    hints: ["It was 111 metres tall — taller than the Statue of Liberty.", "It launched 13 times and sent 24 humans toward the Moon."],
+    coach: "Saturn V is still the most powerful rocket ever successfully flown. It was 111 m tall and generated 3.5 million kg of thrust. All 13 missions succeeded, and it sent 24 humans to the Moon!"
+  },
+
+  // ── Earth & Space ─────────────────────────────────────────────────
+  {
+    id: "astro-es-01",
+    grade: 0,
+    type: "earth-space",
+    word: "Kármán line",
+    prompt: "What is the Kármán line?",
+    choices: [
+      "A line on a star map connecting two constellations",
+      "The internationally recognised boundary of space at 100 km altitude",
+      "A weather pattern in Earth's upper atmosphere",
+      "The equator of Earth"
+    ],
+    answer: "The internationally recognised boundary of space at 100 km altitude",
+    definition: "The Kármán line, at 100 km above sea level, is the internationally recognised boundary where Earth's atmosphere ends and outer space begins.",
+    contextSentence: "Astronauts and rockets must pass the Kármán line to officially reach space.",
+    hints: ["It is 100 km above sea level.", "Cross this line and you are officially an astronaut."],
+    coach: "The Kármán line is at 100 km altitude — cross it and you're officially in space! At that height, the atmosphere is too thin for aircraft to fly, so only rockets can travel there."
+  },
+  {
+    id: "astro-es-02",
+    grade: 0,
+    type: "earth-space",
+    word: "axial tilt",
+    prompt: "What causes seasons on Earth?",
+    choices: [
+      "Earth's distance from the Sun changes during the year",
+      "Earth's axis is tilted at 23.5°, so different parts receive more direct sunlight at different times of year",
+      "The Sun changes temperature throughout the year",
+      "The Moon blocks sunlight during winter"
+    ],
+    answer: "Earth's axis is tilted at 23.5°, so different parts receive more direct sunlight at different times of year",
+    definition: "Earth's axis is tilted 23.5° relative to its orbit, causing seasons as different hemispheres tilt toward or away from the Sun.",
+    contextSentence: "When the Northern Hemisphere tilts toward the Sun, it is summer there — and winter in the Southern Hemisphere.",
+    hints: ["Earth's axis is tilted at 23.5°.", "When your hemisphere tilts toward the Sun, you get summer; away means winter."],
+    coach: "Seasons are caused by Earth's tilt — not its distance from the Sun! The Northern Hemisphere tilts toward the Sun in June (summer), and away in December (winter). The Southern Hemisphere has the opposite!"
+  },
+  {
+    id: "astro-es-03",
+    grade: 0,
+    type: "earth-space",
+    word: "ozone layer",
+    prompt: "What protects life on Earth from the Sun's harmful ultraviolet (UV) radiation?",
+    choices: ["The clouds", "The oceans", "The ozone layer in the stratosphere", "The Moon"],
+    answer: "The ozone layer in the stratosphere",
+    definition: "The ozone layer is a region of Earth's stratosphere that absorbs most of the Sun's harmful ultraviolet radiation.",
+    contextSentence: "Without the ozone layer, UV radiation would damage DNA and make life on Earth very difficult.",
+    hints: ["It is found in the stratosphere, about 15–35 km above Earth.", "Ozone is a molecule made of three oxygen atoms (O₃)."],
+    coach: "The ozone layer acts like Earth's sunscreen! It absorbs harmful UV radiation from the Sun that would otherwise damage living cells and cause skin cancer. Scientists discovered a 'hole' in it in the 1980s, leading to global action."
+  },
+  {
+    id: "astro-es-04",
+    grade: 0,
+    type: "earth-space",
+    word: "microgravity",
+    prompt: "Why do astronauts float inside the ISS?",
+    choices: [
+      "There is no gravity at all in orbit",
+      "The ISS has a gravity generator that is turned off",
+      "They are in constant free-fall around Earth, which creates the feeling of weightlessness",
+      "Magnetic fields in the ISS push them away from the floor"
+    ],
+    answer: "They are in constant free-fall around Earth, which creates the feeling of weightlessness",
+    definition: "Microgravity is the condition experienced in orbit: the ISS and everything in it are falling around Earth together, so there is no felt gravity.",
+    contextSentence: "Astronauts on the ISS still experience Earth's gravity — they are just falling sideways so fast they orbit instead of landing.",
+    hints: ["The ISS is actually falling toward Earth constantly.", "It moves sideways so fast that it keeps missing Earth as it falls."],
+    coach: "Astronauts float because the ISS is in free-fall! It falls toward Earth but moves sideways so fast (27,000 km/h) that it keeps missing. Everything inside falls together, so nothing feels heavy — that's microgravity!"
+  },
+  {
+    id: "astro-es-05",
+    grade: 0,
+    type: "earth-space",
+    word: "mass vs weight",
+    prompt: "What is the difference between mass and weight?",
+    choices: [
+      "They are exactly the same thing",
+      "Mass is the amount of matter in an object; weight is the force of gravity pulling on that mass",
+      "Mass changes on other planets; weight never changes",
+      "Weight measures how big something is; mass measures how dense it is"
+    ],
+    answer: "Mass is the amount of matter in an object; weight is the force of gravity pulling on that mass",
+    definition: "Mass measures how much matter an object contains (kg). Weight is the force gravity exerts on that mass — it changes depending on the gravitational pull of the location.",
+    contextSentence: "Your mass is the same on Earth and the Moon, but your weight on the Moon is only 1/6 of your Earth weight.",
+    hints: ["Your mass stays the same everywhere in the universe.", "On the Moon you would weigh 6 times less than on Earth."],
+    coach: "Mass is how much stuff you're made of — it never changes. Weight is how hard gravity pulls on you. On the Moon (1/6 of Earth's gravity) you'd weigh 6 times less, but your mass would be exactly the same!"
+  },
+  {
+    id: "astro-es-06",
+    grade: 0,
+    type: "earth-space",
+    word: "troposphere",
+    prompt: "Which layer of Earth's atmosphere do we live in and where weather occurs?",
+    choices: ["Stratosphere", "Mesosphere", "Troposphere", "Thermosphere"],
+    answer: "Troposphere",
+    definition: "The troposphere is the lowest layer of Earth's atmosphere, from the surface to about 12 km up, where all weather occurs.",
+    contextSentence: "Jet aircraft fly near the top of the troposphere, around 10–12 km altitude.",
+    hints: ["It is the layer right at Earth's surface, where we breathe and weather forms.", "It extends up to about 12 km altitude."],
+    coach: "The troposphere is our home layer — it extends from the ground to about 12 km up. All our weather happens here. Jet airliners cruise near the top of the troposphere!"
+  },
+  {
+    id: "astro-es-07",
+    grade: 0,
+    type: "earth-space",
+    word: "escape velocity",
+    prompt: "What is Earth's escape velocity — the minimum speed needed to break free from Earth's gravity?",
+    choices: ["About 1 km/s", "About 4 km/s", "About 11.2 km/s", "About 30 km/s"],
+    answer: "About 11.2 km/s",
+    definition: "Escape velocity from Earth is about 11.2 km/s (40,320 km/h) — the minimum speed an object needs to escape Earth's gravitational pull without further propulsion.",
+    contextSentence: "Rockets heading to the Moon or beyond must reach escape velocity to leave Earth's gravity behind.",
+    hints: ["It is about 11.2 km/s — or roughly 40,000 km/h.", "Rockets heading to the Moon must reach this speed."],
+    coach: "To escape Earth's gravity entirely, you need to reach 11.2 km/s — about 40,320 km/h! Missions to the Moon and beyond have to reach this speed. Satellites in orbit don't need to reach it because they are still 'captured' by Earth's gravity."
+  },
+  {
+    id: "astro-es-08",
+    grade: 0,
+    type: "earth-space",
+    word: "tides",
+    prompt: "What primarily causes ocean tides on Earth?",
+    choices: ["Wind patterns from storms", "The Sun's heat warming the oceans", "The gravitational pull of the Moon", "Earth's rotation alone"],
+    answer: "The gravitational pull of the Moon",
+    definition: "The Moon's gravity pulls on Earth's oceans, creating two bulges of water — one facing the Moon and one on the opposite side — that cause the tides.",
+    contextSentence: "Most coastlines have two high tides and two low tides every day as Earth rotates under the Moon's pull.",
+    hints: ["The Moon is the primary cause; the Sun contributes too.", "There are usually two high tides and two low tides each day."],
+    coach: "The Moon's gravity pulls on Earth's oceans, creating bulges of water on the Moon-side and the opposite side. As Earth spins, coastlines pass through these bulges — giving us two high tides and two low tides every day!"
+  },
+  {
+    id: "astro-es-09",
+    grade: 0,
+    type: "earth-space",
+    word: "1,670 km/h",
+    prompt: "About how fast does Earth's surface move at the equator due to Earth's rotation?",
+    choices: ["About 10 km/h", "About 100 km/h", "About 1,670 km/h", "About 10,000 km/h"],
+    answer: "About 1,670 km/h",
+    definition: "Earth's equator travels at about 1,670 km/h as Earth completes one full rotation every 24 hours.",
+    contextSentence: "Rockets launched eastward from Florida get a free speed boost of about 1,500 km/h from Earth's rotation.",
+    hints: ["Earth completes one rotation every 24 hours.", "Rockets launched eastward from Florida get a free boost from this speed."],
+    coach: "Earth's surface at the equator moves at about 1,670 km/h! That's why KSC launches rockets eastward — they get a free speed boost from Earth's spin, which saves a lot of fuel."
+  },
+  {
+    id: "astro-es-10",
+    grade: 0,
+    type: "earth-space",
+    word: "Northern Lights",
+    prompt: "What causes the Northern Lights (Aurora Borealis)?",
+    choices: [
+      "Sunlight reflecting off polar ice",
+      "Lightning storms in the upper atmosphere",
+      "Charged particles from the Sun interacting with Earth's magnetic field and atmosphere",
+      "Light pollution from cities near the poles"
+    ],
+    answer: "Charged particles from the Sun interacting with Earth's magnetic field and atmosphere",
+    definition: "The Aurora Borealis occurs when charged particles from the Sun are funnelled by Earth's magnetic field toward the poles, where they collide with atmospheric gases, emitting coloured light.",
+    contextSentence: "The Northern Lights can appear green, red, purple, or blue depending on which gases the particles hit.",
+    hints: ["They are most visible near Earth's magnetic poles.", "They are also called the Aurora Borealis in the Northern Hemisphere."],
+    coach: "The Northern Lights happen when solar wind (charged particles from the Sun) gets funnelled toward Earth's poles by our magnetic field. The particles collide with air molecules and glow in beautiful colours — nature's own light show!"
   },
 
   // ── Fun Facts ──────────────────────────────────────────────────────
@@ -232,26 +1068,26 @@ export const ASTRONOMY_LEVELS: Level[] = [
     grade: 0,
     type: "fun-fact",
     word: "Venus",
-    prompt: "On which planet is a single day longer than a full year?",
+    prompt: "On which planet is a single day longer than its entire year?",
     choices: ["Mars", "Jupiter", "Venus", "Saturn"],
     answer: "Venus",
     definition: "Venus rotates so slowly that one day on Venus (243 Earth days) is longer than its year (225 Earth days).",
     contextSentence: "On Venus, the Sun rises in the west and sets in the east because it spins backwards.",
     hints: ["It is the second planet from the Sun.", "It also spins backwards compared to most planets."],
-    coach: "Venus spins so slowly that one Venusian day is longer than its whole year. It also spins backwards, so the Sun rises in the west there!"
+    coach: "Venus spins so slowly a Venusian day is longer than its whole year. It also spins backwards — so the Sun rises in the west there!"
   },
   {
     id: "astro-ff-02",
     grade: 0,
     type: "fun-fact",
     word: "Great Red Spot",
-    prompt: "The Great Red Spot on Jupiter is a storm that has been raging for more than how long?",
+    prompt: "The Great Red Spot on Jupiter is a storm that has been raging for at least how long?",
     choices: ["10 years", "100 years", "350+ years", "1,000 years"],
     answer: "350+ years",
-    definition: "The Great Red Spot is a giant storm on Jupiter that has been observed for at least 350 years and is larger than Earth.",
-    contextSentence: "The Great Red Spot is a storm so large that Earth could fit inside it.",
-    hints: ["It was first observed in the 1600s.", "This storm is wider than planet Earth."],
-    coach: "The Great Red Spot is a massive storm on Jupiter that is wider than Earth and has been spinning for over 350 years!"
+    definition: "The Great Red Spot is a giant anticyclonic storm on Jupiter, wider than Earth, observed continuously since the 1600s.",
+    contextSentence: "The Great Red Spot is so large that Earth could fit inside it.",
+    hints: ["It was first observed in the 1600s.", "The storm is wider than our entire planet."],
+    coach: "The Great Red Spot is a storm wider than Earth that has been spinning on Jupiter for over 350 years! It has been shrinking slowly over recent decades though."
   },
   {
     id: "astro-ff-03",
@@ -261,10 +1097,10 @@ export const ASTRONOMY_LEVELS: Level[] = [
     prompt: "How long does light from the Sun take to reach Earth?",
     choices: ["8 seconds", "8 minutes", "8 hours", "8 days"],
     answer: "8 minutes",
-    definition: "Light travels at about 300,000 km/s, and the Sun is about 150 million km away — so its light takes about 8 minutes to reach us.",
+    definition: "Light travels at about 300,000 km/s. The Sun is about 150 million km away, so its light reaches Earth in about 8 minutes.",
     contextSentence: "When you look at the Sun, you are seeing it as it was 8 minutes ago.",
     hints: ["Light travels at 300,000 km per second.", "The Sun is about 150 million km from Earth."],
-    coach: "Light from the Sun takes about 8 minutes to reach Earth. So when you look at the Sun, you're seeing it as it was 8 minutes ago!"
+    coach: "Light from the Sun takes about 8 minutes to reach us. So when you look at the Sun, you're seeing it as it was 8 minutes ago. Starlight you see at night may be thousands of years old!"
   },
   {
     id: "astro-ff-04",
@@ -272,25 +1108,30 @@ export const ASTRONOMY_LEVELS: Level[] = [
     type: "fun-fact",
     word: "no wind or water",
     prompt: "Why do footprints left on the Moon last for millions of years?",
-    choices: ["The Moon is covered in ice", "There is no wind or water to erase them", "Moon rocks are very sticky", "The Moon spins very slowly"],
-    answer: "There is no wind or water to erase them",
-    definition: "The Moon has no atmosphere, so there is no wind or rain to wear away footprints or other marks on its surface.",
-    contextSentence: "The footprints left by Apollo astronauts in 1969 are still there today.",
-    hints: ["Think about what erodes footprints on Earth.", "The Moon has no atmosphere."],
-    coach: "On Earth, wind and rain erase footprints quickly. The Moon has no atmosphere — no wind, no weather — so Apollo astronaut footprints will last for millions of years!"
+    choices: ["The Moon is covered in ice", "There is no wind or water on the Moon to erase them", "Moon dust is sticky", "The Moon spins very slowly"],
+    answer: "There is no wind or water on the Moon to erase them",
+    definition: "The Moon has no atmosphere, so there is no wind, rain, or erosion to wear away footprints or marks.",
+    contextSentence: "The footprints of Apollo astronauts from 1969 are still perfectly preserved on the Moon today.",
+    hints: ["The Moon has no atmosphere.", "Think about what wears away footprints on Earth."],
+    coach: "On Earth, wind and rain erase footprints quickly. The Moon has no atmosphere — no weather at all — so the Apollo astronauts' footprints from 1969 are still perfectly preserved. They'll last millions of years!"
   },
   {
     id: "astro-ff-05",
     grade: 0,
     type: "fun-fact",
-    word: "silence",
-    prompt: "Why is space completely silent?",
-    choices: ["Space is too cold for sound", "Sound needs air to travel, and space is a vacuum", "Sounds travel too slowly in space", "Space absorbs all sound waves"],
-    answer: "Sound needs air to travel, and space is a vacuum",
-    definition: "Sound is a vibration that travels through matter (like air or water). Deep space is a vacuum with almost no matter, so sound cannot travel.",
-    contextSentence: "In the film 'Alien', the tagline 'In space, no one can hear you scream' is scientifically correct.",
-    hints: ["Sound is a wave that needs a medium to travel through.", "Space is almost completely empty — a vacuum."],
-    coach: "Sound needs particles to travel through. Deep space is a vacuum — almost nothing there — so sound cannot travel. Space is completely silent!"
+    word: "vacuum",
+    prompt: "Why is outer space completely silent?",
+    choices: [
+      "Space is too cold for sound",
+      "Sound needs matter (like air) to travel through, and space is nearly empty",
+      "Sounds travel too slowly in space",
+      "Space absorbs all sound waves instantly"
+    ],
+    answer: "Sound needs matter (like air) to travel through, and space is nearly empty",
+    definition: "Sound is a wave that needs particles to travel through. Deep space is a near-perfect vacuum with almost no particles.",
+    contextSentence: "The Alien movie tagline 'In space, no one can hear you scream' is scientifically correct.",
+    hints: ["Sound is a wave that needs particles to vibrate through.", "Space is a near-perfect vacuum."],
+    coach: "Sound needs particles to pass vibrations from one to the next. Space is a near-perfect vacuum — almost no particles — so sound cannot travel at all. Space is completely, utterly silent!"
   },
   {
     id: "astro-ff-06",
@@ -298,25 +1139,64 @@ export const ASTRONOMY_LEVELS: Level[] = [
     type: "fun-fact",
     word: "1,000,000",
     prompt: "Roughly how many Earths could fit inside the Sun?",
-    choices: ["About 100", "About 1,000", "About 1,000,000", "About 1,000,000,000"],
+    choices: ["About 100", "About 1,000", "About 1,000,000", "About 100,000,000"],
     answer: "About 1,000,000",
-    definition: "The Sun is so enormous that roughly one million Earths could fit inside it.",
-    contextSentence: "The Sun contains about 99.8% of all the mass in our solar system.",
-    hints: ["The Sun is by far the largest object in our solar system.", "The Sun contains 99.8% of the total mass of the solar system."],
-    coach: "The Sun is huge — about 1.4 million km across. You could fit about one million Earths inside it. The Sun holds 99.8% of all the mass in our solar system!"
+    definition: "The Sun's volume is so enormous that roughly one million Earths could fit inside it.",
+    contextSentence: "The Sun contains about 99.8% of all mass in the solar system.",
+    hints: ["The Sun is about 1.4 million km in diameter.", "The Sun contains 99.8% of all the mass in the solar system."],
+    coach: "The Sun is 1.4 million km across — about 109 times Earth's diameter. Its volume is so huge that about 1 million Earths could fit inside. It holds 99.8% of all mass in the solar system!"
   },
   {
     id: "astro-ff-07",
+    grade: 0,
+    type: "fun-fact",
+    word: "Olympus Mons",
+    prompt: "What is the name of the largest volcano in our solar system?",
+    choices: ["Kilauea (Earth)", "Olympus Mons (Mars)", "Maxwell Montes (Venus)", "Tharsis (Mars)"],
+    answer: "Olympus Mons (Mars)",
+    definition: "Olympus Mons on Mars is the largest volcano in the solar system — about 22 km tall and 600 km wide, nearly three times the height of Everest.",
+    contextSentence: "Olympus Mons is so wide that if you stood at its base, the rim would be below the horizon.",
+    hints: ["It is on Mars.", "It is nearly three times the height of Mount Everest."],
+    coach: "Olympus Mons on Mars is almost 3× the height of Mount Everest and as wide as the state of Arizona! It is so flat and wide that standing at its base you wouldn't even be able to see its rim — it's over the horizon!"
+  },
+  {
+    id: "astro-ff-08",
+    grade: 0,
+    type: "fun-fact",
+    word: "Jupiter",
+    prompt: "Which planet spins the fastest, completing one full rotation in just under 10 hours?",
+    choices: ["Saturn", "Jupiter", "Neptune", "Uranus"],
+    answer: "Jupiter",
+    definition: "Jupiter rotates once every 9 hours and 56 minutes — faster than any other planet, despite being the largest.",
+    contextSentence: "Jupiter's rapid spin is why it has a distinctly flattened shape at the poles.",
+    hints: ["It is the largest planet but has the shortest day.", "Its rapid rotation causes it to bulge at the equator."],
+    coach: "Jupiter is the biggest planet but has the shortest day — under 10 hours! It spins so fast that it bulges noticeably at the equator. The rapid spin also drives its spectacular storm bands."
+  },
+  {
+    id: "astro-ff-09",
+    grade: 0,
+    type: "fun-fact",
+    word: "4.6 billion years",
+    prompt: "How old is our solar system?",
+    choices: ["About 1 million years", "About 65 million years", "About 4.6 billion years", "About 13.8 billion years"],
+    answer: "About 4.6 billion years",
+    definition: "Our solar system formed from a collapsing cloud of gas and dust about 4.6 billion years ago.",
+    contextSentence: "The universe itself is about 13.8 billion years old — roughly three times the age of our solar system.",
+    hints: ["The universe is about 13.8 billion years old.", "Earth formed from the same solar nebula."],
+    coach: "Our solar system is about 4.6 billion years old — it formed from a collapsing cloud of gas and dust. The universe itself is 13.8 billion years old, so our solar system formed about two-thirds of the way through the universe's life so far!"
+  },
+  {
+    id: "astro-ff-10",
     grade: 0,
     type: "fun-fact",
     word: "neutron star",
     prompt: "A teaspoon of material from a neutron star would weigh about how much on Earth?",
     choices: ["1 kilogram", "1 tonne", "1 billion tonnes", "1 gram"],
     answer: "1 billion tonnes",
-    definition: "Neutron stars are incredibly dense. A teaspoon of neutron star material would weigh about a billion tonnes.",
-    contextSentence: "Neutron stars are the collapsed cores of massive stars, packed with unimaginable density.",
-    hints: ["Neutron stars are incredibly dense objects.", "They are the remnants of exploded massive stars."],
-    coach: "Neutron stars are incredibly dense. A teaspoon of their material would weigh about 1 billion tonnes — as heavy as a mountain!"
+    definition: "Neutron stars are incredibly dense stellar remnants. A teaspoon of their material would weigh about a billion tonnes.",
+    contextSentence: "Neutron stars pack more mass than the Sun into a sphere just 20 km across.",
+    hints: ["Neutron stars are the densest objects in the universe (apart from black holes).", "They pack more mass than the Sun into a city-sized ball."],
+    coach: "Neutron stars pack more mass than our entire Sun into a ball just 20 km across — city-sized! A teaspoon of that material would weigh about a billion tonnes — as heavy as a mountain!"
   },
 
   // ── Astronomy Vocabulary ───────────────────────────────────────────
@@ -326,12 +1206,12 @@ export const ASTRONOMY_LEVELS: Level[] = [
     type: "astronomy-vocab",
     word: "light-year",
     prompt: "What does the term 'light-year' measure?",
-    choices: ["How long a year lasts in space", "The distance light travels in one year", "How bright a star is", "The speed of a planet"],
+    choices: ["How long a year lasts in space", "The distance light travels in one year", "How bright a star is", "The speed of a planet orbiting a star"],
     answer: "The distance light travels in one year",
     definition: "A light-year is the distance that light travels in one year — about 9.46 trillion kilometres.",
-    contextSentence: "The nearest star to our Sun is about 4.24 light-years away.",
+    contextSentence: "The nearest star beyond our Sun is about 4.24 light-years away.",
     hints: ["It is a unit of distance, not time.", "Light travels at about 300,000 km per second."],
-    coach: "A light-year measures distance, not time! It is the distance light travels in one year — about 9.46 trillion km. Scientists use it to measure distances between stars."
+    coach: "A light-year measures distance, not time! Light covers about 9.46 trillion km in a year. Scientists use it to describe the vast distances between stars."
   },
   {
     id: "astro-voc-02",
@@ -339,12 +1219,12 @@ export const ASTRONOMY_LEVELS: Level[] = [
     type: "astronomy-vocab",
     word: "orbit",
     prompt: "What does 'orbit' mean in astronomy?",
-    choices: ["The centre of a planet", "The curved path one object takes around another due to gravity", "The explosion of a star", "The surface of the Moon"],
+    choices: ["The centre of a planet", "The curved path one object takes around another due to gravity", "The explosion of a star", "The surface layer of the Moon"],
     answer: "The curved path one object takes around another due to gravity",
-    definition: "An orbit is the curved path that a planet, moon, or satellite takes around a larger object due to gravity.",
+    definition: "An orbit is the curved path that a planet, moon, or satellite follows around a larger object due to gravity.",
     contextSentence: "Earth orbits the Sun once every 365.25 days.",
     hints: ["It involves one object moving around another.", "Gravity keeps the object on this path."],
-    coach: "An orbit is the path one object takes around another because of gravity. Earth orbits the Sun, and the Moon orbits Earth."
+    coach: "An orbit is the path one object travels around another because of gravity. Earth orbits the Sun, the Moon orbits Earth, and the ISS orbits Earth about every 90 minutes."
   },
   {
     id: "astro-voc-03",
@@ -352,12 +1232,12 @@ export const ASTRONOMY_LEVELS: Level[] = [
     type: "astronomy-vocab",
     word: "nebula",
     prompt: "What is a nebula?",
-    choices: ["A type of comet", "A small moon", "A cloud of gas and dust in space where stars can form", "A dwarf planet"],
-    answer: "A cloud of gas and dust in space where stars can form",
-    definition: "A nebula is a giant cloud of gas and dust in space. New stars are often born inside nebulae.",
-    contextSentence: "The famous Orion Nebula is a stellar nursery where new stars are being born.",
-    hints: ["It is often called a 'stellar nursery'.", "It is made of gas and dust floating in space."],
-    coach: "A nebula is a cloud of gas and dust in space. New stars form inside nebulae — that's why they're called stellar nurseries!"
+    choices: ["A type of comet", "A small moon of Jupiter", "A cloud of gas and dust in space, often where new stars are born", "A dwarf planet beyond Neptune"],
+    answer: "A cloud of gas and dust in space, often where new stars are born",
+    definition: "A nebula is a giant cloud of gas and dust in space. New stars often form inside nebulae, which is why they are called stellar nurseries.",
+    contextSentence: "The Orion Nebula is a famous stellar nursery where new stars are being born right now.",
+    hints: ["It is often called a 'stellar nursery'.", "It is a cloud of gas and dust floating in space."],
+    coach: "A nebula is a cloud of gas and dust in space. Stars — including our own Sun — are born inside nebulae. That's why they're called stellar nurseries!"
   },
   {
     id: "astro-voc-04",
@@ -365,12 +1245,12 @@ export const ASTRONOMY_LEVELS: Level[] = [
     type: "astronomy-vocab",
     word: "eclipse",
     prompt: "What is a solar eclipse?",
-    choices: ["When a comet passes by Earth", "When the Moon blocks the Sun's light from reaching Earth", "When a star explodes", "When Earth passes through asteroid belt"],
-    answer: "When the Moon blocks the Sun's light from reaching Earth",
-    definition: "A solar eclipse occurs when the Moon passes between the Sun and Earth, blocking some or all of the Sun's light.",
+    choices: ["When a comet passes close to Earth", "When the Moon passes between the Sun and Earth, blocking sunlight", "When a star explodes", "When Earth passes through the asteroid belt"],
+    answer: "When the Moon passes between the Sun and Earth, blocking sunlight",
+    definition: "A solar eclipse occurs when the Moon lines up between the Sun and Earth, blocking some or all of the Sun's light from reaching Earth.",
     contextSentence: "During a total solar eclipse, the sky goes dark in the middle of the day.",
-    hints: ["It involves the Moon, Sun, and Earth lining up.", "During a total one, the sky goes dark in the daytime."],
-    coach: "A solar eclipse happens when the Moon passes between the Sun and Earth, blocking the Sun's light. During a total solar eclipse, the sky goes dark in the middle of the day!"
+    hints: ["It involves the Moon, Sun, and Earth lining up perfectly.", "During a total one, daytime briefly becomes dark."],
+    coach: "A solar eclipse happens when the Moon blocks the Sun's light from Earth. During a total solar eclipse, the sky goes dark in the middle of the day and you can see stars! They happen about once every 18 months somewhere on Earth."
   },
   {
     id: "astro-voc-05",
@@ -378,12 +1258,12 @@ export const ASTRONOMY_LEVELS: Level[] = [
     type: "astronomy-vocab",
     word: "gravity",
     prompt: "What is gravity?",
-    choices: ["The glow of a star", "A force that attracts objects with mass toward each other", "The path of a planet around the Sun", "The tail of a comet"],
-    answer: "A force that attracts objects with mass toward each other",
-    definition: "Gravity is a natural force of attraction between any two objects that have mass. The more mass, the stronger the pull.",
-    contextSentence: "Gravity keeps Earth in orbit around the Sun and the Moon in orbit around Earth.",
-    hints: ["It is the force that keeps your feet on the ground.", "Isaac Newton described it when an apple fell from a tree."],
-    coach: "Gravity is the force that pulls objects with mass toward each other. It keeps planets orbiting the Sun, moons orbiting planets, and you firmly on the ground!"
+    choices: ["The glow around a star", "A force that attracts any two objects with mass toward each other", "The curved path of a planet around the Sun", "The bright tail of a comet"],
+    answer: "A force that attracts any two objects with mass toward each other",
+    definition: "Gravity is a fundamental force of attraction between any two objects that have mass. The more massive the object, the stronger its pull.",
+    contextSentence: "Gravity keeps Earth in orbit around the Sun and keeps you firmly on the ground.",
+    hints: ["It is the force that keeps your feet on the ground.", "Isaac Newton described it after observing a falling apple."],
+    coach: "Gravity is the force that pulls objects with mass toward each other. It keeps planets in orbit around the Sun, moons in orbit around planets, and you firmly on the ground. Without it, everything would float away!"
   },
   {
     id: "astro-voc-06",
@@ -391,50 +1271,94 @@ export const ASTRONOMY_LEVELS: Level[] = [
     type: "astronomy-vocab",
     word: "comet",
     prompt: "What is a comet?",
-    choices: ["A rocky planet", "A ball of ice, dust, and rock that orbits the Sun and forms a tail when near the Sun", "A type of black hole", "A satellite orbiting Earth"],
-    answer: "A ball of ice, dust, and rock that orbits the Sun and forms a tail when near the Sun",
-    definition: "A comet is a small icy body that orbits the Sun. When it gets close to the Sun, some of it vaporises, forming a bright tail.",
-    contextSentence: "Halley's Comet passes close to Earth about every 75–76 years.",
-    hints: ["It forms a bright glowing tail when it gets close to the Sun.", "Halley's is the most famous one."],
-    coach: "Comets are balls of ice and rock. When they get close to the Sun, the ice turns to gas and forms a long glowing tail that can stretch millions of kilometres!"
+    choices: ["A rocky planet with no moons", "A ball of ice, dust, and rock that orbits the Sun and grows a glowing tail near the Sun", "A type of black hole", "A satellite built to orbit Earth"],
+    answer: "A ball of ice, dust, and rock that orbits the Sun and grows a glowing tail near the Sun",
+    definition: "A comet is a small icy body that orbits the Sun. When it gets close to the Sun, ices vaporise and form a bright tail that can stretch millions of kilometres.",
+    contextSentence: "Halley's Comet passes near Earth about every 75–76 years and is visible to the naked eye.",
+    hints: ["It forms a bright glowing tail when near the Sun.", "Halley's Comet is the most famous one."],
+    coach: "Comets are balls of ice and rock. As they approach the Sun, the ice turns to gas and dust, forming a long glowing tail. Halley's Comet has been recorded for over 2,000 years and returns every 75–76 years!"
   },
   {
     id: "astro-voc-07",
     grade: 0,
     type: "astronomy-vocab",
     word: "meteor",
-    prompt: "What is a meteor?",
-    choices: ["A planet without moons", "A type of galaxy", "A space rock that burns up and glows as it enters Earth's atmosphere", "A cloud of gas in space"],
+    prompt: "What is a meteor (often called a 'shooting star')?",
+    choices: ["A planet without moons", "A type of distant galaxy", "A space rock that burns up and glows as it enters Earth's atmosphere", "A cloud of gas surrounding a star"],
     answer: "A space rock that burns up and glows as it enters Earth's atmosphere",
-    definition: "A meteor (shooting star) is a piece of space debris that burns up when it enters Earth's atmosphere, creating a bright streak of light.",
-    contextSentence: "You can often see meteors during a meteor shower, when Earth passes through a trail of debris.",
-    hints: ["People often call it a 'shooting star'.", "It glows because of friction with Earth's atmosphere."],
-    coach: "A meteor is a piece of space rock that burns up in Earth's atmosphere, making a bright streak called a 'shooting star'. If it lands on Earth, it is called a meteorite."
+    definition: "A meteor is a piece of space debris that burns up in Earth's atmosphere, producing a bright streak of light. If it lands on Earth, it is called a meteorite.",
+    contextSentence: "You can often see meteors during a meteor shower when Earth passes through a comet's debris trail.",
+    hints: ["People call it a 'shooting star'.", "It glows because of friction as it enters the atmosphere."],
+    coach: "A meteor is space rock burning up in Earth's atmosphere — what we call a shooting star. If a piece survives and hits the ground, it becomes a meteorite. The original chunk in space (before it enters) is called a meteoroid."
   },
   {
     id: "astro-voc-08",
     grade: 0,
     type: "astronomy-vocab",
-    word: "astronomer",
-    prompt: "What is an astronomer?",
-    choices: ["A person who travels to space", "A scientist who studies stars, planets, and other objects in the universe", "A person who builds rockets", "A person who studies weather"],
-    answer: "A scientist who studies stars, planets, and other objects in the universe",
-    definition: "An astronomer is a scientist who observes and studies celestial objects such as stars, planets, galaxies, and other phenomena in the universe.",
-    contextSentence: "The astronomer used a telescope to study a distant galaxy.",
-    hints: ["The prefix 'astro-' means star or space.", "They use telescopes to do their work."],
-    coach: "An astronomer is a scientist who studies the universe — stars, planets, galaxies, and everything else in space. Astronomy is one of the oldest sciences!"
+    word: "telescope",
+    prompt: "What is a telescope?",
+    choices: ["A device for measuring temperature in space", "An instrument that collects and focuses light to make distant objects appear larger and clearer", "A type of rocket engine", "A navigation tool for spacecraft"],
+    answer: "An instrument that collects and focuses light to make distant objects appear larger and clearer",
+    definition: "A telescope is an instrument that collects light from distant objects, making them appear larger and brighter so astronomers can study them.",
+    contextSentence: "Galileo was one of the first people to use a telescope to study the Moon and planets in 1609.",
+    hints: ["Galileo used one to study space in 1609.", "Larger telescopes can collect more light and see fainter objects."],
+    coach: "Telescopes collect light — the more light collected, the fainter and more distant the objects you can see. Galileo first pointed one at the sky in 1609 and saw mountains on the Moon and four moons of Jupiter!"
   },
   {
     id: "astro-voc-09",
     grade: 0,
     type: "astronomy-vocab",
+    word: "atmosphere",
+    prompt: "What is a planet's atmosphere?",
+    choices: ["A ring of asteroids around a planet", "The layer of gases held around a planet by its gravity", "The tail of a comet", "The molten core of a planet"],
+    answer: "The layer of gases held around a planet by its gravity",
+    definition: "An atmosphere is the layer of gases surrounding a planet, held in place by the planet's gravity. It can protect the surface and make the planet habitable.",
+    contextSentence: "Earth's atmosphere is about 78% nitrogen and 21% oxygen — perfect for supporting life.",
+    hints: ["It is the air surrounding a planet.", "Earth's is 78% nitrogen and 21% oxygen."],
+    coach: "An atmosphere is the blanket of gases surrounding a planet. Earth's atmosphere gives us air to breathe, shields us from meteors (which burn up in it), and protects us from UV radiation. Mars has a very thin atmosphere, and the Moon has almost none."
+  },
+  {
+    id: "astro-voc-10",
+    grade: 0,
+    type: "astronomy-vocab",
+    word: "rotation vs revolution",
+    prompt: "What is the difference between rotation and revolution in astronomy?",
+    choices: [
+      "They mean the same thing",
+      "Rotation is a planet spinning on its axis; revolution is a planet orbiting around another object",
+      "Rotation is orbiting another object; revolution is spinning",
+      "Both describe how fast a planet moves through space"
+    ],
+    answer: "Rotation is a planet spinning on its axis; revolution is a planet orbiting around another object",
+    definition: "Rotation is when a body spins on its own axis (Earth rotates once every 24 hours). Revolution is when it travels around another body (Earth revolves around the Sun every 365.25 days).",
+    contextSentence: "Earth's rotation causes day and night; Earth's revolution around the Sun creates the year.",
+    hints: ["Rotation causes day and night.", "Revolution creates the year."],
+    coach: "Rotation = spinning (Earth rotates once a day → day and night). Revolution = orbiting (Earth revolves around the Sun once a year → the year). Easy way to remember: a spinning top rotates; a ball on a string revolves!"
+  },
+  {
+    id: "astro-voc-11",
+    grade: 0,
+    type: "astronomy-vocab",
     word: "galaxy",
     prompt: "What is a galaxy?",
-    choices: ["A single large star", "A massive system of stars, gas, dust, and dark matter bound together by gravity", "A large comet", "A ring of asteroids"],
-    answer: "A massive system of stars, gas, dust, and dark matter bound together by gravity",
-    definition: "A galaxy is a huge collection of stars, gas, dust, and dark matter held together by gravity. There are billions of galaxies in the observable universe.",
-    contextSentence: "Our Milky Way galaxy contains over 200 billion stars.",
-    hints: ["It contains billions of stars.", "Our solar system lives inside one called the Milky Way."],
-    coach: "A galaxy is a giant collection of billions of stars, gas, and dust held together by gravity. Our galaxy, the Milky Way, contains over 200 billion stars — and there are billions of other galaxies in the universe!"
+    choices: ["A single large supergiant star", "A vast system of billions of stars, gas, dust, and dark matter bound together by gravity", "A very large comet", "A ring of asteroids around a star"],
+    answer: "A vast system of billions of stars, gas, dust, and dark matter bound together by gravity",
+    definition: "A galaxy is a gravitationally bound system of billions of stars, along with interstellar gas, dust, and dark matter.",
+    contextSentence: "There are estimated to be over 2 trillion galaxies in the observable universe.",
+    hints: ["Our Milky Way is one.", "There are an estimated 2 trillion of them in the observable universe."],
+    coach: "A galaxy is a city of billions of stars held together by gravity. Our Milky Way has over 200 billion stars. Scientists estimate there are 2 trillion galaxies in the observable universe — that's more galaxies than grains of sand on all of Earth's beaches!"
+  },
+  {
+    id: "astro-voc-12",
+    grade: 0,
+    type: "astronomy-vocab",
+    word: "astronaut",
+    prompt: "What is the term for a person trained to travel and work in space?",
+    choices: ["Astronomer", "Cosmologist", "Astronaut", "Aerospace engineer"],
+    answer: "Astronaut",
+    definition: "An astronaut is a person trained by a space agency to travel and work in space. The word comes from Greek: 'astro' (star) + 'nautes' (sailor).",
+    contextSentence: "NASA astronauts go through two years of basic training before being assigned to a mission.",
+    hints: ["The word comes from Greek for 'star sailor'.", "NASA astronauts train for at least two years before their first mission."],
+    coach: "Astronaut comes from Greek words meaning 'star sailor.' NASA astronauts train for two years learning everything from spacewalks to spacecraft systems to Russian. About 1 in 12,000 applicants is selected — one of the most competitive jobs on Earth!"
   }
 ];

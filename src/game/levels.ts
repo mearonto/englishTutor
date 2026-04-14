@@ -1,4 +1,5 @@
-import { ASTRONOMY_LEVELS } from "./astronomyLevels";
+import { ASTRONOMY_CATEGORY_LABELS, ASTRONOMY_LEVELS } from "./astronomyLevels";
+export { ASTRONOMY_CATEGORY_LABELS };
 import type { Level, ShopItem, SkillType } from "./types";
 
 const CUSTOM_LEVELS_KEY = "word-quest-custom-levels-v1";

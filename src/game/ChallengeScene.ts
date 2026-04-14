@@ -86,9 +86,18 @@ export class ChallengeScene extends Phaser.Scene {
       return;
     }
 
+    const ASTRO_LABELS: Record<string, string> = {
+      "solar-system": "Solar System",
+      "stars-galaxies": "Stars & Galaxies",
+      "space-exploration": "Space Exploration",
+      "nasa-ksc": "NASA & KSC",
+      "earth-space": "Earth & Space",
+      "fun-fact": "Fun Fact",
+      "astronomy-vocab": "Astronomy Vocab"
+    };
     this.typeText.setText(
       this.level.grade === 0
-        ? `Astronomy • ${this.level.type}`
+        ? `Astronomy • ${ASTRO_LABELS[this.level.type] ?? this.level.type}`
         : `Grade ${this.level.grade} • ${this.level.type}`
     );
     this.promptText.setText(this.level.prompt);

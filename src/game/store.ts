@@ -48,7 +48,11 @@ export function maybeUnlockGrade4(): void {
 
 function availableLevels(): Level[] {
   if (state.subject === "astronomy") {
-    const levels = getAstronomyLevels();
+    let levels = getAstronomyLevels();
+    if (state.astronomyCategory && state.astronomyCategory !== "all") {
+      levels = levels.filter((l) => l.type === state.astronomyCategory);
+      if (!levels.length) levels = getAstronomyLevels();
+    }
     return levels.sort((a, b) => (state.learned[a.id] ?? 0) - (state.learned[b.id] ?? 0));
   }
   const unlocked = getLevels().filter((level) => level.grade <= state.gradeUnlocked);
@@ -65,6 +69,11 @@ export function pickNextLevel(): Level {
 
 export function setSubject(subject: Subject): void {
   state = { ...state, subject };
+  emit();
+}
+
+export function setAstronomyCategory(category: string): void {
+  state = { ...state, astronomyCategory: category };
   emit();
 }
 

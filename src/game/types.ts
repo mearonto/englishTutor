@@ -12,7 +12,10 @@ export type SkillType =
   | "compound-word"
   | "context-clues"
   | "solar-system"
-  | "stars"
+  | "stars-galaxies"
+  | "space-exploration"
+  | "nasa-ksc"
+  | "earth-space"
   | "fun-fact"
   | "astronomy-vocab";
 
@@ -40,6 +43,7 @@ export interface PlayerState {
   learned: Record<string, number>;
   inventory: string[];
   subject: Subject;
+  astronomyCategory: string;
 }
 
 export interface ShopItem {

@@ -12,7 +12,8 @@ export function defaultState(): PlayerState {
     mastery3: {},
     learned: {},
     inventory: [],
-    subject: "english"
+    subject: "english",
+    astronomyCategory: "all"
   };
 }
 

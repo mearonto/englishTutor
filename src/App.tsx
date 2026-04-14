@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties, type ChangeEvent } fro
 import type Phaser from "phaser";
 import "./App.css";
 import { gameEvents } from "./game/events";
-import { SHOP_ITEMS } from "./game/levels";
+import { ASTRONOMY_CATEGORY_LABELS, SHOP_ITEMS } from "./game/levels";
 import { createGame } from "./game/createGame";
 import {
   addTokens,
@@ -11,6 +11,7 @@ import {
   purchase,
   refreshAfterContentImport,
   resetAll,
+  setAstronomyCategory,
   setSubject,
   spendTokens,
   subscribe
@@ -454,7 +455,11 @@ function App() {
         {mode === "practice" ? (
           <>
             <div className="progress-wrap">
-              <span>{state.subject === "astronomy" ? "Astronomy Practice" : "Practice Mode"}</span>
+              <span>
+                {state.subject === "astronomy"
+                  ? `Astronomy${state.astronomyCategory !== "all" ? ` • ${ASTRONOMY_CATEGORY_LABELS[state.astronomyCategory] ?? state.astronomyCategory}` : ""}`
+                  : "Practice Mode"}
+              </span>
               <span>
                 Streak: <strong>{state.streak}</strong>
               </span>
@@ -475,7 +480,9 @@ function App() {
               )}
             </div>
             {state.subject === "astronomy" && !testState.running && !testState.finished && (
-              <span style={{ fontSize: "0.8rem", color: "#0099cc", fontWeight: 700 }}>🔭 Astronomy</span>
+              <span style={{ fontSize: "0.8rem", color: "#0099cc", fontWeight: 700 }}>
+                Astronomy{state.astronomyCategory !== "all" ? ` • ${ASTRONOMY_CATEGORY_LABELS[state.astronomyCategory] ?? state.astronomyCategory}` : ""}
+              </span>
             )}
             {testState.finished ? (
               <div className="zone-message">
@@ -679,6 +686,32 @@ function App() {
                     Astronomy
                   </button>
                 </div>
+                {state.subject === "astronomy" && (
+                  <>
+                    <label htmlFor="astroCategory" className="field-label">
+                      Study Category
+                    </label>
+                    <select
+                      id="astroCategory"
+                      value={state.astronomyCategory}
+                      onChange={(e) => {
+                        setAstronomyCategory(e.target.value);
+                        setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
+                        setCanGoNext(false);
+                        setFeedback({ message: "", good: false });
+                        gameEvents.emit("command-set-mode", { testMode: false });
+                        gameEvents.emit("command-next");
+                      }}
+                    >
+                      {Object.entries(ASTRONOMY_CATEGORY_LABELS).map(([key, label]) => (
+                        <option key={key} value={key}>{label}</option>
+                      ))}
+                    </select>
+                    <p className="helper-text" style={{ marginTop: "-0.4rem" }}>
+                      Selecting a category limits practice and test questions to that topic.
+                    </p>
+                  </>
+                )}
                 <hr />
                 <p>Import custom word packs (.json or .csv) and export learner progress reports.</p>
                 <label htmlFor="packUpload" className="field-label">
