@@ -24,6 +24,7 @@ const TEACHER_PASSWORD_KEY = "word-quest-teacher-password-v1";
 const TEST_HISTORY_KEY = "word-quest-test-history-v1";
 const LOTTERY_COST_KEY = "word-quest-lottery-cost-v1";
 const LOTTERY_PRIZES_KEY = "word-quest-lottery-prizes-v1";
+const LOTTERY_HISTORY_KEY = "word-quest-lottery-history-v1";
 const DEFAULT_LOTTERY_COST = 50;
 const DEFAULT_TEACHER_PASSWORD = "2222";
 const SPEED_OPTIONS = [
@@ -64,6 +65,12 @@ const DEFAULT_STORED_PRIZES: LotteryPrize[] = [
   { id: "cash10", label: "现金 ¥10", weight: 5 }
 ];
 
+type LotteryRecord = {
+  id: string;
+  time: number;
+  prizeLabel: string;
+};
+
 type TestRecord = {
   id: string;
   startTime: number;
@@ -102,6 +109,7 @@ function App() {
   const testStartTime = useRef<number>(0);
   const testWrongWords = useRef<string[]>([]);
   const [testHistory, setTestHistory] = useState<TestRecord[]>(() => loadTestHistory());
+  const [lotteryHistory, setLotteryHistory] = useState<LotteryRecord[]>(() => loadLotteryHistory());
   const [canGoNext, setCanGoNext] = useState(false);
   const [testState, setTestState] = useState<TestState>({
     running: false,
@@ -357,6 +365,9 @@ function App() {
       if (step === seq.length - 1) {
         setLastPrize(winner);
         setDrawing(false);
+        const record: LotteryRecord = { id: String(Date.now()), time: Date.now(), prizeLabel: winner.label };
+        saveLotteryRecord(record);
+        setLotteryHistory(loadLotteryHistory());
       } else {
         step++;
         setTimeout(tick, delays[step]);
@@ -811,6 +822,45 @@ function App() {
                 </div>
                 <button onClick={addPrize}>+ 添加奖品</button>
                 <hr />
+                <h3>Lottery History</h3>
+                {lotteryHistory.length === 0 ? (
+                  <p className="helper-text">No draws recorded yet.</p>
+                ) : (
+                  <>
+                    <div className="test-history">
+                      {lotteryHistory.map((record) => (
+                        <div key={record.id} className="test-record">
+                          <div className="test-record-header">
+                            <span className="helper-text">{formatTestDate(record.time)}</span>
+                            <span>{record.prizeLabel}</span>
+                            <button
+                              className="danger"
+                              style={{ marginLeft: "auto", padding: "2px 10px", fontSize: "0.8rem" }}
+                              onClick={() => {
+                                const updated = deleteLotteryRecord(record.id);
+                                setLotteryHistory(updated);
+                              }}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="teacher-actions">
+                      <button
+                        className="danger"
+                        onClick={() => {
+                          localStorage.removeItem(LOTTERY_HISTORY_KEY);
+                          setLotteryHistory([]);
+                        }}
+                      >
+                        Clear All
+                      </button>
+                    </div>
+                  </>
+                )}
+                <hr />
                 <h3>Bonus Tokens</h3>
                 <label htmlFor="bonusTokenInput" className="field-label">
                   Award tokens to student
@@ -1072,6 +1122,29 @@ function ensureTeacherPassword(): void {
 
 function getTeacherPassword(): string {
   return localStorage.getItem(TEACHER_PASSWORD_KEY) || DEFAULT_TEACHER_PASSWORD;
+}
+
+function loadLotteryHistory(): LotteryRecord[] {
+  try {
+    const raw = localStorage.getItem(LOTTERY_HISTORY_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw) as LotteryRecord[];
+  } catch {
+    return [];
+  }
+}
+
+function saveLotteryRecord(record: LotteryRecord): void {
+  const history = loadLotteryHistory();
+  history.unshift(record);
+  if (history.length > 100) history.length = 100;
+  localStorage.setItem(LOTTERY_HISTORY_KEY, JSON.stringify(history));
+}
+
+function deleteLotteryRecord(id: string): LotteryRecord[] {
+  const history = loadLotteryHistory().filter((r) => r.id !== id);
+  localStorage.setItem(LOTTERY_HISTORY_KEY, JSON.stringify(history));
+  return history;
 }
 
 export default App;
