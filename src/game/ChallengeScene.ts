@@ -261,7 +261,11 @@ export class ChallengeScene extends Phaser.Scene {
       return;
     }
     this.resumeAudioContext();
-    this.speak(this.level.word, this.level.contextSentence);
+    if (this.testMode) {
+      this.speak(this.level.prompt);
+    } else {
+      this.speak(this.level.word, this.level.contextSentence);
+    }
   }
 
   private resumeAudioContext(): void {
