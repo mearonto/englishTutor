@@ -675,21 +675,6 @@ function App() {
                 <h3>Learning Subject</h3>
                 <div className="mode-toggle" style={{ background: "rgba(0,100,180,0.08)", marginBottom: "1rem" }}>
                   <button
-                    className={state.subject === "english" ? "active" : ""}
-                    onClick={() => {
-                      if (state.subject !== "english") {
-                        setSubject("english");
-                        setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
-                        setCanGoNext(false);
-                        setFeedback({ message: "", good: false });
-                        gameEvents.emit("command-set-mode", { testMode: false });
-                        gameEvents.emit("command-next");
-                      }
-                    }}
-                  >
-                    English
-                  </button>
-                  <button
                     className={state.subject === "astronomy" ? "active" : ""}
                     onClick={() => {
                       if (state.subject !== "astronomy") {
