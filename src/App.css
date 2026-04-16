@@ -607,3 +607,167 @@ input[type="number"]:focus {
     margin: 0.6rem 0.6rem 0.8rem;
   }
 }
+
+/* ── Mini Games ─────────────────────────────────────────────────────────── */
+.minigames-content {
+  max-width: 560px;
+}
+
+.minigame-cards {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+.minigame-card {
+  background: rgba(0, 100, 180, 0.07);
+  border: 2px solid rgba(0, 100, 180, 0.2);
+  border-radius: 12px;
+  padding: 1rem;
+  width: 220px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.minigame-card h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.minigame-card p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #555;
+}
+
+.minigame-card-icon {
+  font-size: 2.4rem;
+  line-height: 1;
+}
+
+.minigame-cost {
+  font-weight: 700;
+  color: #0066cc !important;
+}
+
+.minigame-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.5rem 0;
+}
+
+.minigame-hud {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #333;
+}
+
+/* Memory Match */
+.memory-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  width: 100%;
+  max-width: 340px;
+}
+
+.memory-card {
+  aspect-ratio: 1;
+  border-radius: 10px;
+  border: 2px solid #aac;
+  background: linear-gradient(135deg, #3b6fbc, #1a3a6e);
+  cursor: pointer;
+  font-size: 1.6rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.memory-card:hover:not(:disabled) {
+  transform: scale(1.06);
+}
+
+.memory-card .card-front {
+  display: none;
+}
+
+.memory-card .card-back {
+  font-size: 1.4rem;
+}
+
+.memory-card.face-up .card-front {
+  display: block;
+}
+
+.memory-card.face-up .card-back {
+  display: none;
+}
+
+.memory-card.face-up {
+  background: #f0f8ff;
+  border-color: #4a90d9;
+}
+
+.memory-card.matched {
+  background: #dcfce7;
+  border-color: #22c55e;
+  cursor: default;
+}
+
+/* Whack-a-Mole */
+.mole-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.mole-hole {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 3px solid #7c5c3e;
+  background: radial-gradient(circle at 40% 40%, #6b4423, #3d1f0a);
+  cursor: pointer;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s, background 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+
+.mole-hole.mole-up {
+  background: radial-gradient(circle at 40% 40%, #a0d87a, #5a9e2f);
+  border-color: #3a7a1a;
+  transform: scale(1.08);
+}
+
+.mole-hole.mole-whacked {
+  background: radial-gradient(circle at 40% 40%, #fde68a, #f59e0b);
+  border-color: #d97706;
+  transform: scale(0.92);
+}
+
+.mole-emoji {
+  font-size: 2rem;
+  line-height: 1;
+  animation: pop-up 0.15s ease-out;
+}
+
+@keyframes pop-up {
+  from { transform: scale(0.3) translateY(20px); opacity: 0; }
+  to   { transform: scale(1) translateY(0);      opacity: 1; }
+}

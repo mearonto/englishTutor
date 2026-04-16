@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState, type CSSProperties, type ChangeEvent } from "react";
+import { MiniGamesModal } from "./MiniGames";
 import type Phaser from "phaser";
 import "./App.css";
 import { gameEvents } from "./game/events";
 import { ASTRONOMY_CATEGORY_LABELS, CANADA_CATEGORY_LABELS, SHOP_ITEMS } from "./game/levels";
 import { createGame } from "./game/createGame";
 import {
+  addStars,
   addTokens,
   buildReport,
   getState,
@@ -14,6 +16,7 @@ import {
   setAstronomyCategory,
   setCanadaCategory,
   setSubject,
+  spendStars,
   spendTokens,
   subscribe
 } from "./game/store";
@@ -90,6 +93,7 @@ function App() {
     good: false
   });
   const [shopOpen, setShopOpen] = useState(false);
+  const [miniGamesOpen, setMiniGamesOpen] = useState(false);
   const [teacherOpen, setTeacherOpen] = useState(false);
   const [teacherUnlocked, setTeacherUnlocked] = useState(false);
   const [teacherPasswordInput, setTeacherPasswordInput] = useState("");
@@ -546,6 +550,7 @@ function App() {
           <button onClick={startTest}>{testState.finished ? "New Test" : "Start Test"}</button>
         )}
         <button onClick={() => setShopOpen(true)}>Open Camp Shop</button>
+        <button onClick={() => setMiniGamesOpen(true)}>🎮 Mini Games</button>
         <button onClick={openTeacherMode}>Teacher Mode</button>
         <button
           onClick={() => { setLotteryOpen(true); setLastPrize(null); }}
@@ -605,6 +610,15 @@ function App() {
           </section>
         );
       })()}
+
+      {miniGamesOpen && (
+        <MiniGamesModal
+          stars={state.stars}
+          onSpendStars={spendStars}
+          onEarnStars={addStars}
+          onClose={() => setMiniGamesOpen(false)}
+        />
+      )}
 
       {shopOpen && (
         <section className="shop-modal" role="dialog" aria-label="Camp Shop">

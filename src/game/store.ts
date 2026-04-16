@@ -176,6 +176,21 @@ export function addTokens(amount: number): void {
   emit();
 }
 
+export function addStars(amount: number): void {
+  if (amount <= 0) return;
+  state = { ...state, stars: state.stars + amount };
+  emit();
+}
+
+export function spendStars(amount: number): { ok: boolean; message: string } {
+  if (state.stars < amount) {
+    return { ok: false, message: `Not enough stars. Need ${amount} ⭐.` };
+  }
+  state = { ...state, stars: state.stars - amount };
+  emit();
+  return { ok: true, message: "" };
+}
+
 export function spendTokens(amount: number): { ok: boolean; message: string } {
   if (state.tokens < amount) {
     return { ok: false, message: "Not enough tokens." };
