@@ -13,7 +13,8 @@ export function defaultState(): PlayerState {
     learned: {},
     inventory: [],
     subject: "english",
-    astronomyCategory: "all"
+    astronomyCategory: "all",
+    canadaCategory: "all"
   };
 }
 

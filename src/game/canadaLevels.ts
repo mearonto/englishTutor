@@ -1,0 +1,747 @@
+import type { Level } from "./types";
+
+export const CANADA_CATEGORY_LABELS: Record<string, string> = {
+  all: "All Subjects",
+  math: "Math",
+  science: "Science",
+  "social-studies": "Social Studies",
+  "language-arts": "Language Arts",
+  health: "Health & Phys-Ed"
+};
+
+export const CANADA_LEVELS: Level[] = [
+  // ── Math ─────────────────────────────────────────────────────────────
+  {
+    id: "ca-math-01",
+    grade: 4,
+    type: "math",
+    word: "36",
+    prompt: "What is 6 × 6?",
+    choices: ["30", "36", "42", "48"],
+    answer: "36",
+    definition: "The product of 6 multiplied by 6.",
+    contextSentence: "There are 6 rows of 6 desks, so there are 36 desks in total.",
+    hints: ["Count by 6s six times.", "6 + 6 + 6 + 6 + 6 + 6 = ?"],
+    coach: "6 × 6 = 36. Memorizing multiplication facts helps you solve problems faster!"
+  },
+  {
+    id: "ca-math-02",
+    grade: 4,
+    type: "math",
+    word: "7",
+    prompt: "What is 56 ÷ 8?",
+    choices: ["6", "7", "8", "9"],
+    answer: "7",
+    definition: "56 divided into 8 equal groups gives 7 in each group.",
+    contextSentence: "56 apples divided equally into 8 bags gives 7 apples per bag.",
+    hints: ["Think: 8 × ? = 56.", "Count by 8s until you reach 56."],
+    coach: "56 ÷ 8 = 7 because 8 × 7 = 56. Division and multiplication are related!"
+  },
+  {
+    id: "ca-math-03",
+    grade: 4,
+    type: "math",
+    word: "1/2",
+    prompt: "Which fraction is equivalent to 2/4?",
+    choices: ["1/3", "1/2", "2/3", "3/4"],
+    answer: "1/2",
+    definition: "Equivalent fractions represent the same amount using different numbers.",
+    contextSentence: "Half of a pizza is the same as two-quarters of a pizza.",
+    hints: ["Divide both numerator and denominator of 2/4 by 2.", "2 ÷ 2 = 1 and 4 ÷ 2 = ?"],
+    coach: "2/4 ÷ 2/2 = 1/2. Always simplify by dividing top and bottom by the same number."
+  },
+  {
+    id: "ca-math-04",
+    grade: 4,
+    type: "math",
+    word: "perimeter",
+    prompt: "A rectangle is 5 cm long and 3 cm wide. What is its perimeter?",
+    choices: ["8 cm", "15 cm", "16 cm", "18 cm"],
+    answer: "16 cm",
+    definition: "Perimeter is the total distance around the outside of a shape.",
+    contextSentence: "The fence around the garden measures the perimeter of the yard.",
+    hints: ["Perimeter = 2 × (length + width).", "Add all four sides: 5 + 3 + 5 + 3."],
+    coach: "Perimeter = 2 × (5 + 3) = 2 × 8 = 16 cm. Remember to add ALL sides!"
+  },
+  {
+    id: "ca-math-05",
+    grade: 4,
+    type: "math",
+    word: "area",
+    prompt: "A rectangle is 4 cm long and 6 cm wide. What is its area?",
+    choices: ["10 cm²", "20 cm²", "24 cm²", "28 cm²"],
+    answer: "24 cm²",
+    definition: "Area is the amount of space inside a 2D shape, measured in square units.",
+    contextSentence: "We need to know the area of the floor to buy the right amount of carpet.",
+    hints: ["Area = length × width.", "4 × 6 = ?"],
+    coach: "Area = 4 × 6 = 24 cm². Area is always measured in square units like cm²."
+  },
+  {
+    id: "ca-math-06",
+    grade: 4,
+    type: "math",
+    word: "1000",
+    prompt: "How many millimetres are in 1 metre?",
+    choices: ["10", "100", "1000", "10 000"],
+    answer: "1000",
+    definition: "The metric system uses powers of 10 to relate units of length.",
+    contextSentence: "A metre stick has 1000 small millimetre markings on it.",
+    hints: ["1 m = 100 cm. 1 cm = 10 mm.", "100 × 10 = ?"],
+    coach: "1 m = 100 cm and 1 cm = 10 mm, so 1 m = 1000 mm. The prefix milli- means one thousandth."
+  },
+  {
+    id: "ca-math-07",
+    grade: 4,
+    type: "math",
+    word: "obtuse",
+    prompt: "An angle that measures 120° is called a(n) _____ angle.",
+    choices: ["acute", "right", "obtuse", "straight"],
+    answer: "obtuse",
+    definition: "An obtuse angle measures more than 90° but less than 180°.",
+    contextSentence: "The roof of the barn forms an obtuse angle.",
+    hints: ["Acute < 90°. Right = 90°. Obtuse is between 90° and 180°.", "120° is greater than 90°."],
+    coach: "Obtuse angles are between 90° and 180°. Think of it as an angle that is 'blunt' or wide open."
+  },
+  {
+    id: "ca-math-08",
+    grade: 4,
+    type: "math",
+    word: "250",
+    prompt: "What is 5 × 50?",
+    choices: ["200", "250", "300", "350"],
+    answer: "250",
+    definition: "Multiplying by multiples of ten using place value.",
+    contextSentence: "Five bags with 50 marbles each contain 250 marbles in total.",
+    hints: ["5 × 5 = 25. Then add a zero.", "Think: 5 × 5 × 10."],
+    coach: "5 × 50 = 5 × 5 × 10 = 25 × 10 = 250. Multiply the digits first, then handle the zeros."
+  },
+  {
+    id: "ca-math-09",
+    grade: 4,
+    type: "math",
+    word: "symmetry",
+    prompt: "A shape has a line of symmetry when it can be folded so that both halves _____ exactly.",
+    choices: ["overlap", "rotate", "translate", "expand"],
+    answer: "overlap",
+    definition: "A line of symmetry divides a shape into two mirror-image halves.",
+    contextSentence: "A butterfly has a line of symmetry down the centre of its body.",
+    hints: ["When you fold along the line, both sides should match perfectly.", "Mirror images overlap when flipped."],
+    coach: "A line of symmetry means both halves overlap exactly when folded — they are mirror images."
+  },
+  {
+    id: "ca-math-10",
+    grade: 4,
+    type: "math",
+    word: "3",
+    prompt: "What is the remainder when 25 is divided by 11?",
+    choices: ["1", "2", "3", "4"],
+    answer: "3",
+    definition: "The remainder is the amount left over after dividing as evenly as possible.",
+    contextSentence: "25 ÷ 11 = 2 with a remainder of 3, since 11 × 2 = 22 and 25 − 22 = 3.",
+    hints: ["11 × 2 = 22. What is 25 − 22?", "Find the closest multiple of 11 below 25."],
+    coach: "25 ÷ 11: 11 × 2 = 22, 25 − 22 = 3. The remainder is 3."
+  },
+
+  // ── Science ───────────────────────────────────────────────────────────
+  {
+    id: "ca-sci-01",
+    grade: 4,
+    type: "science",
+    word: "habitat",
+    prompt: "What is a habitat?",
+    choices: [
+      "A type of food that animals eat",
+      "The natural environment where a plant or animal lives",
+      "A way animals protect themselves",
+      "The path water takes through the environment"
+    ],
+    answer: "The natural environment where a plant or animal lives",
+    definition: "A habitat provides food, water, shelter, and space for living things.",
+    contextSentence: "The forest is the natural habitat of the white-tailed deer.",
+    hints: ["Think of where an animal makes its home.", "It must supply all basic needs."],
+    coach: "A habitat is the natural place where a plant or animal lives and gets everything it needs to survive."
+  },
+  {
+    id: "ca-sci-02",
+    grade: 4,
+    type: "science",
+    word: "producer",
+    prompt: "In a food chain, which organism is a producer?",
+    choices: ["A wolf", "A deer", "A blade of grass", "A mushroom"],
+    answer: "A blade of grass",
+    definition: "Producers make their own food using sunlight through photosynthesis.",
+    contextSentence: "Grass is a producer because it turns sunlight into food energy.",
+    hints: ["Producers make their own food using sunlight.", "They are usually green plants."],
+    coach: "Producers (plants) use sunlight to make food. Consumers eat producers. Decomposers break down waste."
+  },
+  {
+    id: "ca-sci-03",
+    grade: 4,
+    type: "science",
+    word: "pulley",
+    prompt: "What does a pulley do?",
+    choices: [
+      "It stores energy in a coiled spring",
+      "It changes the direction or size of a force to make lifting easier",
+      "It converts electrical energy into motion",
+      "It measures the weight of an object"
+    ],
+    answer: "It changes the direction or size of a force to make lifting easier",
+    definition: "A pulley is a simple machine that uses a wheel and rope to lift or move loads.",
+    contextSentence: "Workers use a pulley to raise heavy boxes to the top floor of a building.",
+    hints: ["It is a simple machine.", "It uses a wheel and rope."],
+    coach: "A pulley is a simple machine. It can change the direction of a force or help you lift heavy objects with less effort."
+  },
+  {
+    id: "ca-sci-04",
+    grade: 4,
+    type: "science",
+    word: "opaque",
+    prompt: "Which word describes a material that does NOT let light pass through at all?",
+    choices: ["transparent", "translucent", "opaque", "reflective"],
+    answer: "opaque",
+    definition: "Opaque materials block all light and cast a shadow.",
+    contextSentence: "A wooden door is opaque — you cannot see light through it.",
+    hints: ["Transparent lets all light through. Translucent lets some light through.", "Opaque blocks all light."],
+    coach: "Transparent = all light passes through. Translucent = some light passes. Opaque = no light passes."
+  },
+  {
+    id: "ca-sci-05",
+    grade: 4,
+    type: "science",
+    word: "igneous",
+    prompt: "Which type of rock forms when melted rock (magma or lava) cools and hardens?",
+    choices: ["sedimentary", "metamorphic", "igneous", "mineral"],
+    answer: "igneous",
+    definition: "Igneous rocks form from cooled and solidified magma or lava.",
+    contextSentence: "Granite is an igneous rock that formed deep underground from cooled magma.",
+    hints: ["The word igneous comes from the Latin word for fire.", "Volcanoes produce this type of rock."],
+    coach: "Igneous rocks form from fire and heat — cooled lava or magma. Examples: granite, basalt, obsidian."
+  },
+  {
+    id: "ca-sci-06",
+    grade: 4,
+    type: "science",
+    word: "photosynthesis",
+    prompt: "Plants make their own food through photosynthesis. What THREE things do plants need for photosynthesis?",
+    choices: [
+      "Water, carbon dioxide, and sunlight",
+      "Oxygen, soil, and heat",
+      "Water, oxygen, and moonlight",
+      "Carbon dioxide, salt, and wind"
+    ],
+    answer: "Water, carbon dioxide, and sunlight",
+    definition: "Photosynthesis is the process by which plants make food using sunlight, water, and carbon dioxide.",
+    contextSentence: "During photosynthesis, plants absorb sunlight and carbon dioxide and release oxygen.",
+    hints: ["Plants absorb a gas from the air and water from the soil.", "They need a light source."],
+    coach: "Photosynthesis: sunlight + water + CO₂ → glucose (food) + oxygen. Plants release the oxygen we breathe!"
+  },
+  {
+    id: "ca-sci-07",
+    grade: 4,
+    type: "science",
+    word: "adaptation",
+    prompt: "A beaver's flat tail helps it swim and slap the water to warn others. This feature is an example of a(n) _____ .",
+    choices: ["migration", "hibernation", "adaptation", "decomposition"],
+    answer: "adaptation",
+    definition: "An adaptation is a feature or behaviour that helps an organism survive in its environment.",
+    contextSentence: "The beaver's waterproof fur is an adaptation for living in and around water.",
+    hints: ["It is a special feature that helps the animal survive.", "It develops over many generations."],
+    coach: "Adaptations are features or behaviours that help living things survive. A beaver's flat tail is a physical adaptation."
+  },
+  {
+    id: "ca-sci-08",
+    grade: 4,
+    type: "science",
+    word: "gear",
+    prompt: "When two gears of different sizes are connected, the smaller gear turns _____ than the larger gear.",
+    choices: ["slower", "faster", "at the same speed", "in the same direction"],
+    answer: "faster",
+    definition: "Gears transfer motion; a smaller gear connected to a larger one turns faster.",
+    contextSentence: "In a bicycle, small gears make the wheels turn faster with less force.",
+    hints: ["Think about which gear has fewer teeth.", "Fewer teeth = fewer rotations needed to turn once."],
+    coach: "A smaller gear has fewer teeth, so it completes more rotations for each rotation of the larger gear — it turns faster."
+  },
+  {
+    id: "ca-sci-09",
+    grade: 4,
+    type: "science",
+    word: "food web",
+    prompt: "How is a food web different from a food chain?",
+    choices: [
+      "A food web shows only producers",
+      "A food web shows many feeding relationships among organisms in an ecosystem",
+      "A food web shows only one path of energy flow",
+      "A food web includes only decomposers"
+    ],
+    answer: "A food web shows many feeding relationships among organisms in an ecosystem",
+    definition: "A food web is a network of connected food chains showing all feeding relationships.",
+    contextSentence: "In the pond food web, frogs eat insects, ducks eat frogs, and eagles eat ducks.",
+    hints: ["A food chain is one straight path. A web has many paths.", "Many organisms eat more than one kind of food."],
+    coach: "A food chain is a single path (grass → rabbit → fox). A food web shows ALL feeding connections in an ecosystem."
+  },
+  {
+    id: "ca-sci-10",
+    grade: 4,
+    type: "science",
+    word: "shadow",
+    prompt: "A shadow forms on the side of an object that is _____ from the light source.",
+    choices: ["closest", "farthest", "brightest", "transparent"],
+    answer: "farthest",
+    definition: "A shadow is the dark area behind an opaque object that blocks light.",
+    contextSentence: "In the afternoon, your shadow falls on the side of you farthest from the sun.",
+    hints: ["Light travels in straight lines and cannot bend around objects.", "Where does light NOT reach?"],
+    coach: "Light travels in straight lines. When an opaque object blocks light, a shadow forms on the far side away from the light source."
+  },
+
+  // ── Social Studies ─────────────────────────────────────────────────────
+  {
+    id: "ca-ss-01",
+    grade: 4,
+    type: "social-studies",
+    word: "province",
+    prompt: "How many provinces are in Canada?",
+    choices: ["8", "10", "12", "13"],
+    answer: "10",
+    definition: "Canada has 10 provinces and 3 territories.",
+    contextSentence: "Ontario and British Columbia are two of Canada's 10 provinces.",
+    hints: ["Canada also has 3 territories.", "Count from east to west: NL, PEI, NS, NB, QC, ON, MB, SK, AB, BC."],
+    coach: "Canada has 10 provinces and 3 territories. The provinces have their own elected governments."
+  },
+  {
+    id: "ca-ss-02",
+    grade: 4,
+    type: "social-studies",
+    word: "Ottawa",
+    prompt: "What is the capital city of Canada?",
+    choices: ["Toronto", "Montreal", "Ottawa", "Vancouver"],
+    answer: "Ottawa",
+    definition: "Ottawa is the seat of the federal government of Canada.",
+    contextSentence: "The Parliament Buildings and the Supreme Court of Canada are located in Ottawa.",
+    hints: ["It is located in Ontario near the border of Quebec.", "The federal government, not the provincial, is based here."],
+    coach: "Ottawa, in Ontario, is Canada's capital city. It is home to the Parliament of Canada."
+  },
+  {
+    id: "ca-ss-03",
+    grade: 4,
+    type: "social-studies",
+    word: "Indigenous",
+    prompt: "Which term refers to the original peoples of Canada who lived here before European contact?",
+    choices: ["Immigrants", "Settlers", "Indigenous peoples", "Explorers"],
+    answer: "Indigenous peoples",
+    definition: "Indigenous peoples include First Nations, Métis, and Inuit who are the original inhabitants of Canada.",
+    contextSentence: "Indigenous peoples have lived on the lands now called Canada for thousands of years.",
+    hints: ["The term includes First Nations, Métis, and Inuit.", "They were here before Europeans arrived."],
+    coach: "Indigenous peoples — First Nations, Métis, and Inuit — are the original inhabitants of Canada with rich and diverse cultures."
+  },
+  {
+    id: "ca-ss-04",
+    grade: 4,
+    type: "social-studies",
+    word: "rural",
+    prompt: "A community with farms, forests, and very few people per square kilometre is best described as _____ .",
+    choices: ["urban", "suburban", "rural", "metropolitan"],
+    answer: "rural",
+    definition: "Rural communities are in the countryside with low population density.",
+    contextSentence: "Many rural communities in Saskatchewan depend on wheat farming.",
+    hints: ["Urban = city. Suburban = near a city. Rural = countryside.", "Think of wide open spaces and farms."],
+    coach: "Rural communities are in the countryside. Urban communities are cities. Suburban communities are between the two."
+  },
+  {
+    id: "ca-ss-05",
+    grade: 4,
+    type: "social-studies",
+    word: "Confederation",
+    prompt: "In what year did Canada become a country through Confederation?",
+    choices: ["1776", "1867", "1905", "1931"],
+    answer: "1867",
+    definition: "Confederation in 1867 united the provinces of Canada, Nova Scotia, and New Brunswick into the Dominion of Canada.",
+    contextSentence: "On July 1, 1867, Canada was born through Confederation and we celebrate that date as Canada Day.",
+    hints: ["July 1 is celebrated as Canada Day to mark this event.", "It happened in the 1800s."],
+    coach: "Confederation happened on July 1, 1867. Four original provinces joined: Ontario, Quebec, Nova Scotia, and New Brunswick."
+  },
+  {
+    id: "ca-ss-06",
+    grade: 4,
+    type: "social-studies",
+    word: "government",
+    prompt: "Which level of government is responsible for building and maintaining local roads and parks?",
+    choices: ["Federal government", "Provincial government", "Municipal government", "Territorial government"],
+    answer: "Municipal government",
+    definition: "Municipal (local) governments handle community services like roads, parks, and water.",
+    contextSentence: "The municipal government decides when to collect garbage and how to repair local roads.",
+    hints: ["Think about the level closest to your neighbourhood.", "Municipal means relating to your town or city."],
+    coach: "Canada has three levels: Federal (whole country), Provincial (your province), and Municipal (your town or city)."
+  },
+  {
+    id: "ca-ss-07",
+    grade: 4,
+    type: "social-studies",
+    word: "Inuit",
+    prompt: "The Inuit people traditionally lived in which region of Canada?",
+    choices: [
+      "The Pacific rainforest",
+      "The prairies and plains",
+      "The Arctic and subarctic regions",
+      "The Great Lakes lowlands"
+    ],
+    answer: "The Arctic and subarctic regions",
+    definition: "The Inuit are Indigenous peoples who have lived in the Arctic for thousands of years.",
+    contextSentence: "The Inuit developed highly effective adaptations for living in the harsh Arctic environment.",
+    hints: ["Think about the coldest, northernmost part of Canada.", "Inuit traditional homes include igloos."],
+    coach: "The Inuit are Indigenous peoples of the Arctic. They developed remarkable skills for surviving in one of Earth's coldest environments."
+  },
+  {
+    id: "ca-ss-08",
+    grade: 4,
+    type: "social-studies",
+    word: "border",
+    prompt: "Which country shares the longest land border with Canada?",
+    choices: ["Russia", "Mexico", "Greenland", "United States"],
+    answer: "United States",
+    definition: "The Canada–United States border is the longest international land border in the world.",
+    contextSentence: "The border between Canada and the United States stretches about 8 891 kilometres.",
+    hints: ["It is Canada's southern neighbour.", "This border is the world's longest international land border."],
+    coach: "The Canada–U.S. border is the world's longest international land border at about 8 891 km."
+  },
+  {
+    id: "ca-ss-09",
+    grade: 4,
+    type: "social-studies",
+    word: "heritage",
+    prompt: "Which word best describes the traditions, languages, and customs passed down from earlier generations?",
+    choices: ["heritage", "migration", "economy", "democracy"],
+    answer: "heritage",
+    definition: "Heritage refers to the traditions, values, and practices inherited from previous generations.",
+    contextSentence: "Canada's multicultural heritage means people from many countries share their traditions here.",
+    hints: ["It relates to what is passed down through history and culture.", "Think: family traditions and history."],
+    coach: "Heritage includes the languages, traditions, and customs we inherit from people who came before us."
+  },
+  {
+    id: "ca-ss-10",
+    grade: 4,
+    type: "social-studies",
+    word: "Métis",
+    prompt: "The Métis people are known for having ancestry from both _____ and European peoples.",
+    choices: ["Asian", "Indigenous", "African", "Polynesian"],
+    answer: "Indigenous",
+    definition: "Métis are one of the three recognized Indigenous peoples in Canada, with mixed First Nations and European ancestry.",
+    contextSentence: "The Métis Nation has a distinct culture, language (Michif), and history in Canada.",
+    hints: ["The Métis are one of Canada's three recognized Indigenous groups.", "Their ancestry is a blend of two groups."],
+    coach: "The Métis have both Indigenous and European ancestry and are one of Canada's three constitutionally recognized Indigenous peoples."
+  },
+
+  // ── Language Arts ───────────────────────────────────────────────────────
+  {
+    id: "ca-la-01",
+    grade: 4,
+    type: "language-arts",
+    word: "noun",
+    prompt: "Which word in this sentence is a NOUN? 'The curious beaver built a dam.'",
+    choices: ["curious", "built", "beaver", "a"],
+    answer: "beaver",
+    definition: "A noun is a word that names a person, place, animal, or thing.",
+    contextSentence: "The beaver is an important symbol in Canadian culture.",
+    hints: ["A noun names a person, place, animal, or thing.", "Which word names an animal?"],
+    coach: "Nouns name people, places, animals, or things. 'Beaver' is the animal in this sentence."
+  },
+  {
+    id: "ca-la-02",
+    grade: 4,
+    type: "language-arts",
+    word: "adjective",
+    prompt: "Which word is an ADJECTIVE in 'The tall maple tree turned bright red in autumn'?",
+    choices: ["turned", "maple", "tall", "autumn"],
+    answer: "tall",
+    definition: "An adjective describes or modifies a noun.",
+    contextSentence: "The tall, old maple tree stands in front of the school.",
+    hints: ["An adjective describes a noun.", "Which word describes the maple tree?"],
+    coach: "Adjectives describe nouns. 'Tall' describes the tree. 'Bright' also describes 'red' — both are adjectives."
+  },
+  {
+    id: "ca-la-03",
+    grade: 4,
+    type: "language-arts",
+    word: "inference",
+    prompt: "You read: 'Maria put on her boots, grabbed her umbrella, and frowned at the dark sky.' What can you INFER?",
+    choices: [
+      "Maria is going swimming",
+      "Maria thinks it will rain",
+      "Maria is going to a party",
+      "Maria is late for school"
+    ],
+    answer: "Maria thinks it will rain",
+    definition: "An inference is a conclusion drawn from evidence and reasoning, not directly stated.",
+    contextSentence: "Good readers make inferences by combining text clues with what they already know.",
+    hints: ["Look for clues: umbrella, dark sky, boots.", "What do these objects and details suggest?"],
+    coach: "Inferencing means using clues in the text to figure out something the author didn't say directly."
+  },
+  {
+    id: "ca-la-04",
+    grade: 4,
+    type: "language-arts",
+    word: "paragraph",
+    prompt: "What is the purpose of a topic sentence in a paragraph?",
+    choices: [
+      "To end the paragraph with a conclusion",
+      "To introduce the main idea of the paragraph",
+      "To list all the supporting details",
+      "To connect one paragraph to the next"
+    ],
+    answer: "To introduce the main idea of the paragraph",
+    definition: "A topic sentence states the main idea that the rest of the paragraph will support.",
+    contextSentence: "The topic sentence tells readers what to expect in the rest of the paragraph.",
+    hints: ["It usually comes at the beginning of the paragraph.", "It tells the reader what the paragraph is about."],
+    coach: "The topic sentence introduces the main idea. Supporting sentences give details and examples. The concluding sentence wraps it up."
+  },
+  {
+    id: "ca-la-05",
+    grade: 4,
+    type: "language-arts",
+    word: "plural",
+    prompt: "What is the correct plural form of 'leaf'?",
+    choices: ["leafs", "leaves", "leafes", "leaf's"],
+    answer: "leaves",
+    definition: "Some nouns change spelling when made plural, especially those ending in -f.",
+    contextSentence: "The leaves on the maple tree turn orange every autumn.",
+    hints: ["Words ending in -f or -fe often change to -ves in the plural.", "Think: knife → knives."],
+    coach: "For many words ending in -f or -fe, change the f to v and add -es: leaf → leaves, wolf → wolves."
+  },
+  {
+    id: "ca-la-06",
+    grade: 4,
+    type: "language-arts",
+    word: "simile",
+    prompt: "Which sentence contains a SIMILE?",
+    choices: [
+      "The wind howled through the trees.",
+      "Her smile was a warm sunrise.",
+      "The river ran as fast as a galloping horse.",
+      "The mountain stood guard over the valley."
+    ],
+    answer: "The river ran as fast as a galloping horse.",
+    definition: "A simile compares two things using the words 'like' or 'as'.",
+    contextSentence: "The simile 'as quiet as a mouse' compares someone's silence to a mouse.",
+    hints: ["Look for the words 'like' or 'as' used to compare two things.", "A metaphor does NOT use like or as."],
+    coach: "A simile uses 'like' or 'as' to compare two things. A metaphor says one thing IS another thing."
+  },
+  {
+    id: "ca-la-07",
+    grade: 4,
+    type: "language-arts",
+    word: "verb",
+    prompt: "Which word is the VERB in 'The moose splashed through the shallow river'?",
+    choices: ["moose", "shallow", "splashed", "river"],
+    answer: "splashed",
+    definition: "A verb is an action word or a word that describes a state of being.",
+    contextSentence: "The moose splashed water everywhere as it crossed the stream.",
+    hints: ["A verb shows action or a state of being.", "What action did the moose do?"],
+    coach: "Verbs show action (run, splash, build) or a state of being (is, was, seem). 'Splashed' is the action here."
+  },
+  {
+    id: "ca-la-08",
+    grade: 4,
+    type: "language-arts",
+    word: "text structure",
+    prompt: "A book about Canada uses bold headings like 'Geography', 'Government', and 'Culture'. What type of text structure is this?",
+    choices: ["narrative", "problem-solution", "cause-and-effect", "description"],
+    answer: "description",
+    definition: "A descriptive text structure uses headings and details to describe or explain a topic.",
+    contextSentence: "Informational texts often use a descriptive structure to organise facts about a topic.",
+    hints: ["It is not telling a story, so not narrative.", "The headings describe different aspects of one topic."],
+    coach: "Description text structure uses categories and headings to explain a topic. It is common in non-fiction books."
+  },
+  {
+    id: "ca-la-09",
+    grade: 4,
+    type: "language-arts",
+    word: "homonym",
+    prompt: "Which pair of words are HOMONYMS (same spelling and sound, different meaning)?",
+    choices: ["flower / flour", "bare / bear", "bat (animal) / bat (sports equipment)", "right / write"],
+    answer: "bat (animal) / bat (sports equipment)",
+    definition: "Homonyms are words that are spelled and pronounced the same but have different meanings.",
+    contextSentence: "The word 'bat' can mean a flying mammal or the stick used to hit a ball.",
+    hints: ["Homophones sound the same but are spelled differently.", "Homonyms are spelled the same AND sound the same."],
+    coach: "Homonyms: same spelling + same sound + different meaning (bat, bank, can). Homophones: same sound, different spelling (flower/flour)."
+  },
+  {
+    id: "ca-la-10",
+    grade: 4,
+    type: "language-arts",
+    word: "point of view",
+    prompt: "A story told using 'I', 'me', and 'my' is written in which point of view?",
+    choices: ["second person", "third-person limited", "first person", "third-person omniscient"],
+    answer: "first person",
+    definition: "First-person point of view uses 'I', 'me', and 'my' — the narrator is a character in the story.",
+    contextSentence: "In first-person stories, the narrator shares their own thoughts and feelings directly with the reader.",
+    hints: ["First person uses pronouns like I, me, my, we.", "Second person uses 'you'."],
+    coach: "First person: I, me, my. Second person: you. Third person: he, she, they. Look at the pronouns to identify the point of view."
+  },
+
+  // ── Health & Phys-Ed ────────────────────────────────────────────────────
+  {
+    id: "ca-health-01",
+    grade: 4,
+    type: "health",
+    word: "nutrients",
+    prompt: "Which nutrient is the body's MAIN source of energy?",
+    choices: ["protein", "fat", "carbohydrates", "vitamins"],
+    answer: "carbohydrates",
+    definition: "Carbohydrates (sugars and starches) are the body's primary fuel source.",
+    contextSentence: "Whole-grain bread, oats, and fruits are healthy sources of carbohydrates.",
+    hints: ["It is found in bread, pasta, rice, and fruit.", "It breaks down into glucose — the body's fuel."],
+    coach: "Carbohydrates break down into glucose, which cells use for energy. Protein builds muscles. Fat stores energy and protects organs."
+  },
+  {
+    id: "ca-health-02",
+    grade: 4,
+    type: "health",
+    word: "heart",
+    prompt: "What does the heart do?",
+    choices: [
+      "It filters waste from the blood",
+      "It pumps blood throughout the body",
+      "It produces red blood cells",
+      "It digests food into nutrients"
+    ],
+    answer: "It pumps blood throughout the body",
+    definition: "The heart is a muscular organ that pumps blood carrying oxygen and nutrients to all parts of the body.",
+    contextSentence: "When you exercise, your heart beats faster to deliver more oxygen to your muscles.",
+    hints: ["It is a muscle that beats about 70 times per minute at rest.", "Blood carries oxygen and nutrients."],
+    coach: "The heart is a pump that sends blood to every cell in the body. Blood carries oxygen and removes carbon dioxide."
+  },
+  {
+    id: "ca-health-03",
+    grade: 4,
+    type: "health",
+    word: "aerobic",
+    prompt: "Running, swimming, and cycling are examples of _____ exercise.",
+    choices: ["flexibility", "strength", "aerobic", "balance"],
+    answer: "aerobic",
+    definition: "Aerobic exercise increases heart rate and breathing rate over a sustained period.",
+    contextSentence: "Aerobic exercise strengthens the heart and lungs and helps maintain a healthy weight.",
+    hints: ["Aerobic means 'with air/oxygen'.", "It raises your heart rate and breathing rate."],
+    coach: "Aerobic exercise = activities that raise your heart and breathing rate for a sustained time. Great for heart health!"
+  },
+  {
+    id: "ca-health-04",
+    grade: 4,
+    type: "health",
+    word: "stress",
+    prompt: "Which is a HEALTHY way to manage stress?",
+    choices: [
+      "Skipping meals to save time",
+      "Playing video games for 8 hours straight",
+      "Talking to a trusted adult or friend",
+      "Avoiding all physical activity"
+    ],
+    answer: "Talking to a trusted adult or friend",
+    definition: "Healthy stress management includes talking to others, exercising, and taking breaks.",
+    contextSentence: "Talking to a trusted adult can help you feel better and find solutions when you are stressed.",
+    hints: ["Healthy choices involve connection, movement, and rest.", "Isolating or unhealthy habits make stress worse."],
+    coach: "Healthy ways to manage stress: talk to someone you trust, exercise, get enough sleep, and take breaks."
+  },
+  {
+    id: "ca-health-05",
+    grade: 4,
+    type: "health",
+    word: "skeleton",
+    prompt: "What are the TWO main jobs of the human skeleton?",
+    choices: [
+      "To produce hormones and filter blood",
+      "To support the body and protect organs",
+      "To digest food and absorb nutrients",
+      "To carry oxygen and fight infection"
+    ],
+    answer: "To support the body and protect organs",
+    definition: "The skeleton provides structure for the body and protects delicate internal organs.",
+    contextSentence: "Your ribs protect your lungs and heart, and your skull protects your brain.",
+    hints: ["Think about what bones do for your body shape and for protecting soft organs.", "Skull protects the brain; ribs protect the heart and lungs."],
+    coach: "The skeleton supports your body, allows movement (with muscles), and protects organs like the brain (skull) and heart/lungs (ribs)."
+  },
+  {
+    id: "ca-health-06",
+    grade: 4,
+    type: "health",
+    word: "respect",
+    prompt: "Which behaviour shows RESPECT for others during a group activity?",
+    choices: [
+      "Talking over teammates when they are sharing ideas",
+      "Taking more than your fair share of time and equipment",
+      "Listening carefully and taking turns",
+      "Ignoring the team rules because you disagree"
+    ],
+    answer: "Listening carefully and taking turns",
+    definition: "Respect means treating others with kindness, fairness, and consideration.",
+    contextSentence: "Listening carefully and taking turns helps the whole team work together effectively.",
+    hints: ["Respect involves considering others' feelings and needs.", "Taking turns and listening show you value others."],
+    coach: "Respect means treating others the way you want to be treated — listening, taking turns, and being fair."
+  },
+  {
+    id: "ca-health-07",
+    grade: 4,
+    type: "health",
+    word: "hydration",
+    prompt: "Why is it important to drink water before, during, and after physical activity?",
+    choices: [
+      "To increase the feeling of hunger",
+      "To replace fluids lost through sweat and keep the body working well",
+      "To make muscles grow larger",
+      "To slow down breathing during exercise"
+    ],
+    answer: "To replace fluids lost through sweat and keep the body working well",
+    definition: "Hydration means keeping the body's fluid levels healthy, which is essential for all body functions.",
+    contextSentence: "Drinking water during exercise replaces the fluids lost through sweating and prevents dehydration.",
+    hints: ["Your body loses water when you sweat.", "Without enough water, performance drops and you feel tired."],
+    coach: "During exercise your body sweats. Drinking water replaces those fluids and helps your heart, muscles, and brain work their best."
+  },
+  {
+    id: "ca-health-08",
+    grade: 4,
+    type: "health",
+    word: "Canada's Food Guide",
+    prompt: "According to Canada's Food Guide, which food group should fill HALF of your plate?",
+    choices: ["Protein foods", "Dairy products", "Whole grains", "Vegetables and fruits"],
+    answer: "Vegetables and fruits",
+    definition: "Canada's Food Guide recommends filling half your plate with vegetables and fruits at each meal.",
+    contextSentence: "Canada's Food Guide encourages eating plenty of colourful vegetables and fruits every day.",
+    hints: ["It is the largest recommended portion on the plate.", "Think colourful and plant-based."],
+    coach: "Canada's Food Guide (2019): half the plate = vegetables & fruits; a quarter = whole grains; a quarter = protein foods."
+  },
+  {
+    id: "ca-health-09",
+    grade: 4,
+    type: "health",
+    word: "bullying",
+    prompt: "Which of the following is an example of cyberbullying?",
+    choices: [
+      "Accidentally bumping into someone in the hallway",
+      "Disagreeing with a friend's opinion at lunch",
+      "Sending mean or hurtful messages to someone online",
+      "Choosing a different game to play at recess"
+    ],
+    answer: "Sending mean or hurtful messages to someone online",
+    definition: "Cyberbullying is bullying that takes place over digital devices like phones, computers, and tablets.",
+    contextSentence: "Sending mean messages online is cyberbullying and can cause serious emotional harm.",
+    hints: ["Cyberbullying happens through technology like phones or the internet.", "It is intentionally hurtful."],
+    coach: "Cyberbullying is intentional and repeated harm through digital devices. Always tell a trusted adult if you see or experience it."
+  },
+  {
+    id: "ca-health-10",
+    grade: 4,
+    type: "health",
+    word: "lung",
+    prompt: "What is the MAIN job of the lungs?",
+    choices: [
+      "To pump blood around the body",
+      "To break down food into energy",
+      "To exchange oxygen and carbon dioxide between the body and the air",
+      "To filter waste products from the blood"
+    ],
+    answer: "To exchange oxygen and carbon dioxide between the body and the air",
+    definition: "The lungs take in oxygen from the air and release carbon dioxide from the body.",
+    contextSentence: "When you breathe in, your lungs absorb oxygen; when you breathe out, they release carbon dioxide.",
+    hints: ["Breathing brings oxygen in and takes carbon dioxide out.", "Gas exchange happens in tiny air sacs called alveoli."],
+    coach: "Lungs breathe in oxygen (needed by cells) and breathe out carbon dioxide (waste from cells). This gas exchange is essential for life."
+  }
+];

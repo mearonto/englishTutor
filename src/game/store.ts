@@ -1,4 +1,4 @@
-import { getAstronomyLevels, getCustomLevelsCount, getLevels, SHOP_ITEMS } from "./levels";
+import { getAstronomyLevels, getCanadaLevels, getCustomLevelsCount, getLevels, SHOP_ITEMS } from "./levels";
 import { clearState, defaultState, loadState, saveState } from "./storage";
 import type { Level, PlayerState, Reward, Subject } from "./types";
 
@@ -55,6 +55,14 @@ function availableLevels(): Level[] {
     }
     return levels.sort((a, b) => (state.learned[a.id] ?? 0) - (state.learned[b.id] ?? 0));
   }
+  if (state.subject === "canada") {
+    let levels = getCanadaLevels();
+    if (state.canadaCategory && state.canadaCategory !== "all") {
+      levels = levels.filter((l) => l.type === state.canadaCategory);
+      if (!levels.length) levels = getCanadaLevels();
+    }
+    return levels.sort((a, b) => (state.learned[a.id] ?? 0) - (state.learned[b.id] ?? 0));
+  }
   const unlocked = getLevels().filter((level) => level.grade <= state.gradeUnlocked);
   return unlocked.sort((a, b) => (state.learned[a.id] ?? 0) - (state.learned[b.id] ?? 0));
 }
@@ -63,6 +71,7 @@ export function pickNextLevel(): Level {
   if (state.subject === "english") {
     maybeUnlockGrade4();
   }
+
   const pool = availableLevels();
   return pool[Math.floor(Math.random() * pool.length)];
 }
@@ -74,6 +83,11 @@ export function setSubject(subject: Subject): void {
 
 export function setAstronomyCategory(category: string): void {
   state = { ...state, astronomyCategory: category };
+  emit();
+}
+
+export function setCanadaCategory(category: string): void {
+  state = { ...state, canadaCategory: category };
   emit();
 }
 

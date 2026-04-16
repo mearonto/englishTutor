@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties, type ChangeEvent } fro
 import type Phaser from "phaser";
 import "./App.css";
 import { gameEvents } from "./game/events";
-import { ASTRONOMY_CATEGORY_LABELS, SHOP_ITEMS } from "./game/levels";
+import { ASTRONOMY_CATEGORY_LABELS, CANADA_CATEGORY_LABELS, SHOP_ITEMS } from "./game/levels";
 import { createGame } from "./game/createGame";
 import {
   addTokens,
@@ -12,6 +12,7 @@ import {
   refreshAfterContentImport,
   resetAll,
   setAstronomyCategory,
+  setCanadaCategory,
   setSubject,
   spendTokens,
   subscribe
@@ -469,7 +470,9 @@ function App() {
               <span>
                 {state.subject === "astronomy"
                   ? `Astronomy${state.astronomyCategory !== "all" ? ` • ${ASTRONOMY_CATEGORY_LABELS[state.astronomyCategory] ?? state.astronomyCategory}` : ""}`
-                  : "Practice Mode"}
+                  : state.subject === "canada"
+                    ? `Canada G4${state.canadaCategory !== "all" ? ` • ${CANADA_CATEGORY_LABELS[state.canadaCategory] ?? state.canadaCategory}` : ""}`
+                    : "Practice Mode"}
               </span>
               <span>
                 Streak: <strong>{state.streak}</strong>
@@ -493,6 +496,11 @@ function App() {
             {state.subject === "astronomy" && !testState.running && !testState.finished && (
               <span style={{ fontSize: "0.8rem", color: "#0099cc", fontWeight: 700 }}>
                 Astronomy{state.astronomyCategory !== "all" ? ` • ${ASTRONOMY_CATEGORY_LABELS[state.astronomyCategory] ?? state.astronomyCategory}` : ""}
+              </span>
+            )}
+            {state.subject === "canada" && !testState.running && !testState.finished && (
+              <span style={{ fontSize: "0.8rem", color: "#cc5500", fontWeight: 700 }}>
+                Canada G4{state.canadaCategory !== "all" ? ` • ${CANADA_CATEGORY_LABELS[state.canadaCategory] ?? state.canadaCategory}` : ""}
               </span>
             )}
             {testState.finished ? (
@@ -696,6 +704,21 @@ function App() {
                   >
                     Astronomy
                   </button>
+                  <button
+                    className={state.subject === "canada" ? "active" : ""}
+                    onClick={() => {
+                      if (state.subject !== "canada") {
+                        setSubject("canada");
+                        setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
+                        setCanGoNext(false);
+                        setFeedback({ message: "", good: false });
+                        gameEvents.emit("command-set-mode", { testMode: false });
+                        gameEvents.emit("command-next");
+                      }
+                    }}
+                  >
+                    Canada G4
+                  </button>
                 </div>
                 {state.subject === "astronomy" && (
                   <>
@@ -720,6 +743,32 @@ function App() {
                     </select>
                     <p className="helper-text" style={{ marginTop: "-0.4rem" }}>
                       Selecting a category limits practice and test questions to that topic.
+                    </p>
+                  </>
+                )}
+                {state.subject === "canada" && (
+                  <>
+                    <label htmlFor="canadaCategory" className="field-label">
+                      Subject Area
+                    </label>
+                    <select
+                      id="canadaCategory"
+                      value={state.canadaCategory}
+                      onChange={(e) => {
+                        setCanadaCategory(e.target.value);
+                        setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
+                        setCanGoNext(false);
+                        setFeedback({ message: "", good: false });
+                        gameEvents.emit("command-set-mode", { testMode: false });
+                        gameEvents.emit("command-next");
+                      }}
+                    >
+                      {Object.entries(CANADA_CATEGORY_LABELS).map(([key, label]) => (
+                        <option key={key} value={key}>{label}</option>
+                      ))}
+                    </select>
+                    <p className="helper-text" style={{ marginTop: "-0.4rem" }}>
+                      Selecting a subject area limits practice and test questions to that topic.
                     </p>
                   </>
                 )}

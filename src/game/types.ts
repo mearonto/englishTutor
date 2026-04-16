@@ -1,6 +1,6 @@
 export type Grade = 3 | 4;
 
-export type Subject = "english" | "astronomy";
+export type Subject = "english" | "astronomy" | "canada";
 
 export type SkillType =
   | "spelling"
@@ -17,7 +17,12 @@ export type SkillType =
   | "nasa-ksc"
   | "earth-space"
   | "fun-fact"
-  | "astronomy-vocab";
+  | "astronomy-vocab"
+  | "math"
+  | "science"
+  | "social-studies"
+  | "language-arts"
+  | "health";
 
 export interface Level {
   id: string;
@@ -44,6 +49,7 @@ export interface PlayerState {
   inventory: string[];
   subject: Subject;
   astronomyCategory: string;
+  canadaCategory: string;
 }
 
 export interface ShopItem {
