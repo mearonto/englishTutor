@@ -154,7 +154,9 @@ export class ChallengeScene extends Phaser.Scene {
 
     gameEvents.emit("feedback", { message: "", good: false });
     gameEvents.emit("round-start");
-    this.pronounceCurrent();
+    if (!this.testMode) {
+      this.pronounceCurrent();
+    }
   }
 
   private onChoice(choice: string): void {
@@ -208,7 +210,9 @@ export class ChallengeScene extends Phaser.Scene {
           node.bg.setStrokeStyle(2, 0x4ade80);
         }
       });
-      this.speak(this.level.answer, this.level.contextSentence);
+      if (!this.testMode) {
+        this.speak(this.level.answer, this.level.contextSentence);
+      }
       gameEvents.emit("feedback", {
         message: `Correct! +${reward.xp} XP, +${reward.stars} stars, +${reward.tokens} tokens`,
         good: true
@@ -248,7 +252,9 @@ export class ChallengeScene extends Phaser.Scene {
       }
       node.container.disableInteractive();
     });
-    this.speak(this.level.answer, this.level.contextSentence);
+    if (!this.testMode) {
+      this.speak(this.level.answer, this.level.contextSentence);
+    }
     gameEvents.emit("feedback", {
       message: `Answer: ${this.level.answer}. You still earn +${reward.xp} XP.`,
       good: false
