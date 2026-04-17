@@ -451,7 +451,7 @@ function App() {
     <main className="app-shell">
       <header className="topbar">
         <div className="topbar-row">
-          <h1>Word Quest: Northern Trails</h1>
+          <h1>Happy Study for Matthew and Leon</h1>
           <div className="mode-toggle">
             <button
               className={mode === "practice" ? "active" : ""}
