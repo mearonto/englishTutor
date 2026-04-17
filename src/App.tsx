@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties, type ChangeEvent } from "react";
 import { MiniGamesModal } from "./MiniGames";
+import { FONT_SIZE_STORAGE_KEY, type FontSizePref } from "./game/ChallengeScene";
 import type Phaser from "phaser";
 import "./App.css";
 import { gameEvents } from "./game/events";
@@ -125,6 +126,9 @@ function App() {
   });
   const [pendingAstroCats, setPendingAstroCats] = useState<string[]>([]);
   const [pendingCanadaCats, setPendingCanadaCats] = useState<string[]>([]);
+  const [pendingFontSize, setPendingFontSize] = useState<FontSizePref>(
+    () => (localStorage.getItem(FONT_SIZE_STORAGE_KEY) as FontSizePref | null) ?? "small"
+  );
   const [bonusTokenInput, setBonusTokenInput] = useState(0);
   const [bonusTokenMessage, setBonusTokenMessage] = useState("");
   const [oldPassword, setOldPassword] = useState("");
@@ -242,6 +246,7 @@ function App() {
     const s = getState();
     setPendingAstroCats([...s.astronomyCategories]);
     setPendingCanadaCats([...s.canadaCategories]);
+    setPendingFontSize((localStorage.getItem(FONT_SIZE_STORAGE_KEY) as FontSizePref | null) ?? "small");
     setTeacherOpen(true);
     setTeacherUnlocked(false);
     setTeacherPasswordInput("");
@@ -259,9 +264,13 @@ function App() {
     const canadaDiff =
       JSON.stringify([...pendingCanadaCats].sort()) !==
       JSON.stringify([...s.canadaCategories].sort());
+    const prevFontSize = (localStorage.getItem(FONT_SIZE_STORAGE_KEY) as FontSizePref | null) ?? "small";
+    const fontSizeDiff = pendingFontSize !== prevFontSize;
+    localStorage.setItem(FONT_SIZE_STORAGE_KEY, pendingFontSize);
+    gameEvents.emit("command-font-size", { size: pendingFontSize });
     setAstronomyCategories(pendingAstroCats);
     setCanadaCategories(pendingCanadaCats);
-    if (astroDiff || canadaDiff) {
+    if (astroDiff || canadaDiff || fontSizeDiff) {
       setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
       setCanGoNext(false);
       setFeedback({ message: "", good: false });
@@ -744,6 +753,22 @@ function App() {
               </>
             ) : (
               <>
+                <h3>Font Size</h3>
+                <div className="font-size-picker">
+                  {(["small", "medium", "large"] as FontSizePref[]).map((sz) => (
+                    <button
+                      key={sz}
+                      className={pendingFontSize === sz ? "active" : ""}
+                      onClick={() => setPendingFontSize(sz)}
+                    >
+                      {sz === "small" ? "小 Small" : sz === "medium" ? "中 Medium" : "大 Large"}
+                    </button>
+                  ))}
+                </div>
+                <p className="helper-text" style={{ marginTop: "0.2rem" }}>
+                  Takes effect when you close Teacher Mode.
+                </p>
+                <hr />
                 <h3>Category Settings</h3>
                 <p className="helper-text" style={{ marginTop: "-0.4rem" }}>
                   Select which categories students can see. Takes effect when you close Teacher Mode.

@@ -4,6 +4,18 @@ import { applyCorrect, applyFailedRound, breakStreak, pickNextLevel } from "./st
 import { speakWord } from "./tts";
 import type { Level } from "./types";
 
+export type FontSizePref = "small" | "medium" | "large";
+export const FONT_SIZE_STORAGE_KEY = "word-quest-font-size-v1";
+
+const SIZE_CONFIG: Record<FontSizePref, {
+  type: number; prompt: number; choice: number; hint: number;
+  spacing: number; choiceH: number; canvas: number;
+}> = {
+  small:  { type: 12, prompt: 17, choice: 15, hint: 13, spacing: 52, choiceH: 42, canvas: 420 },
+  medium: { type: 14, prompt: 20, choice: 18, hint: 15, spacing: 62, choiceH: 50, canvas: 490 },
+  large:  { type: 16, prompt: 23, choice: 21, hint: 17, spacing: 72, choiceH: 58, canvas: 560 },
+};
+
 type ChoiceNode = {
   container: Phaser.GameObjects.Container;
   bg: Phaser.GameObjects.Rectangle;
@@ -24,12 +36,16 @@ export class ChallengeScene extends Phaser.Scene {
   private speechRate = 0.88;
   private testMode = false;
   private disposed = false;
+  private fontSize: FontSizePref = "small";
 
   constructor() {
     super("ChallengeScene");
   }
 
   create(): void {
+    const saved = localStorage.getItem(FONT_SIZE_STORAGE_KEY) as FontSizePref | null;
+    if (saved && saved in SIZE_CONFIG) this.fontSize = saved;
+
     this.cameras.main.setBackgroundColor("#ffffff");
     this.add.rectangle(430, 210, 840, 400, 0xf0f8ff).setStrokeStyle(2, 0xbfdbfe);
 
@@ -66,6 +82,7 @@ export class ChallengeScene extends Phaser.Scene {
     gameEvents.on("command-pronounce", this.pronounceCurrent, this);
     gameEvents.on("command-audio-settings", this.applyAudioSettings, this);
     gameEvents.on("command-set-mode", this.applyModeSettings, this);
+    gameEvents.on("command-font-size", this.applyFontSize, this);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanup, this);
     this.events.once(Phaser.Scenes.Events.DESTROY, this.cleanup, this);
 
@@ -87,6 +104,16 @@ export class ChallengeScene extends Phaser.Scene {
       return;
     }
 
+    // Apply font size config for this round
+    const cfg = SIZE_CONFIG[this.fontSize];
+    if (this.scale.height !== cfg.canvas) {
+      this.scale.resize(860, cfg.canvas);
+    }
+    this.typeText.setFontSize(cfg.type);
+    this.promptText.setFontSize(cfg.prompt);
+    this.hintText.setFontSize(cfg.hint);
+    this.metaText.setFontSize(cfg.hint);
+
     const ASTRO_LABELS: Record<string, string> = {
       "solar-system": "Solar System",
       "stars-galaxies": "Stars & Galaxies",
@@ -107,9 +134,9 @@ export class ChallengeScene extends Phaser.Scene {
 
     // Measure the actual prompt height after word-wrap so choices never overlap it
     const promptBottom = this.promptText.y + this.promptText.height;
-    const choiceStartY = Math.max(100, promptBottom + 14);
-    const choiceSpacing = 52;
-    const choiceHeight = 42;
+    const choiceStartY = Math.max(cfg.choiceH * 2, promptBottom + 14);
+    const choiceSpacing = cfg.spacing;
+    const choiceHeight = cfg.choiceH;
 
     const CHOICE_LETTERS = ["A", "B", "C", "D"];
     this.level.choices.forEach((choice, index) => {
@@ -129,7 +156,7 @@ export class ChallengeScene extends Phaser.Scene {
       const label = this.add.text(106, y - 10, choice, {
         fontFamily: "Trebuchet MS, sans-serif",
         color: "#0a3d5c",
-        fontSize: "15px",
+        fontSize: `${cfg.choice}px`,
         wordWrap: { width: 700 }
       });
 
@@ -366,6 +393,12 @@ export class ChallengeScene extends Phaser.Scene {
     this.testMode = payload.testMode;
   }
 
+  private applyFontSize(payload: { size: FontSizePref }): void {
+    if (payload.size in SIZE_CONFIG) {
+      this.fontSize = payload.size;
+    }
+  }
+
   private applyAudioSettings(payload: { enabled?: boolean; rate?: number }): void {
     if (typeof payload.enabled === "boolean") {
       this.audioEnabled = payload.enabled;
@@ -384,6 +417,7 @@ export class ChallengeScene extends Phaser.Scene {
     gameEvents.off("command-pronounce", this.pronounceCurrent, this);
     gameEvents.off("command-audio-settings", this.applyAudioSettings, this);
     gameEvents.off("command-set-mode", this.applyModeSettings, this);
+    gameEvents.off("command-font-size", this.applyFontSize, this);
   }
 
   private canRender(): boolean {
