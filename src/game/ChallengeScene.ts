@@ -31,6 +31,7 @@ export class ChallengeScene extends Phaser.Scene {
   private metaText?: Phaser.GameObjects.Text;
   private hintText?: Phaser.GameObjects.Text;
   private typeText?: Phaser.GameObjects.Text;
+  private bgRect?: Phaser.GameObjects.Rectangle;
   private choiceNodes: ChoiceNode[] = [];
   private audioEnabled = true;
   private speechRate = 0.88;
@@ -47,7 +48,7 @@ export class ChallengeScene extends Phaser.Scene {
     if (saved && saved in SIZE_CONFIG) this.fontSize = saved;
 
     this.cameras.main.setBackgroundColor("#ffffff");
-    this.add.rectangle(430, 210, 840, 400, 0xf0f8ff).setStrokeStyle(2, 0xbfdbfe);
+    this.bgRect = this.add.rectangle(430, 210, 840, 400, 0xf0f8ff).setStrokeStyle(2, 0xbfdbfe);
 
     this.typeText = this.add.text(28, 14, "", {
       fontFamily: "Trebuchet MS, sans-serif",
@@ -108,6 +109,11 @@ export class ChallengeScene extends Phaser.Scene {
     const cfg = SIZE_CONFIG[this.fontSize];
     if (this.scale.height !== cfg.canvas) {
       this.scale.resize(860, cfg.canvas);
+    }
+    // Resize background box to match canvas height
+    if (this.bgRect) {
+      this.bgRect.setY(cfg.canvas / 2);
+      this.bgRect.setSize(840, cfg.canvas - 8);
     }
     this.typeText.setFontSize(cfg.type);
     this.promptText.setFontSize(cfg.prompt);
