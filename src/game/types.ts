@@ -48,8 +48,8 @@ export interface PlayerState {
   learned: Record<string, number>;
   inventory: string[];
   subject: Subject;
-  astronomyCategory: string;
-  canadaCategory: string;
+  astronomyCategories: string[];
+  canadaCategories: string[];
 }
 
 export interface ShopItem {

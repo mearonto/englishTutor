@@ -608,6 +608,41 @@ input[type="number"]:focus {
   }
 }
 
+/* ── Category Checkboxes ────────────────────────────────────────────────── */
+.category-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  background: rgba(0, 100, 180, 0.05);
+  border: 1px solid rgba(0, 100, 180, 0.15);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 0.4rem;
+}
+
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  user-select: none;
+}
+
+.check-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #0066cc;
+}
+
+.check-row:first-child {
+  font-weight: 700;
+  border-bottom: 1px solid rgba(0, 100, 180, 0.15);
+  padding-bottom: 0.35rem;
+  margin-bottom: 0.1rem;
+}
+
 /* ── Mini Games ─────────────────────────────────────────────────────────── */
 .minigames-content {
   max-width: 560px;

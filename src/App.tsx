@@ -13,8 +13,8 @@ import {
   purchase,
   refreshAfterContentImport,
   resetAll,
-  setAstronomyCategory,
-  setCanadaCategory,
+  setAstronomyCategories,
+  setCanadaCategories,
   setSubject,
   spendStars,
   spendTokens,
@@ -123,6 +123,8 @@ function App() {
     answered: 0,
     correct: 0
   });
+  const [pendingAstroCats, setPendingAstroCats] = useState<string[]>([]);
+  const [pendingCanadaCats, setPendingCanadaCats] = useState<string[]>([]);
   const [bonusTokenInput, setBonusTokenInput] = useState(0);
   const [bonusTokenMessage, setBonusTokenMessage] = useState("");
   const [oldPassword, setOldPassword] = useState("");
@@ -237,6 +239,9 @@ function App() {
   };
 
   const openTeacherMode = () => {
+    const s = getState();
+    setPendingAstroCats([...s.astronomyCategories]);
+    setPendingCanadaCats([...s.canadaCategories]);
     setTeacherOpen(true);
     setTeacherUnlocked(false);
     setTeacherPasswordInput("");
@@ -247,6 +252,22 @@ function App() {
   };
 
   const closeTeacherMode = () => {
+    const s = getState();
+    const astroDiff =
+      JSON.stringify([...pendingAstroCats].sort()) !==
+      JSON.stringify([...s.astronomyCategories].sort());
+    const canadaDiff =
+      JSON.stringify([...pendingCanadaCats].sort()) !==
+      JSON.stringify([...s.canadaCategories].sort());
+    setAstronomyCategories(pendingAstroCats);
+    setCanadaCategories(pendingCanadaCats);
+    if (astroDiff || canadaDiff) {
+      setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
+      setCanGoNext(false);
+      setFeedback({ message: "", good: false });
+      gameEvents.emit("command-set-mode", { testMode: false });
+      gameEvents.emit("command-next");
+    }
     setTeacherOpen(false);
     setTeacherUnlocked(false);
     setTeacherPasswordInput("");
@@ -473,9 +494,9 @@ function App() {
             <div className="progress-wrap">
               <span>
                 {state.subject === "astronomy"
-                  ? `Astronomy${state.astronomyCategory !== "all" ? ` • ${ASTRONOMY_CATEGORY_LABELS[state.astronomyCategory] ?? state.astronomyCategory}` : ""}`
+                  ? `Astronomy${state.astronomyCategories.length === 1 ? ` • ${ASTRONOMY_CATEGORY_LABELS[state.astronomyCategories[0]] ?? state.astronomyCategories[0]}` : state.astronomyCategories.length > 1 ? ` • ${state.astronomyCategories.length} categories` : ""}`
                   : state.subject === "canada"
-                    ? `Canada G4${state.canadaCategory !== "all" ? ` • ${CANADA_CATEGORY_LABELS[state.canadaCategory] ?? state.canadaCategory}` : ""}`
+                    ? `Canada G4${state.canadaCategories.length === 1 ? ` • ${CANADA_CATEGORY_LABELS[state.canadaCategories[0]] ?? state.canadaCategories[0]}` : state.canadaCategories.length > 1 ? ` • ${state.canadaCategories.length} subjects` : ""}`
                     : "Practice Mode"}
               </span>
               <span>
@@ -497,14 +518,18 @@ function App() {
                 </>
               )}
             </div>
-            {state.subject === "astronomy" && !testState.running && !testState.finished && (
+            {state.subject === "astronomy" && !testState.running && !testState.finished && state.astronomyCategories.length > 0 && (
               <span style={{ fontSize: "0.8rem", color: "#0099cc", fontWeight: 700 }}>
-                Astronomy{state.astronomyCategory !== "all" ? ` • ${ASTRONOMY_CATEGORY_LABELS[state.astronomyCategory] ?? state.astronomyCategory}` : ""}
+                {state.astronomyCategories.length === 1
+                  ? `Astronomy • ${ASTRONOMY_CATEGORY_LABELS[state.astronomyCategories[0]] ?? state.astronomyCategories[0]}`
+                  : `Astronomy • ${state.astronomyCategories.length} categories`}
               </span>
             )}
-            {state.subject === "canada" && !testState.running && !testState.finished && (
+            {state.subject === "canada" && !testState.running && !testState.finished && state.canadaCategories.length > 0 && (
               <span style={{ fontSize: "0.8rem", color: "#cc5500", fontWeight: 700 }}>
-                Canada G4{state.canadaCategory !== "all" ? ` • ${CANADA_CATEGORY_LABELS[state.canadaCategory] ?? state.canadaCategory}` : ""}
+                {state.canadaCategories.length === 1
+                  ? `Canada G4 • ${CANADA_CATEGORY_LABELS[state.canadaCategories[0]] ?? state.canadaCategories[0]}`
+                  : `Canada G4 • ${state.canadaCategories.length} subjects`}
               </span>
             )}
             {testState.finished ? (
@@ -719,58 +744,80 @@ function App() {
                     Canada G4
                   </button>
                 </div>
-                {state.subject === "astronomy" && (
-                  <>
-                    <label htmlFor="astroCategory" className="field-label">
-                      Study Category
-                    </label>
-                    <select
-                      id="astroCategory"
-                      value={state.astronomyCategory}
-                      onChange={(e) => {
-                        setAstronomyCategory(e.target.value);
-                        setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
-                        setCanGoNext(false);
-                        setFeedback({ message: "", good: false });
-                        gameEvents.emit("command-set-mode", { testMode: false });
-                        gameEvents.emit("command-next");
-                      }}
-                    >
-                      {Object.entries(ASTRONOMY_CATEGORY_LABELS).map(([key, label]) => (
-                        <option key={key} value={key}>{label}</option>
-                      ))}
-                    </select>
-                    <p className="helper-text" style={{ marginTop: "-0.4rem" }}>
-                      Selecting a category limits practice and test questions to that topic.
-                    </p>
-                  </>
-                )}
-                {state.subject === "canada" && (
-                  <>
-                    <label htmlFor="canadaCategory" className="field-label">
-                      Subject Area
-                    </label>
-                    <select
-                      id="canadaCategory"
-                      value={state.canadaCategory}
-                      onChange={(e) => {
-                        setCanadaCategory(e.target.value);
-                        setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
-                        setCanGoNext(false);
-                        setFeedback({ message: "", good: false });
-                        gameEvents.emit("command-set-mode", { testMode: false });
-                        gameEvents.emit("command-next");
-                      }}
-                    >
-                      {Object.entries(CANADA_CATEGORY_LABELS).map(([key, label]) => (
-                        <option key={key} value={key}>{label}</option>
-                      ))}
-                    </select>
-                    <p className="helper-text" style={{ marginTop: "-0.4rem" }}>
-                      Selecting a subject area limits practice and test questions to that topic.
-                    </p>
-                  </>
-                )}
+                {state.subject === "astronomy" && (() => {
+                  const allKeys = Object.keys(ASTRONOMY_CATEGORY_LABELS).filter(k => k !== "all");
+                  const allSelected = pendingAstroCats.length === 0;
+                  const toggle = (key: string) => {
+                    const effective = allSelected ? allKeys : pendingAstroCats;
+                    if (effective.includes(key)) {
+                      const next = effective.filter(k => k !== key);
+                      setPendingAstroCats(next.length === 0 ? [] : next.length === allKeys.length ? [] : next);
+                    } else {
+                      const next = [...effective, key];
+                      setPendingAstroCats(next.length === allKeys.length ? [] : next);
+                    }
+                  };
+                  return (
+                    <>
+                      <label className="field-label">Study Categories</label>
+                      <div className="category-checkboxes">
+                        <label className="check-row">
+                          <input type="checkbox" checked={allSelected}
+                            onChange={() => setPendingAstroCats([])} />
+                          <span>All Categories</span>
+                        </label>
+                        {allKeys.map(key => (
+                          <label key={key} className="check-row">
+                            <input type="checkbox"
+                              checked={allSelected || pendingAstroCats.includes(key)}
+                              onChange={() => toggle(key)} />
+                            <span>{ASTRONOMY_CATEGORY_LABELS[key]}</span>
+                          </label>
+                        ))}
+                      </div>
+                      <p className="helper-text" style={{ marginTop: "0.2rem" }}>
+                        Takes effect when you close Teacher Mode.
+                      </p>
+                    </>
+                  );
+                })()}
+                {state.subject === "canada" && (() => {
+                  const allKeys = Object.keys(CANADA_CATEGORY_LABELS).filter(k => k !== "all");
+                  const allSelected = pendingCanadaCats.length === 0;
+                  const toggle = (key: string) => {
+                    const effective = allSelected ? allKeys : pendingCanadaCats;
+                    if (effective.includes(key)) {
+                      const next = effective.filter(k => k !== key);
+                      setPendingCanadaCats(next.length === 0 ? [] : next.length === allKeys.length ? [] : next);
+                    } else {
+                      const next = [...effective, key];
+                      setPendingCanadaCats(next.length === allKeys.length ? [] : next);
+                    }
+                  };
+                  return (
+                    <>
+                      <label className="field-label">Subject Areas</label>
+                      <div className="category-checkboxes">
+                        <label className="check-row">
+                          <input type="checkbox" checked={allSelected}
+                            onChange={() => setPendingCanadaCats([])} />
+                          <span>All Subjects</span>
+                        </label>
+                        {allKeys.map(key => (
+                          <label key={key} className="check-row">
+                            <input type="checkbox"
+                              checked={allSelected || pendingCanadaCats.includes(key)}
+                              onChange={() => toggle(key)} />
+                            <span>{CANADA_CATEGORY_LABELS[key]}</span>
+                          </label>
+                        ))}
+                      </div>
+                      <p className="helper-text" style={{ marginTop: "0.2rem" }}>
+                        Takes effect when you close Teacher Mode.
+                      </p>
+                    </>
+                  );
+                })()}
                 <hr />
                 <p>Import custom word packs (.json or .csv) and export learner progress reports.</p>
                 <label htmlFor="packUpload" className="field-label">

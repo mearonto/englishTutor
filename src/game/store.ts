@@ -49,17 +49,17 @@ export function maybeUnlockGrade4(): void {
 function availableLevels(): Level[] {
   if (state.subject === "astronomy") {
     let levels = getAstronomyLevels();
-    if (state.astronomyCategory && state.astronomyCategory !== "all") {
-      levels = levels.filter((l) => l.type === state.astronomyCategory);
-      if (!levels.length) levels = getAstronomyLevels();
+    if (state.astronomyCategories.length > 0) {
+      const filtered = levels.filter((l) => state.astronomyCategories.includes(l.type));
+      if (filtered.length) levels = filtered;
     }
     return levels.sort((a, b) => (state.learned[a.id] ?? 0) - (state.learned[b.id] ?? 0));
   }
   if (state.subject === "canada") {
     let levels = getCanadaLevels();
-    if (state.canadaCategory && state.canadaCategory !== "all") {
-      levels = levels.filter((l) => l.type === state.canadaCategory);
-      if (!levels.length) levels = getCanadaLevels();
+    if (state.canadaCategories.length > 0) {
+      const filtered = levels.filter((l) => state.canadaCategories.includes(l.type));
+      if (filtered.length) levels = filtered;
     }
     return levels.sort((a, b) => (state.learned[a.id] ?? 0) - (state.learned[b.id] ?? 0));
   }
@@ -81,13 +81,13 @@ export function setSubject(subject: Subject): void {
   emit();
 }
 
-export function setAstronomyCategory(category: string): void {
-  state = { ...state, astronomyCategory: category };
+export function setAstronomyCategories(categories: string[]): void {
+  state = { ...state, astronomyCategories: categories };
   emit();
 }
 
-export function setCanadaCategory(category: string): void {
-  state = { ...state, canadaCategory: category };
+export function setCanadaCategories(categories: string[]): void {
+  state = { ...state, canadaCategories: categories };
   emit();
 }
 
