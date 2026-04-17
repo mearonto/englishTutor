@@ -31,34 +31,35 @@ export class ChallengeScene extends Phaser.Scene {
 
   create(): void {
     this.cameras.main.setBackgroundColor("#ffffff");
-    this.add.rectangle(430, 210, 840, 390, 0xf0f8ff).setStrokeStyle(2, 0xbfdbfe);
+    this.add.rectangle(430, 280, 840, 530, 0xf0f8ff).setStrokeStyle(2, 0xbfdbfe);
 
-    this.typeText = this.add.text(30, 26, "", {
+    this.typeText = this.add.text(30, 18, "", {
       fontFamily: "Trebuchet MS, sans-serif",
       color: "#0099cc",
       fontSize: "13px",
       fontStyle: "bold"
     });
 
-    this.promptText = this.add.text(30, 52, "", {
+    this.promptText = this.add.text(30, 44, "", {
       fontFamily: "Trebuchet MS, sans-serif",
       color: "#0a3d5c",
       fontSize: "22px",
-      wordWrap: { width: 790 }
+      wordWrap: { width: 800 }
     });
 
-    this.hintText = this.add.text(30, 300, "", {
+    // y-positions are overridden dynamically in startRound()
+    this.hintText = this.add.text(30, 460, "", {
       fontFamily: "Trebuchet MS, sans-serif",
       color: "#92400e",
       fontSize: "16px",
-      wordWrap: { width: 790 }
+      wordWrap: { width: 800 }
     });
 
-    this.metaText = this.add.text(30, 356, "", {
+    this.metaText = this.add.text(30, 510, "", {
       fontFamily: "Trebuchet MS, sans-serif",
       color: "#475569",
       fontSize: "15px",
-      wordWrap: { width: 790 }
+      wordWrap: { width: 800 }
     });
 
     gameEvents.on("command-next", this.startRound, this);
@@ -104,13 +105,17 @@ export class ChallengeScene extends Phaser.Scene {
     this.metaText.setText("");
     this.hintText.setText("");
 
+    // Measure the actual prompt height after word-wrap so choices never overlap it
+    const promptBottom = this.promptText.y + this.promptText.height;
+    const choiceStartY = Math.max(120, promptBottom + 18);
+    const choiceSpacing = 62;
+
     const CHOICE_LETTERS = ["A", "B", "C", "D"];
-    const startY = 128;
     this.level.choices.forEach((choice, index) => {
-      const y = startY + index * 56;
+      const y = choiceStartY + index * choiceSpacing;
       const letter = CHOICE_LETTERS[index] ?? String(index + 1);
 
-      const bg = this.add.rectangle(430, y, 770, 46, 0xffffff).setStrokeStyle(1.5, 0xbfdbfe);
+      const bg = this.add.rectangle(430, y, 790, 50, 0xffffff).setStrokeStyle(1.5, 0xbfdbfe);
 
       const badgeBg = this.add.rectangle(74, y, 28, 28, 0xdbeafe);
       const badgeLabel = this.add.text(74 - 5, y - 9, letter, {
@@ -124,14 +129,14 @@ export class ChallengeScene extends Phaser.Scene {
         fontFamily: "Trebuchet MS, sans-serif",
         color: "#0a3d5c",
         fontSize: "18px",
-        wordWrap: { width: 670 }
+        wordWrap: { width: 680 }
       });
 
       const container = this.add
         .container(0, 0, [bg, badgeBg, badgeLabel, label])
-        .setSize(770, 46)
+        .setSize(790, 50)
         .setInteractive(
-          new Phaser.Geom.Rectangle(45, y - 23, 770, 46),
+          new Phaser.Geom.Rectangle(45, y - 25, 790, 50),
           Phaser.Geom.Rectangle.Contains
         );
 
@@ -151,6 +156,15 @@ export class ChallengeScene extends Phaser.Scene {
 
       this.choiceNodes.push({ container, bg, label, value: choice });
     });
+
+    // Position hint and meta text below the last choice
+    const lastChoiceBottom = choiceStartY + (this.level.choices.length - 1) * choiceSpacing + 30;
+    if (this.hintText) {
+      this.hintText.setY(lastChoiceBottom + 12);
+    }
+    if (this.metaText) {
+      this.metaText.setY(lastChoiceBottom + 52);
+    }
 
     gameEvents.emit("feedback", { message: "", good: false });
     gameEvents.emit("round-start");

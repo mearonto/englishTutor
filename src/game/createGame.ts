@@ -6,7 +6,7 @@ export function createGame(parent: string): Phaser.Game {
     type: Phaser.AUTO,
     parent,
     width: 860,
-    height: 420,
+    height: 560,
     backgroundColor: "#ffffff",
     scene: [ChallengeScene],
     scale: {
