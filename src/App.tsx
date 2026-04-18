@@ -116,6 +116,8 @@ function App() {
   const testWrongWords = useRef<string[]>([]);
   const [testHistory, setTestHistory] = useState<TestRecord[]>(() => loadTestHistory());
   const [lotteryHistory, setLotteryHistory] = useState<LotteryRecord[]>(() => loadLotteryHistory());
+  const [dragPrizeId, setDragPrizeId] = useState<string | null>(null);
+  const [dragOverPrizeId, setDragOverPrizeId] = useState<string | null>(null);
   const [canGoNext, setCanGoNext] = useState(false);
   const [testState, setTestState] = useState<TestState>({
     running: false,
@@ -425,6 +427,18 @@ function App() {
 
   const addPrize = () => {
     const updated = [...storedPrizes, { id: `prize-${Date.now()}`, label: "新奖品", weight: 0 }];
+    setStoredPrizes(updated);
+    saveStoredPrizes(updated);
+  };
+
+  const reorderPrizes = (fromId: string, toId: string) => {
+    if (fromId === toId) return;
+    const fromIndex = storedPrizes.findIndex((p) => p.id === fromId);
+    const toIndex = storedPrizes.findIndex((p) => p.id === toId);
+    if (fromIndex < 0 || toIndex < 0) return;
+    const updated = [...storedPrizes];
+    const [moved] = updated.splice(fromIndex, 1);
+    updated.splice(toIndex, 0, moved);
     setStoredPrizes(updated);
     saveStoredPrizes(updated);
   };
@@ -913,7 +927,38 @@ function App() {
                     <span className="helper-text">自动补齐</span>
                   </div>
                   {storedPrizes.map((prize, i) => (
-                    <div key={prize.id} className="prize-row">
+                    <div
+                      key={prize.id}
+                      className={[
+                        "prize-row",
+                        dragPrizeId === prize.id ? "dragging" : "",
+                        dragOverPrizeId === prize.id && dragPrizeId !== prize.id ? "drag-over" : ""
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
+                      draggable
+                      onDragStart={(event) => {
+                        event.dataTransfer.effectAllowed = "move";
+                        setDragPrizeId(prize.id);
+                        setDragOverPrizeId(prize.id);
+                      }}
+                      onDragOver={(event) => {
+                        event.preventDefault();
+                        event.dataTransfer.dropEffect = "move";
+                        setDragOverPrizeId(prize.id);
+                      }}
+                      onDrop={(event) => {
+                        event.preventDefault();
+                        if (dragPrizeId) reorderPrizes(dragPrizeId, prize.id);
+                        setDragPrizeId(null);
+                        setDragOverPrizeId(null);
+                      }}
+                      onDragEnd={() => {
+                        setDragPrizeId(null);
+                        setDragOverPrizeId(null);
+                      }}
+                    >
+                      <span className="drag-handle" title="Drag to reorder" aria-label="Drag to reorder">↕</span>
                       <input
                         type="text"
                         value={prize.label}

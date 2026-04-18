@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 // ── Shared ────────────────────────────────────────────────────────────────────
-type GameId = "memory" | "mole";
+type GameId = "memory" | "mole" | "blaster";
 
 interface Props {
   stars: number;
@@ -264,6 +264,153 @@ function MoleGame({ onResult }: { onResult: (score: number) => void }) {
   );
 }
 
+// ── Space Blaster ─────────────────────────────────────────────────────────────
+const BLASTER_COST = 4;
+const BLASTER_TIME = 35;
+const BLASTER_APPEAR_MS = 950;
+
+interface BlasterCell {
+  active: boolean;
+  kind: "target" | "trap" | null;
+  hit: boolean;
+}
+
+function SpaceBlasterGame({ onResult }: { onResult: (score: number, trapsHit: number) => void }) {
+  const CELLS = 12;
+  const [cells, setCells] = useState<BlasterCell[]>(
+    Array.from({ length: CELLS }, () => ({ active: false, kind: null, hit: false }))
+  );
+  const [score, setScore] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(BLASTER_TIME);
+  const [done, setDone] = useState(false);
+  const activeTimers = useRef<(ReturnType<typeof setTimeout> | null)[]>(
+    Array(CELLS).fill(null)
+  );
+  const scoreRef = useRef(0);
+  const trapRef = useRef(0);
+  const doneRef = useRef(false);
+
+  const spawn = useCallback(() => {
+    if (doneRef.current) return;
+    const idx = Math.floor(Math.random() * CELLS);
+    const isTrap = Math.random() < 0.25;
+
+    setCells((prev) => {
+      if (prev[idx].active) return prev;
+      return prev.map((c, i) =>
+        i === idx ? { active: true, kind: isTrap ? "trap" : "target", hit: false } : c
+      );
+    });
+
+    activeTimers.current[idx] = setTimeout(() => {
+      setCells((prev) =>
+        prev.map((c, i) =>
+          i === idx && c.active ? { active: false, kind: null, hit: false } : c
+        )
+      );
+    }, BLASTER_APPEAR_MS);
+  }, []);
+
+  useEffect(() => {
+    let spawnTimeout: ReturnType<typeof setTimeout> | null = null;
+    const loop = () => {
+      if (doneRef.current) return;
+      spawn();
+      if (Math.random() > 0.55) spawn();
+      spawnTimeout = setTimeout(loop, 420 + Math.random() * 260);
+    };
+    spawnTimeout = setTimeout(loop, 350);
+
+    const timer = setInterval(() => {
+      setTimeLeft((t) => {
+        if (t <= 1) {
+          clearInterval(timer);
+          if (spawnTimeout) clearTimeout(spawnTimeout);
+          doneRef.current = true;
+          setDone(true);
+          onResult(scoreRef.current, trapRef.current);
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+
+    return () => {
+      clearInterval(timer);
+      if (spawnTimeout) clearTimeout(spawnTimeout);
+      activeTimers.current.forEach((t) => t && clearTimeout(t));
+    };
+  }, [onResult, spawn]);
+
+  const blast = (idx: number) => {
+    if (done) return;
+    setCells((prev) => {
+      const c = prev[idx];
+      if (!c.active || !c.kind) return prev;
+
+      if (activeTimers.current[idx]) {
+        clearTimeout(activeTimers.current[idx]!);
+        activeTimers.current[idx] = null;
+      }
+
+      if (c.kind === "target") {
+        scoreRef.current += 1;
+        setScore((s) => s + 1);
+      } else {
+        trapRef.current += 1;
+        scoreRef.current = Math.max(0, scoreRef.current - 1);
+        setScore((s) => Math.max(0, s - 1));
+      }
+
+      const next = prev.map((x, i) => (i === idx ? { ...x, hit: true } : x));
+      setTimeout(() => {
+        setCells((p) =>
+          p.map((x, i) =>
+            i === idx ? { active: false, kind: null, hit: false } : x
+          )
+        );
+      }, 180);
+      return next;
+    });
+  };
+
+  return (
+    <div className="minigame-area">
+      <div className="minigame-hud">
+        <span>⏱ {timeLeft}s</span>
+        <span>🚀 Score: {score}</span>
+      </div>
+      <div className="blaster-grid">
+        {cells.map((cell, i) => (
+          <button
+            key={i}
+            className={[
+              "blaster-cell",
+              cell.active && cell.kind === "target" ? "blaster-target" : "",
+              cell.active && cell.kind === "trap" ? "blaster-trap" : "",
+              cell.hit ? "blaster-hit" : ""
+            ]
+              .filter(Boolean)
+              .join(" ")}
+            onClick={() => blast(i)}
+          >
+            {cell.active && !cell.hit && cell.kind === "target" && (
+              <span className="blaster-emoji">☄️</span>
+            )}
+            {cell.active && !cell.hit && cell.kind === "trap" && (
+              <span className="blaster-emoji">🛰️</span>
+            )}
+            {cell.hit && <span className="blaster-emoji">💥</span>}
+          </button>
+        ))}
+      </div>
+      <p className="helper-text" style={{ marginTop: "0.5rem" }}>
+        Hit meteors (☄️), avoid satellites (🛰️).
+      </p>
+    </div>
+  );
+}
+
 // ── Main Modal ────────────────────────────────────────────────────────────────
 export function MiniGamesModal({ stars, onSpendStars, onEarnStars, onClose }: Props) {
   const [screen, setScreen] = useState<"menu" | GameId | "result">("menu");
@@ -280,6 +427,12 @@ export function MiniGamesModal({ stars, onSpendStars, onEarnStars, onClose }: Pr
     const r = onSpendStars(MOLE_COST);
     if (!r.ok) { setResultMsg(r.message); setResultGood(false); setScreen("result"); return; }
     setScreen("mole");
+  };
+
+  const startBlaster = () => {
+    const r = onSpendStars(BLASTER_COST);
+    if (!r.ok) { setResultMsg(r.message); setResultGood(false); setScreen("result"); return; }
+    setScreen("blaster");
   };
 
   const handleMemoryResult = useCallback((won: boolean, fast: boolean) => {
@@ -312,6 +465,28 @@ export function MiniGamesModal({ stars, onSpendStars, onEarnStars, onClose }: Pr
     setScreen("result");
   }, [onEarnStars]);
 
+  const handleBlasterResult = useCallback((score: number, trapsHit: number) => {
+    let earned = 2;
+    let msg = "";
+    if (score >= 24 && trapsHit <= 2) {
+      earned = 11;
+      msg = `Ace pilot! Score ${score}, only ${trapsHit} mistakes! +${earned} ⭐`;
+    } else if (score >= 18) {
+      earned = 8;
+      msg = `Great shooting! Score ${score}! +${earned} ⭐`;
+    } else if (score >= 12) {
+      earned = 5;
+      msg = `Good run! Score ${score}! +${earned} ⭐`;
+    } else {
+      earned = 2;
+      msg = `Score ${score}. Try to avoid satellites next time! +${earned} ⭐`;
+    }
+    onEarnStars(earned);
+    setResultGood(score >= 12);
+    setResultMsg(msg);
+    setScreen("result");
+  }, [onEarnStars]);
+
   return (
     <section className="shop-modal" role="dialog" aria-label="Mini Games">
       <div className="shop-content minigames-content">
@@ -339,6 +514,15 @@ export function MiniGamesModal({ stars, onSpendStars, onEarnStars, onClose }: Pr
                   Play! ({MOLE_COST} ⭐)
                 </button>
               </div>
+              <div className="minigame-card">
+                <div className="minigame-card-icon">🚀</div>
+                <h3>Space Blaster</h3>
+                <p>Fast action game: blast meteors, avoid satellites, beat the timer.</p>
+                <p className="minigame-cost">Cost: {BLASTER_COST} ⭐ &nbsp;|&nbsp; Win up to 11 ⭐</p>
+                <button onClick={startBlaster} disabled={stars < BLASTER_COST}>
+                  Play! ({BLASTER_COST} ⭐)
+                </button>
+              </div>
             </div>
             <button onClick={onClose} style={{ marginTop: "1rem" }}>Close</button>
           </>
@@ -355,6 +539,13 @@ export function MiniGamesModal({ stars, onSpendStars, onEarnStars, onClose }: Pr
           <>
             <h3>🐹 Whack-a-Hamster</h3>
             <MoleGame onResult={handleMoleResult} />
+          </>
+        )}
+
+        {screen === "blaster" && (
+          <>
+            <h3>🚀 Space Blaster</h3>
+            <SpaceBlasterGame onResult={handleBlasterResult} />
           </>
         )}
 

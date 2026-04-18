@@ -396,7 +396,7 @@ button.danger:hover:enabled {
 
 .prize-row {
   display: grid;
-  grid-template-columns: 1fr 58px 16px auto;
+  grid-template-columns: 24px 1fr 58px 16px auto;
   gap: 0.35rem;
   align-items: center;
   padding: 0.4rem 0.6rem;
@@ -427,6 +427,30 @@ button.danger:hover:enabled {
   font-size: 0.78rem;
   padding: 0.25rem 0.5rem;
   white-space: nowrap;
+}
+
+.prize-row.dragging {
+  opacity: 0.55;
+}
+
+.prize-row.drag-over {
+  background: rgba(0, 102, 204, 0.08);
+  outline: 2px dashed rgba(0, 102, 204, 0.5);
+  outline-offset: -2px;
+}
+
+.drag-handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: #64748b;
+  cursor: grab;
+  user-select: none;
+}
+
+.prize-row.dragging .drag-handle {
+  cursor: grabbing;
 }
 
 .test-history {
@@ -872,6 +896,53 @@ input[type="number"]:focus {
   font-size: 2rem;
   line-height: 1;
   animation: pop-up 0.15s ease-out;
+}
+
+/* Space Blaster */
+.blaster-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.blaster-cell {
+  aspect-ratio: 1;
+  border-radius: 12px;
+  border: 2px solid #1e3a8a;
+  background: radial-gradient(circle at 30% 25%, #1f2f6a, #0b1430);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s ease, border-color 0.1s ease, background 0.1s ease;
+}
+
+.blaster-cell:hover {
+  transform: scale(1.04);
+}
+
+.blaster-cell.blaster-target {
+  border-color: #16a34a;
+  background: radial-gradient(circle at 35% 30%, #34d399, #14532d);
+}
+
+.blaster-cell.blaster-trap {
+  border-color: #f59e0b;
+  background: radial-gradient(circle at 35% 30%, #fcd34d, #92400e);
+}
+
+.blaster-cell.blaster-hit {
+  border-color: #ef4444;
+  background: radial-gradient(circle at 35% 30%, #fca5a5, #991b1b);
+  transform: scale(0.94);
+}
+
+.blaster-emoji {
+  font-size: 1.7rem;
+  line-height: 1;
+  animation: pop-up 0.14s ease-out;
 }
 
 @keyframes pop-up {
