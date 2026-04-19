@@ -4,7 +4,12 @@ import { FONT_SIZE_STORAGE_KEY, type FontSizePref } from "./game/ChallengeScene"
 import type Phaser from "phaser";
 import "./App.css";
 import { gameEvents } from "./game/events";
-import { ASTRONOMY_CATEGORY_LABELS, CANADA_CATEGORY_LABELS, SHOP_ITEMS } from "./game/levels";
+import {
+  ASTRONOMY_CATEGORY_LABELS,
+  CANADA_CATEGORY_LABELS,
+  MATH_KANGAROO_CATEGORY_LABELS,
+  SHOP_ITEMS
+} from "./game/levels";
 import { createGame } from "./game/createGame";
 import {
   addStars,
@@ -16,6 +21,7 @@ import {
   resetAll,
   setAstronomyCategories,
   setCanadaCategories,
+  setMathKangarooCategories,
   setSubject,
   spendStars,
   spendTokens,
@@ -114,6 +120,13 @@ function App() {
   const [confetti, setConfetti] = useState<ConfettiPiece[]>([]);
   const testStartTime = useRef<number>(0);
   const testWrongWords = useRef<string[]>([]);
+  const testStateRef = useRef<TestState>({
+    running: false,
+    finished: false,
+    target: 10,
+    answered: 0,
+    correct: 0
+  });
   const [testHistory, setTestHistory] = useState<TestRecord[]>(() => loadTestHistory());
   const [lotteryHistory, setLotteryHistory] = useState<LotteryRecord[]>(() => loadLotteryHistory());
   const [dragPrizeId, setDragPrizeId] = useState<string | null>(null);
@@ -128,6 +141,7 @@ function App() {
   });
   const [pendingAstroCats, setPendingAstroCats] = useState<string[]>([]);
   const [pendingCanadaCats, setPendingCanadaCats] = useState<string[]>([]);
+  const [pendingMathKangarooCats, setPendingMathKangarooCats] = useState<string[]>([]);
   const [pendingFontSize, setPendingFontSize] = useState<FontSizePref>(
     () => (localStorage.getItem(FONT_SIZE_STORAGE_KEY) as FontSizePref | null) ?? "small"
   );
@@ -162,38 +176,44 @@ function App() {
       if (!payload.correct) {
         testWrongWords.current.push(payload.word);
       }
-      setTestState((prev) => {
-        if (!prev.running) return prev;
-        const answered = prev.answered + 1;
-        const correct = prev.correct + (payload.correct ? 1 : 0);
-        if (answered >= prev.target) {
-          const pct = Math.round((correct / prev.target) * 100);
-          const endTime = Date.now();
-          const record: TestRecord = {
-            id: String(endTime),
-            startTime: testStartTime.current,
-            endTime,
-            duration: Math.round((endTime - testStartTime.current) / 1000),
-            target: prev.target,
-            correct,
-            score: pct,
-            wrongWords: [...testWrongWords.current]
-          };
-          saveTestRecord(record);
-          setTestHistory(loadTestHistory());
-          gameEvents.emit("command-set-mode", { testMode: false });
-          const allCorrect = correct === prev.target;
-          const tokenBonus = correct * 2 + (allCorrect ? prev.target : 0);
-          addTokens(tokenBonus);
-          const bonusNote = allCorrect ? ` Perfect score bonus: +${prev.target} tokens!` : "";
-          setFeedback({
-            message: `Test complete: ${correct}/${prev.target} correct (${pct}%). +${tokenBonus} tokens.${bonusNote}`,
-            good: pct >= 70
-          });
-          return { ...prev, answered, correct, running: false, finished: true };
-        }
-        return { ...prev, answered, correct };
-      });
+      const prev = testStateRef.current;
+      if (!prev.running) return;
+      const answered = prev.answered + 1;
+      const correct = prev.correct + (payload.correct ? 1 : 0);
+      if (answered >= prev.target) {
+        const pct = Math.round((correct / prev.target) * 100);
+        const endTime = Date.now();
+        const record: TestRecord = {
+          id: String(endTime),
+          startTime: testStartTime.current,
+          endTime,
+          duration: Math.round((endTime - testStartTime.current) / 1000),
+          target: prev.target,
+          correct,
+          score: pct,
+          wrongWords: [...testWrongWords.current]
+        };
+        saveTestRecord(record);
+        setTestHistory(loadTestHistory());
+        gameEvents.emit("command-set-mode", { testMode: false });
+        const allCorrect = correct === prev.target;
+        const tokenBonus = correct * 2 + (allCorrect ? prev.target : 0);
+        // Award tokens synchronously here so they are saved to localStorage
+        // before any React state update, preventing loss on page restart
+        addTokens(tokenBonus);
+        const bonusNote = allCorrect ? ` Perfect score bonus: +${prev.target} tokens!` : "";
+        setFeedback({
+          message: `Test complete: ${correct}/${prev.target} correct (${pct}%). +${tokenBonus} tokens.${bonusNote}`,
+          good: pct >= 70
+        });
+        const nextTestState: TestState = { ...prev, answered, correct, running: false, finished: true };
+        testStateRef.current = nextTestState;
+        setTestState(nextTestState);
+      } else {
+        const nextTestState: TestState = { ...prev, answered, correct };
+        testStateRef.current = nextTestState;
+        setTestState(nextTestState);
+      }
     });
 
     return () => {
@@ -205,6 +225,10 @@ function App() {
       gameRef.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    testStateRef.current = testState;
+  }, [testState]);
 
   useEffect(() => {
     saveAudioSettings({ enabled: audioEnabled, rate: speechRate });
@@ -248,6 +272,7 @@ function App() {
     const s = getState();
     setPendingAstroCats([...s.astronomyCategories]);
     setPendingCanadaCats([...s.canadaCategories]);
+    setPendingMathKangarooCats([...s.mathKangarooCategories]);
     setPendingFontSize((localStorage.getItem(FONT_SIZE_STORAGE_KEY) as FontSizePref | null) ?? "small");
     setTeacherOpen(true);
     setTeacherUnlocked(false);
@@ -266,13 +291,17 @@ function App() {
     const canadaDiff =
       JSON.stringify([...pendingCanadaCats].sort()) !==
       JSON.stringify([...s.canadaCategories].sort());
+    const kangarooDiff =
+      JSON.stringify([...pendingMathKangarooCats].sort()) !==
+      JSON.stringify([...s.mathKangarooCategories].sort());
     const prevFontSize = (localStorage.getItem(FONT_SIZE_STORAGE_KEY) as FontSizePref | null) ?? "small";
     const fontSizeDiff = pendingFontSize !== prevFontSize;
     localStorage.setItem(FONT_SIZE_STORAGE_KEY, pendingFontSize);
     gameEvents.emit("command-font-size", { size: pendingFontSize });
     setAstronomyCategories(pendingAstroCats);
     setCanadaCategories(pendingCanadaCats);
-    if (astroDiff || canadaDiff || fontSizeDiff) {
+    setMathKangarooCategories(pendingMathKangarooCats);
+    if (astroDiff || canadaDiff || kangarooDiff || fontSizeDiff) {
       setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
       setCanGoNext(false);
       setFeedback({ message: "", good: false });
@@ -545,6 +574,22 @@ function App() {
           >
             🍁 Canada G4
           </button>
+          <button
+            className={`subject-btn${state.subject === "math-kangaroo" ? " active" : ""}`}
+            onClick={() => {
+              if (state.subject !== "math-kangaroo" && !testState.running) {
+                setSubject("math-kangaroo");
+                setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
+                setCanGoNext(false);
+                setFeedback({ message: "", good: false });
+                gameEvents.emit("command-set-mode", { testMode: false });
+                gameEvents.emit("command-next");
+              }
+            }}
+            disabled={testState.running}
+          >
+            🦘 Math Kangaroo
+          </button>
         </div>
         {mode === "practice" ? (
           <>
@@ -552,7 +597,9 @@ function App() {
               <span>
                 {state.subject === "astronomy"
                   ? `Astronomy${state.astronomyCategories.length === 1 ? ` • ${ASTRONOMY_CATEGORY_LABELS[state.astronomyCategories[0]] ?? state.astronomyCategories[0]}` : state.astronomyCategories.length > 1 ? ` • ${state.astronomyCategories.length} categories` : ""}`
-                  : `Canada G4${state.canadaCategories.length === 1 ? ` • ${CANADA_CATEGORY_LABELS[state.canadaCategories[0]] ?? state.canadaCategories[0]}` : state.canadaCategories.length > 1 ? ` • ${state.canadaCategories.length} subjects` : ""}`}
+                  : state.subject === "canada"
+                    ? `Canada G4${state.canadaCategories.length === 1 ? ` • ${CANADA_CATEGORY_LABELS[state.canadaCategories[0]] ?? state.canadaCategories[0]}` : state.canadaCategories.length > 1 ? ` • ${state.canadaCategories.length} subjects` : ""}`
+                    : `Math Kangaroo${state.mathKangarooCategories.length === 1 ? ` • ${MATH_KANGAROO_CATEGORY_LABELS[state.mathKangarooCategories[0]] ?? state.mathKangarooCategories[0]}` : state.mathKangarooCategories.length > 1 ? ` • ${state.mathKangarooCategories.length} grades` : ""}`}
               </span>
               <span>
                 Streak: <strong>{state.streak}</strong>
@@ -574,18 +621,24 @@ function App() {
               )}
             </div>
             {!testState.running && !testState.finished && (
-              <span style={{ fontSize: "0.8rem", color: state.subject === "astronomy" ? "#0099cc" : "#cc5500", fontWeight: 700 }}>
+              <span style={{ fontSize: "0.8rem", color: state.subject === "astronomy" ? "#0099cc" : state.subject === "canada" ? "#cc5500" : "#0f766e", fontWeight: 700 }}>
                 {state.subject === "astronomy"
                   ? (state.astronomyCategories.length === 1
                       ? `Astronomy • ${ASTRONOMY_CATEGORY_LABELS[state.astronomyCategories[0]] ?? state.astronomyCategories[0]}`
                       : state.astronomyCategories.length > 1
                         ? `Astronomy • ${state.astronomyCategories.length} categories`
                         : "Astronomy")
-                  : (state.canadaCategories.length === 1
-                      ? `Canada G4 • ${CANADA_CATEGORY_LABELS[state.canadaCategories[0]] ?? state.canadaCategories[0]}`
-                      : state.canadaCategories.length > 1
-                        ? `Canada G4 • ${state.canadaCategories.length} subjects`
-                        : "Canada G4")}
+                  : state.subject === "canada"
+                    ? (state.canadaCategories.length === 1
+                        ? `Canada G4 • ${CANADA_CATEGORY_LABELS[state.canadaCategories[0]] ?? state.canadaCategories[0]}`
+                        : state.canadaCategories.length > 1
+                          ? `Canada G4 • ${state.canadaCategories.length} subjects`
+                          : "Canada G4")
+                    : (state.mathKangarooCategories.length === 1
+                        ? `Math Kangaroo • ${MATH_KANGAROO_CATEGORY_LABELS[state.mathKangarooCategories[0]] ?? state.mathKangarooCategories[0]}`
+                        : state.mathKangarooCategories.length > 1
+                          ? `Math Kangaroo • ${state.mathKangarooCategories.length} grades`
+                          : "Math Kangaroo")}
               </span>
             )}
             {testState.finished ? (
@@ -812,6 +865,18 @@ function App() {
                       setPendingCanadaCats(next.length === canadaKeys.length ? [] : next);
                     }
                   };
+                  const kangarooKeys = Object.keys(MATH_KANGAROO_CATEGORY_LABELS).filter(k => k !== "all");
+                  const kangarooAllSelected = pendingMathKangarooCats.length === 0;
+                  const toggleKangaroo = (key: string) => {
+                    const effective = kangarooAllSelected ? kangarooKeys : pendingMathKangarooCats;
+                    if (effective.includes(key)) {
+                      const next = effective.filter(k => k !== key);
+                      setPendingMathKangarooCats(next.length === 0 || next.length === kangarooKeys.length ? [] : next);
+                    } else {
+                      const next = [...effective, key];
+                      setPendingMathKangarooCats(next.length === kangarooKeys.length ? [] : next);
+                    }
+                  };
                   return (
                     <div className="teacher-category-cols">
                       <div className="teacher-category-col">
@@ -846,6 +911,24 @@ function App() {
                                 checked={canadaAllSelected || pendingCanadaCats.includes(key)}
                                 onChange={() => toggleCanada(key)} />
                               <span>{CANADA_CATEGORY_LABELS[key]}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="teacher-category-col">
+                        <label className="field-label">🦘 Math Kangaroo</label>
+                        <div className="category-checkboxes">
+                          <label className="check-row">
+                            <input type="checkbox" checked={kangarooAllSelected}
+                              onChange={() => setPendingMathKangarooCats([])} />
+                            <span>All Grades</span>
+                          </label>
+                          {kangarooKeys.map(key => (
+                            <label key={key} className="check-row">
+                              <input type="checkbox"
+                                checked={kangarooAllSelected || pendingMathKangarooCats.includes(key)}
+                                onChange={() => toggleKangaroo(key)} />
+                              <span>{MATH_KANGAROO_CATEGORY_LABELS[key]}</span>
                             </label>
                           ))}
                         </div>
