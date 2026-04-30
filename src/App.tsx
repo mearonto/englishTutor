@@ -1,4 +1,6 @@
-import { useEffect, useRef, useState, type CSSProperties, type ChangeEvent } from "react";
+import { useEffect, useRef, useState, useCallback, type CSSProperties, type ChangeEvent } from "react";
+import { StudentPicker } from "./components/StudentPicker";
+import { studentsApi, type ApiStudent } from "./api/client";
 import { MiniGamesModal } from "./MiniGames";
 import { FONT_SIZE_STORAGE_KEY, type FontSizePref } from "./game/ChallengeScene";
 import type Phaser from "phaser";
@@ -15,7 +17,9 @@ import {
   addStars,
   addTokens,
   buildReport,
+  getCurrentStudentId,
   getState,
+  loadStudentState,
   purchase,
   refreshAfterContentImport,
   resetAll,
@@ -94,6 +98,46 @@ type TestRecord = {
 };
 
 function App() {
+  // ── Student session ────────────────────────────────────────────────────────
+  const [currentStudent, setCurrentStudent] = useState<{ id: number; name: string } | null>(null);
+
+  const handleStudentSelect = useCallback(
+    (student: { id: number; name: string; data: ApiStudent }) => {
+      loadStudentState(student.id, student.data);
+      setCurrentStudent({ id: student.id, name: student.name });
+    },
+    []
+  );
+
+  const handleGuest = useCallback(() => {
+    setCurrentStudent({ id: -1, name: "Guest" });
+  }, []);
+
+  // Async sync: whenever game state changes, push to API (debounced, fire-and-forget)
+  const syncTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scheduleSync = useCallback((playerState: PlayerState) => {
+    const id = getCurrentStudentId();
+    if (!id || id < 0) return;
+    if (syncTimerRef.current) clearTimeout(syncTimerRef.current);
+    syncTimerRef.current = setTimeout(() => {
+      studentsApi.update(id, {
+        grade_unlocked: playerState.gradeUnlocked,
+        xp: playerState.xp,
+        stars: playerState.stars,
+        tokens: playerState.tokens,
+        streak: playerState.streak,
+        mastery3: playerState.mastery3,
+        learned: playerState.learned,
+        inventory: playerState.inventory,
+        subject: playerState.subject,
+        astronomy_categories: playerState.astronomyCategories,
+        canada_categories: playerState.canadaCategories,
+        math_kangaroo_categories: playerState.mathKangarooCategories,
+      } as Partial<ApiStudent>).catch(() => {/* silent — localStorage is the fallback */});
+    }, 2000);
+  }, []);
+
+  // ── Game state ─────────────────────────────────────────────────────────────
   const [state, setState] = useState<PlayerState>(getState());
   const [feedback, setFeedback] = useState<{ message: string; good: boolean }>({
     message: "",
@@ -162,6 +206,7 @@ function App() {
     gameRef.current = createGame("phaser-root");
     const unsub = subscribe((nextState) => {
       setState(nextState);
+      scheduleSync(nextState);
     });
 
     const feedbackHandler = (payload: { message: string; good: boolean }) => setFeedback(payload);
@@ -498,6 +543,12 @@ function App() {
 
   const testLeft = Math.max(0, testState.target - testState.answered);
   const finalScore = Math.round((testState.correct / testState.target) * 100);
+
+  if (!currentStudent) {
+    return (
+      <StudentPicker onSelect={handleStudentSelect} onGuest={handleGuest} />
+    );
+  }
 
   return (
     <main className="app-shell">

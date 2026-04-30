@@ -1,4 +1,11 @@
-import { getAstronomyLevels, getCanadaLevels, getCustomLevelsCount, getLevels, SHOP_ITEMS } from "./levels";
+import {
+  getAstronomyLevels,
+  getCanadaLevels,
+  getCustomLevelsCount,
+  getLevels,
+  getMathKangarooLevels,
+  SHOP_ITEMS
+} from "./levels";
 import { clearState, defaultState, loadState, saveState } from "./storage";
 import type { Level, PlayerState, Reward, Subject } from "./types";
 
@@ -63,6 +70,14 @@ function availableLevels(): Level[] {
     }
     return levels.sort((a, b) => (state.learned[a.id] ?? 0) - (state.learned[b.id] ?? 0));
   }
+  if (state.subject === "math-kangaroo") {
+    let levels = getMathKangarooLevels();
+    if (state.mathKangarooCategories.length > 0) {
+      const filtered = levels.filter((l) => state.mathKangarooCategories.includes(l.type));
+      if (filtered.length) levels = filtered;
+    }
+    return levels.sort((a, b) => (state.learned[a.id] ?? 0) - (state.learned[b.id] ?? 0));
+  }
   const unlocked = getLevels().filter((level) => level.grade <= state.gradeUnlocked);
   return unlocked.sort((a, b) => (state.learned[a.id] ?? 0) - (state.learned[b.id] ?? 0));
 }
@@ -88,6 +103,11 @@ export function setAstronomyCategories(categories: string[]): void {
 
 export function setCanadaCategories(categories: string[]): void {
   state = { ...state, canadaCategories: categories };
+  emit();
+}
+
+export function setMathKangarooCategories(categories: string[]): void {
+  state = { ...state, mathKangarooCategories: categories };
   emit();
 }
 
@@ -208,6 +228,50 @@ export function resetAll(): void {
 
 export function refreshAfterContentImport(): void {
   maybeUnlockGrade4();
+  emit();
+}
+
+// ── Student session ──────────────────────────────────────────────────────────
+let currentStudentId: number | null = null;
+
+export function getCurrentStudentId(): number | null {
+  return currentStudentId;
+}
+
+/**
+ * Called when a student is selected from the StudentPicker.
+ * Hydrates local state from the DB record so the game reflects their progress.
+ */
+export function loadStudentState(id: number, data: {
+  grade_unlocked: number;
+  xp: number;
+  stars: number;
+  tokens: number;
+  streak: number;
+  mastery3: Record<string, number>;
+  learned: Record<string, number>;
+  inventory: string[];
+  subject: string;
+  astronomy_categories: string[];
+  canada_categories: string[];
+  math_kangaroo_categories: string[];
+}): void {
+  currentStudentId = id;
+  state = {
+    ...defaultState(),
+    gradeUnlocked: (data.grade_unlocked as 3 | 4) ?? 3,
+    xp: data.xp,
+    stars: data.stars,
+    tokens: data.tokens,
+    streak: data.streak,
+    mastery3: data.mastery3 ?? {},
+    learned: data.learned ?? {},
+    inventory: data.inventory ?? [],
+    subject: (data.subject as import("./types").Subject) ?? "english",
+    astronomyCategories: data.astronomy_categories ?? [],
+    canadaCategories: data.canada_categories ?? [],
+    mathKangarooCategories: data.math_kangaroo_categories ?? [],
+  };
   emit();
 }
 
