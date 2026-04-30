@@ -1,17 +1,26 @@
 import express from "express";
 import cors from "cors";
 import { runMigrations } from "./migrate";
+import { seedQuestions, seedStudents } from "./seed";
 import { pool } from "./db";
+import questionsRouter from "./routes/questions";
 
 const app = express();
 const PORT = parseInt(process.env.PORT ?? "3001", 10);
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 
-// Health check
+// Routes
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok" });
+});
+app.use("/api/questions", questionsRouter);
+
+// Global error handler
+app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error("[api] Unhandled error:", err.message);
+  res.status(500).json({ error: err.message });
 });
 
 async function main() {
@@ -30,10 +39,11 @@ async function main() {
   }
 
   await runMigrations();
+  await seedQuestions();
+  await seedStudents();
 
   app.listen(PORT, () => {
     console.log(`[api] Word Quest API listening on port ${PORT}`);
-    console.log(`[api] DB ready`);
   });
 }
 

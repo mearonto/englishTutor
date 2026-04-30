@@ -15,7 +15,7 @@
 - [x] Created `findings.md` with current-state analysis and API surface
 
 ### Status
-Phase 1 complete. Ready for Phase 2 (Question Seeding & API).
+Phase 2 complete. Ready for Phase 3 (Student API).
 
 ### Notes
 - No code written yet — this session was design/planning only
