@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback, type CSSProperties, type ChangeEvent } from "react";
 import { StudentPicker } from "./components/StudentPicker";
 import { studentsApi, type ApiStudent } from "./api/client";
+import { loadQuestionPool, invalidateCache } from "./game/questionCache";
 import { MiniGamesModal } from "./MiniGames";
 import { FONT_SIZE_STORAGE_KEY, type FontSizePref } from "./game/ChallengeScene";
 import type Phaser from "phaser";
@@ -101,16 +102,38 @@ function App() {
   // ── Student session ────────────────────────────────────────────────────────
   const [currentStudent, setCurrentStudent] = useState<{ id: number; name: string } | null>(null);
 
+  const [questionsLoading, setQuestionsLoading] = useState(false);
+
+  const fetchPool = useCallback(async (
+    studentId: number,
+    subject: string,
+    categories: string[]
+  ) => {
+    setQuestionsLoading(true);
+    await loadQuestionPool(studentId, subject, categories);
+    setQuestionsLoading(false);
+    // Trigger a new question after pool is ready
+    gameEvents.emit("command-next");
+  }, []);
+
   const handleStudentSelect = useCallback(
-    (student: { id: number; name: string; data: ApiStudent }) => {
+    async (student: { id: number; name: string; data: ApiStudent }) => {
       loadStudentState(student.id, student.data);
       setCurrentStudent({ id: student.id, name: student.name });
+      const s = student.data;
+      const cats = s.subject === "astronomy" ? (s.astronomy_categories ?? [])
+        : s.subject === "canada" ? (s.canada_categories ?? [])
+        : s.subject === "math-kangaroo" ? (s.math_kangaroo_categories ?? [])
+        : [];
+      await fetchPool(student.id, s.subject, cats);
     },
-    []
+    [fetchPool]
   );
 
   const handleGuest = useCallback(() => {
     setCurrentStudent({ id: -1, name: "Guest" });
+    // Use static levels — no fetch needed, cache stays empty → fallback path
+    invalidateCache();
   }, []);
 
   // Async sync: whenever game state changes, push to API (debounced, fire-and-forget)
@@ -289,6 +312,21 @@ function App() {
       setConfetti([]);
     }
   }, [lastPrize]);
+
+  const switchSubject = (newSubject: import("./game/types").Subject) => {
+    if (testState.running) return;
+    setSubject(newSubject);
+    setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
+    setCanGoNext(false);
+    setFeedback({ message: "", good: false });
+    gameEvents.emit("command-set-mode", { testMode: false });
+    const sid = currentStudent?.id ?? -1;
+    const cats = newSubject === "astronomy" ? state.astronomyCategories
+      : newSubject === "canada" ? state.canadaCategories
+      : newSubject === "math-kangaroo" ? state.mathKangarooCategories
+      : [];
+    void fetchPool(sid, newSubject, cats);
+  };
 
   const switchMode = (newMode: Mode) => {
     if (testState.running) return;
@@ -550,6 +588,17 @@ function App() {
     );
   }
 
+  if (questionsLoading) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center",
+        justifyContent: "center", height: "100vh", gap: "1rem",
+        background: "linear-gradient(135deg, #1e3a5f, #0d6e8a)", color: "#fff" }}>
+        <div style={{ fontSize: "2rem" }}>⏳</div>
+        <p style={{ fontSize: "1.1rem", margin: 0 }}>Loading questions…</p>
+      </div>
+    );
+  }
+
   return (
     <main className="app-shell">
       <header className="topbar">
@@ -595,48 +644,21 @@ function App() {
         <div className="subject-toggle-row">
           <button
             className={`subject-btn${state.subject === "astronomy" ? " active" : ""}`}
-            onClick={() => {
-              if (state.subject !== "astronomy" && !testState.running) {
-                setSubject("astronomy");
-                setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
-                setCanGoNext(false);
-                setFeedback({ message: "", good: false });
-                gameEvents.emit("command-set-mode", { testMode: false });
-                gameEvents.emit("command-next");
-              }
-            }}
+            onClick={() => { if (state.subject !== "astronomy") switchSubject("astronomy"); }}
             disabled={testState.running}
           >
             🔭 Astronomy
           </button>
           <button
             className={`subject-btn${state.subject === "canada" ? " active" : ""}`}
-            onClick={() => {
-              if (state.subject !== "canada" && !testState.running) {
-                setSubject("canada");
-                setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
-                setCanGoNext(false);
-                setFeedback({ message: "", good: false });
-                gameEvents.emit("command-set-mode", { testMode: false });
-                gameEvents.emit("command-next");
-              }
-            }}
+            onClick={() => { if (state.subject !== "canada") switchSubject("canada"); }}
             disabled={testState.running}
           >
             🍁 Canada G4
           </button>
           <button
             className={`subject-btn${state.subject === "math-kangaroo" ? " active" : ""}`}
-            onClick={() => {
-              if (state.subject !== "math-kangaroo" && !testState.running) {
-                setSubject("math-kangaroo");
-                setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
-                setCanGoNext(false);
-                setFeedback({ message: "", good: false });
-                gameEvents.emit("command-set-mode", { testMode: false });
-                gameEvents.emit("command-next");
-              }
-            }}
+            onClick={() => { if (state.subject !== "math-kangaroo") switchSubject("math-kangaroo"); }}
             disabled={testState.running}
           >
             🦘 Math Kangaroo

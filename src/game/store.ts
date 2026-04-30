@@ -6,6 +6,7 @@ import {
   getMathKangarooLevels,
   SHOP_ITEMS
 } from "./levels";
+import { getCachedPool, isCacheReady } from "./questionCache";
 import { clearState, defaultState, loadState, saveState } from "./storage";
 import type { Level, PlayerState, Reward, Subject } from "./types";
 
@@ -54,6 +55,19 @@ export function maybeUnlockGrade4(): void {
 }
 
 function availableLevels(): Level[] {
+  // Use API-fetched cache when available
+  if (isCacheReady()) {
+    const pool = getCachedPool();
+    if (pool.length > 0) {
+      // For English, still filter by grade
+      const filtered = state.subject === "english"
+        ? pool.filter((l) => l.grade <= state.gradeUnlocked)
+        : pool;
+      return filtered.sort((a, b) => (state.learned[a.id] ?? 0) - (state.learned[b.id] ?? 0));
+    }
+  }
+
+  // Fallback: static level files
   if (state.subject === "astronomy") {
     let levels = getAstronomyLevels();
     if (state.astronomyCategories.length > 0) {
