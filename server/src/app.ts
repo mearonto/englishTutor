@@ -4,6 +4,7 @@ import { runMigrations } from "./migrate";
 import { seedQuestions, seedStudents } from "./seed";
 import { pool } from "./db";
 import questionsRouter from "./routes/questions";
+import studentsRouter from "./routes/students";
 
 const app = express();
 const PORT = parseInt(process.env.PORT ?? "3001", 10);
@@ -16,6 +17,7 @@ app.get("/api/health", (_req, res) => {
   res.json({ status: "ok" });
 });
 app.use("/api/questions", questionsRouter);
+app.use("/api/students", studentsRouter);
 
 // Global error handler
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
