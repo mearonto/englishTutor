@@ -121,6 +121,37 @@ export const questionsApi = {
   },
 };
 
+// ── Test sessions ────────────────────────────────────────────────────────────
+export interface ApiTestSession {
+  id: number;
+  student_id: number;
+  subject?: string;
+  started_at: string;
+  finished_at?: string;
+  score?: number;
+  total?: number;
+  wrong_words?: string[];
+}
+
+export interface TestSessionListResult {
+  sessions: ApiTestSession[];
+  total: number;
+}
+
+export const testSessionsApi = {
+  create(data: { student_id: number; subject?: string }): Promise<ApiTestSession> {
+    return apiFetch("/test-sessions", { method: "POST", body: JSON.stringify(data) });
+  },
+
+  finish(id: number, data: { score: number; total: number; wrong_words: string[] }): Promise<ApiTestSession> {
+    return apiFetch(`/test-sessions/${id}`, { method: "PATCH", body: JSON.stringify(data) });
+  },
+
+  listForStudent(studentId: number, limit = 50): Promise<TestSessionListResult> {
+    return apiFetch(`/test-sessions?student_id=${studentId}&limit=${limit}`);
+  },
+};
+
 // ── Health check ─────────────────────────────────────────────────────────────
 export async function isApiAvailable(): Promise<boolean> {
   try {

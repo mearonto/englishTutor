@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback, type CSSProperties, type ChangeEvent } from "react";
 import { StudentPicker } from "./components/StudentPicker";
-import { studentsApi, type ApiStudent } from "./api/client";
+import { studentsApi, testSessionsApi, type ApiStudent } from "./api/client";
 import { loadQuestionPool, invalidateCache } from "./game/questionCache";
 import { MiniGamesModal } from "./MiniGames";
 import { FONT_SIZE_STORAGE_KEY, type FontSizePref } from "./game/ChallengeScene";
@@ -197,6 +197,7 @@ function App() {
   const [confetti, setConfetti] = useState<ConfettiPiece[]>([]);
   const testStartTime = useRef<number>(0);
   const testWrongWords = useRef<string[]>([]);
+  const dbSessionIdRef = useRef<number | null>(null);
   const testStateRef = useRef<TestState>({
     running: false,
     finished: false,
@@ -273,6 +274,13 @@ function App() {
         };
         saveTestRecord(record);
         setTestHistory(loadTestHistory());
+        // Persist to DB (fire-and-forget)
+        if (dbSessionIdRef.current) {
+          testSessionsApi.finish(dbSessionIdRef.current, {
+            score: correct, total: prev.target, wrong_words: [...testWrongWords.current],
+          }).catch(() => {/* silent */});
+          dbSessionIdRef.current = null;
+        }
         gameEvents.emit("command-set-mode", { testMode: false });
         const allCorrect = correct === prev.target;
         const tokenBonus = correct * 2 + (allCorrect ? prev.target : 0);
@@ -478,11 +486,19 @@ function App() {
     const target = testLength;
     testStartTime.current = Date.now();
     testWrongWords.current = [];
+    dbSessionIdRef.current = null;
     setTestState({ running: true, finished: false, target, answered: 0, correct: 0 });
     setCanGoNext(false);
     setFeedback({ message: "", good: false });
     gameEvents.emit("command-set-mode", { testMode: true });
     gameEvents.emit("command-next");
+    // Fire-and-forget: create DB session if a real student is logged in
+    const sid = getCurrentStudentId();
+    if (sid && sid > 0) {
+      testSessionsApi.create({ student_id: sid, subject: getState().subject })
+        .then((s) => { dbSessionIdRef.current = s.id; })
+        .catch(() => {/* silent — localStorage is the fallback */});
+    }
   };
 
   const getEffectivePrizes = (prizes: LotteryPrize[]): LotteryPrize[] => {

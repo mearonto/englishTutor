@@ -5,6 +5,7 @@ import { seedQuestions, seedStudents } from "./seed";
 import { pool } from "./db";
 import questionsRouter from "./routes/questions";
 import studentsRouter from "./routes/students";
+import testsRouter from "./routes/tests";
 
 const app = express();
 const PORT = parseInt(process.env.PORT ?? "3001", 10);
@@ -18,6 +19,7 @@ app.get("/api/health", (_req, res) => {
 });
 app.use("/api/questions", questionsRouter);
 app.use("/api/students", studentsRouter);
+app.use("/api/test-sessions", testsRouter);
 
 // Global error handler
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {

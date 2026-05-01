@@ -2,12 +2,14 @@ import { useState, useEffect, useCallback } from "react";
 import { studentsApi, type ApiStudent } from "../../api/client";
 import { StudentForm } from "./StudentForm";
 import { StudentQuestionPool } from "./StudentQuestionPool";
+import { StudentTestHistory } from "./StudentTestHistory";
 
 export function StudentList() {
   const [students, setStudents] = useState<ApiStudent[]>([]);
   const [loading, setLoading] = useState(true);
   const [editStudent, setEditStudent] = useState<ApiStudent | null | undefined>(undefined);
   const [poolStudent, setPoolStudent] = useState<ApiStudent | null>(null);
+  const [historyStudent, setHistoryStudent] = useState<ApiStudent | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -86,6 +88,7 @@ export function StudentList() {
             <div style={actions}>
               <button style={btnEdit} onClick={() => setEditStudent(s)}>✏️ Edit</button>
               <button style={btnPool} onClick={() => setPoolStudent(s)}>📚 Questions</button>
+              <button style={btnHistory} onClick={() => setHistoryStudent(s)}>📊 History</button>
               <button style={btnReset} onClick={() => handleReset(s)}>↺ Reset</button>
               <button style={btnDel} onClick={() => handleDelete(s)}>🗑</button>
             </div>
@@ -111,6 +114,13 @@ export function StudentList() {
           onClose={() => { setPoolStudent(null); void load(); }}
         />
       )}
+
+      {historyStudent && (
+        <StudentTestHistory
+          student={historyStudent}
+          onClose={() => setHistoryStudent(null)}
+        />
+      )}
     </div>
   );
 }
@@ -129,5 +139,6 @@ const statLbl: React.CSSProperties = { fontSize: "0.65rem", color: "#94a3b8" };
 const actions: React.CSSProperties = { display: "flex", gap: "0.4rem", flexWrap: "wrap" };
 const btnEdit: React.CSSProperties = { padding: "3px 10px", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 6, cursor: "pointer", fontSize: "0.78rem", color: "#1d4ed8" };
 const btnPool: React.CSSProperties = { padding: "3px 10px", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 6, cursor: "pointer", fontSize: "0.78rem", color: "#166534" };
+const btnHistory: React.CSSProperties = { padding: "3px 10px", background: "#fdf4ff", border: "1px solid #e9d5ff", borderRadius: 6, cursor: "pointer", fontSize: "0.78rem", color: "#7e22ce" };
 const btnReset: React.CSSProperties = { padding: "3px 10px", background: "#fefce8", border: "1px solid #fde047", borderRadius: 6, cursor: "pointer", fontSize: "0.78rem", color: "#854d0e" };
 const btnDel: React.CSSProperties = { padding: "3px 9px", background: "#fff1f2", border: "1px solid #fecdd3", borderRadius: 6, cursor: "pointer", fontSize: "0.78rem", color: "#be123c", marginLeft: "auto" };
