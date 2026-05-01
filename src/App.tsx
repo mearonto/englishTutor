@@ -608,23 +608,6 @@ function App() {
   const testLeft = Math.max(0, testState.target - testState.answered);
   const finalScore = Math.round((testState.correct / testState.target) * 100);
 
-  if (!currentStudent) {
-    return (
-      <StudentPicker onSelect={handleStudentSelect} onGuest={handleGuest} />
-    );
-  }
-
-  if (questionsLoading) {
-    return (
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center",
-        justifyContent: "center", height: "100vh", gap: "1rem",
-        background: "linear-gradient(135deg, #1e3a5f, #0d6e8a)", color: "#fff" }}>
-        <div style={{ fontSize: "2rem" }}>⏳</div>
-        <p style={{ fontSize: "1.1rem", margin: 0 }}>Loading questions…</p>
-      </div>
-    );
-  }
-
   return (
     <main className="app-shell">
       <header className="topbar">
@@ -1332,6 +1315,21 @@ function App() {
       >
         {mode === "test" && testState.running ? "" : feedback.message}
       </footer>
+
+      {/* Student picker — fixed overlay, shown until a student is chosen */}
+      {!currentStudent && (
+        <StudentPicker onSelect={handleStudentSelect} onGuest={handleGuest} />
+      )}
+
+      {/* Questions loading overlay */}
+      {questionsLoading && (
+        <div style={{ position: "fixed", inset: 0, display: "flex", flexDirection: "column",
+          alignItems: "center", justifyContent: "center", gap: "1rem", zIndex: 9999,
+          background: "linear-gradient(135deg, #1e3a5f, #0d6e8a)", color: "#fff" }}>
+          <div style={{ fontSize: "2rem" }}>⏳</div>
+          <p style={{ fontSize: "1.1rem", margin: 0 }}>Loading questions…</p>
+        </div>
+      )}
 
       {confetti.length > 0 && (
         <div className="confetti-overlay" aria-hidden="true">
