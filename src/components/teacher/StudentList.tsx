@@ -76,6 +76,10 @@ export function StudentList() {
               <div style={stat}><span style={statVal}>{s.tokens}</span><span style={statLbl}>🪙</span></div>
               <div style={stat}><span style={statVal}>{s.streak}</span><span style={statLbl}>🔥</span></div>
               <div style={stat}><span style={statVal}>{masteryPercent(s)}%</span><span style={statLbl}>Mastery</span></div>
+              <div style={stat}>
+                <span style={statVal}>{s.difficulty_min ?? 1}–{s.difficulty_max ?? 5}</span>
+                <span style={statLbl}>Diff</span>
+              </div>
             </div>
 
             {/* Actions */}

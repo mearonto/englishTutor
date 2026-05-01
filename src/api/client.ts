@@ -33,6 +33,8 @@ export interface ApiStudent {
   astronomy_categories: string[];
   canada_categories: string[];
   math_kangaroo_categories: string[];
+  difficulty_min: number;
+  difficulty_max: number;
   created_at: string;
 }
 

@@ -37,30 +37,47 @@ function rowToLevel(row: Record<string, unknown>): Level {
 /**
  * Fetch the question pool for a student + subject from the API.
  * Populates the cache. Falls back to static data on error.
+ *
+ * When a real student is selected, uses /api/students/:id/questions so the
+ * response automatically respects the student's custom pool AND difficulty range.
+ * For guest mode, falls back to /api/questions with explicit difficulty params.
  */
 export async function loadQuestionPool(
   studentId: number | null,
   subject: string,
-  categories: string[]
+  categories: string[],
+  difficultyMin = 1,
+  difficultyMax = 5,
 ): Promise<void> {
   cacheReady = false;
 
   try {
-    const params: Record<string, string> = {
-      subject,
-      limit: "2000",
-      active: "true",
-    };
+    let url: string;
+
     if (studentId && studentId > 0) {
-      params.student_id = String(studentId);
-    }
-    // Send categories as comma-separated type filter if narrowed
-    if (categories.length === 1) {
-      params.type = categories[0];
+      // Student endpoint: handles custom pool + difficulty filtering server-side
+      const params = new URLSearchParams({
+        subject,
+        limit: "2000",
+        difficulty_min: String(difficultyMin),
+        difficulty_max: String(difficultyMax),
+      });
+      if (categories.length === 1) params.set("type", categories[0]);
+      url = `/api/students/${studentId}/questions?${params}`;
+    } else {
+      // Guest: global pool with difficulty filter
+      const params = new URLSearchParams({
+        subject,
+        limit: "2000",
+        active: "true",
+        difficulty_min: String(difficultyMin),
+        difficulty_max: String(difficultyMax),
+      });
+      if (categories.length === 1) params.set("type", categories[0]);
+      url = `/api/questions?${params}`;
     }
 
-    const qs = new URLSearchParams(params).toString();
-    const res = await fetch(`/api/questions?${qs}`);
+    const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
     const data = (await res.json()) as { questions: Record<string, unknown>[] };

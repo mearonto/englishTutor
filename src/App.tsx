@@ -102,17 +102,19 @@ type TestRecord = {
 
 function App() {
   // ── Student session ────────────────────────────────────────────────────────
-  const [currentStudent, setCurrentStudent] = useState<{ id: number; name: string } | null>(null);
+  const [currentStudent, setCurrentStudent] = useState<{ id: number; name: string; difficultyMin: number; difficultyMax: number } | null>(null);
 
   const [questionsLoading, setQuestionsLoading] = useState(false);
 
   const fetchPool = useCallback(async (
     studentId: number,
     subject: string,
-    categories: string[]
+    categories: string[],
+    difficultyMin = 1,
+    difficultyMax = 5,
   ) => {
     setQuestionsLoading(true);
-    await loadQuestionPool(studentId, subject, categories);
+    await loadQuestionPool(studentId, subject, categories, difficultyMin, difficultyMax);
     setQuestionsLoading(false);
     // Trigger a new question after pool is ready
     gameEvents.emit("command-next");
@@ -121,19 +123,24 @@ function App() {
   const handleStudentSelect = useCallback(
     async (student: { id: number; name: string; data: ApiStudent }) => {
       loadStudentState(student.id, student.data);
-      setCurrentStudent({ id: student.id, name: student.name });
+      setCurrentStudent({
+        id: student.id,
+        name: student.name,
+        difficultyMin: student.data.difficulty_min ?? 1,
+        difficultyMax: student.data.difficulty_max ?? 5,
+      });
       const s = student.data;
       const cats = s.subject === "astronomy" ? (s.astronomy_categories ?? [])
         : s.subject === "canada" ? (s.canada_categories ?? [])
         : s.subject === "math-kangaroo" ? (s.math_kangaroo_categories ?? [])
         : [];
-      await fetchPool(student.id, s.subject, cats);
+      await fetchPool(student.id, s.subject, cats, s.difficulty_min ?? 1, s.difficulty_max ?? 5);
     },
     [fetchPool]
   );
 
   const handleGuest = useCallback(() => {
-    setCurrentStudent({ id: -1, name: "Guest" });
+    setCurrentStudent({ id: -1, name: "Guest", difficultyMin: 1, difficultyMax: 5 });
     // Use static levels — no fetch needed, cache stays empty → fallback path
     invalidateCache();
   }, []);
@@ -328,7 +335,7 @@ function App() {
       : newSubject === "canada" ? state.canadaCategories
       : newSubject === "math-kangaroo" ? state.mathKangarooCategories
       : [];
-    void fetchPool(sid, newSubject, cats);
+    void fetchPool(sid, newSubject, cats, currentStudent?.difficultyMin ?? 1, currentStudent?.difficultyMax ?? 5);
   };
 
   const switchMode = (newMode: Mode) => {

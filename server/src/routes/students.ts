@@ -43,6 +43,7 @@ router.put("/:id", async (req: Request, res: Response) => {
     "name", "grade_unlocked", "xp", "stars", "tokens", "streak",
     "mastery3", "learned", "inventory", "subject",
     "astronomy_categories", "canada_categories", "math_kangaroo_categories",
+    "difficulty_min", "difficulty_max",
   ];
   const jsonFields = new Set(["mastery3", "learned", "inventory",
     "astronomy_categories", "canada_categories", "math_kangaroo_categories"]);

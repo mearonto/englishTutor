@@ -11,6 +11,8 @@ export function StudentForm({ student, onSave, onClose }: Props) {
   const [name, setName] = useState(student?.name ?? "");
   const [grade, setGrade] = useState(student?.grade_unlocked ?? 3);
   const [subject, setSubject] = useState(student?.subject ?? "english");
+  const [diffMin, setDiffMin] = useState(student?.difficulty_min ?? 1);
+  const [diffMax, setDiffMax] = useState(student?.difficulty_max ?? 5);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
@@ -18,6 +20,8 @@ export function StudentForm({ student, onSave, onClose }: Props) {
     setName(student?.name ?? "");
     setGrade(student?.grade_unlocked ?? 3);
     setSubject(student?.subject ?? "english");
+    setDiffMin(student?.difficulty_min ?? 1);
+    setDiffMax(student?.difficulty_max ?? 5);
     setError("");
   }, [student]);
 
@@ -27,7 +31,10 @@ export function StudentForm({ student, onSave, onClose }: Props) {
     setError("");
     try {
       if (student?.id) {
-        await studentsApi.update(student.id, { name: name.trim(), grade_unlocked: grade, subject });
+        await studentsApi.update(student.id, {
+          name: name.trim(), grade_unlocked: grade, subject,
+          difficulty_min: diffMin, difficulty_max: diffMax,
+        });
       } else {
         await studentsApi.create(name.trim());
       }
@@ -64,6 +71,25 @@ export function StudentForm({ student, onSave, onClose }: Props) {
             <option value="canada">Canada</option>
             <option value="math-kangaroo">Math Kangaroo</option>
           </select>
+
+          <label style={lbl}>Difficulty Range (gameplay filter)</label>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", flexWrap: "wrap" }}>
+            <span style={{ fontSize: "0.82rem", color: "#475569", whiteSpace: "nowrap" }}>
+              Min: <strong>{diffMin}</strong>
+            </span>
+            <input type="range" min={1} max={5} value={diffMin}
+              onChange={(e) => setDiffMin(Math.min(Number(e.target.value), diffMax))}
+              style={{ flex: 1, accentColor: "#3b82f6" }} />
+            <span style={{ fontSize: "0.82rem", color: "#475569", whiteSpace: "nowrap" }}>
+              Max: <strong>{diffMax}</strong>
+            </span>
+            <input type="range" min={1} max={5} value={diffMax}
+              onChange={(e) => setDiffMax(Math.max(Number(e.target.value), diffMin))}
+              style={{ flex: 1, accentColor: "#3b82f6" }} />
+          </div>
+          <p style={{ margin: "0.1rem 0", fontSize: "0.75rem", color: "#94a3b8" }}>
+            Only questions within this difficulty range will be shown during practice and tests.
+          </p>
 
           {error && <p style={{ color: "#dc2626", margin: "0.25rem 0", fontSize: "0.9rem" }}>{error}</p>}
         </div>
