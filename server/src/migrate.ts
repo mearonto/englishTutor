@@ -3,7 +3,7 @@ import path from "path";
 import { pool } from "./db";
 
 export async function runMigrations() {
-  const migrationsDir = path.join(__dirname, "..", "..", "migrations");
+  const migrationsDir = path.join(__dirname, "..", "migrations");
 
   // Ensure migrations tracking table exists
   await pool.query(`

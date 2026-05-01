@@ -25,7 +25,7 @@ export async function seedQuestions() {
     return;
   }
 
-  const seedFile = path.join(__dirname, "..", "..", "seed", "questions.json");
+  const seedFile = path.join(__dirname, "..", "seed", "questions.json");
   if (!fs.existsSync(seedFile)) {
     console.warn("[seed] questions.json not found — skipping question seed");
     return;
