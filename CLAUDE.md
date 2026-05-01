@@ -17,6 +17,8 @@ There are no automated tests in this project.
 
 When implementing a user-requested feature change, make **one single commit at the end** after all files are modified and the build passes. Do not commit after each individual file change.
 
+**At the end of every conversation**, create one commit summarizing all changes made in that session, then **push to the remote** (`git push origin main`). The commit message should be a concise summary based on what the user asked for during the conversation.
+
 ## Architecture Overview
 
 This is **Word Quest: Northern Trails**, a Grade 3/4 vocabulary game for children built with **React + TypeScript + Phaser 3**, bundled by Vite.

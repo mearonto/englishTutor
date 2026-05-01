@@ -885,6 +885,15 @@ function App() {
         <button onClick={onHearWord} disabled={mode === "test"}>
           Hear Word
         </button>
+        {mode === "practice" && (
+          <button
+            onClick={() => setAudioEnabled((v) => !v)}
+            title={audioEnabled ? "Turn off audio" : "Turn on audio"}
+            style={{ minWidth: "2.4rem", fontSize: "1.1rem" }}
+          >
+            {audioEnabled ? "🔊" : "🔇"}
+          </button>
+        )}
         {mode === "practice" ? (
           <button onClick={onNext} disabled={!canGoNext}>
             Next Challenge
