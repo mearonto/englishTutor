@@ -45,9 +45,11 @@ router.put("/:id", async (req: Request, res: Response) => {
     "astronomy_categories", "canada_categories", "math_kangaroo_categories",
     "difficulty_min", "difficulty_max",
     "font_size", "test_length", "audio_enabled", "audio_rate",
+    "lottery_cost", "lottery_prizes", "lottery_history",
   ];
   const jsonFields = new Set(["mastery3", "learned", "inventory",
-    "astronomy_categories", "canada_categories", "math_kangaroo_categories"]);
+    "astronomy_categories", "canada_categories", "math_kangaroo_categories",
+    "lottery_prizes", "lottery_history"]);
 
   const fields: string[] = [];
   const values: unknown[] = [];

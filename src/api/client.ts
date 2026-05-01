@@ -39,6 +39,9 @@ export interface ApiStudent {
   test_length: number;
   audio_enabled: boolean;
   audio_rate: number;
+  lottery_cost: number;
+  lottery_prizes: { id: string; label: string; weight: number }[];
+  lottery_history: { id: string; time: number; prizeLabel: string }[];
   created_at: string;
 }
 

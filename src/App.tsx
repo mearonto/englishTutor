@@ -145,6 +145,14 @@ function App() {
       gameEvents.emit("command-font-size", { size: fs });
       saveAudioSettings({ enabled: ae, rate: ar });
 
+      // Per-student lottery settings
+      const lc = s.lottery_cost ?? 50;
+      const lp = s.lottery_prizes?.length ? s.lottery_prizes : DEFAULT_STORED_PRIZES.map(p => ({ ...p }));
+      const lh = s.lottery_history ?? [];
+      setLotteryCost(lc);
+      setStoredPrizes(lp);
+      setLotteryHistory(lh);
+
       const cats = s.subject === "astronomy" ? (s.astronomy_categories ?? [])
         : s.subject === "canada" ? (s.canada_categories ?? [])
         : s.subject === "math-kangaroo" ? (s.math_kangaroo_categories ?? [])
@@ -580,8 +588,8 @@ function App() {
         setLastPrize(winner);
         setDrawing(false);
         const record: LotteryRecord = { id: String(Date.now()), time: Date.now(), prizeLabel: winner.label };
-        saveLotteryRecord(record);
-        setLotteryHistory(loadLotteryHistory());
+        const newHistory = [record, ...lotteryHistory].slice(0, 100);
+        syncLotteryHistory(newHistory);
       } else {
         step++;
         setTimeout(tick, delays[step]);
@@ -590,22 +598,30 @@ function App() {
     setTimeout(tick, delays[0]);
   };
 
-  const updatePrize = (index: number, field: "label" | "weight", value: string | number) => {
-    const updated = storedPrizes.map((p, i) => (i === index ? { ...p, [field]: value } : p));
+  const syncLotteryPrizes = (updated: LotteryPrize[]) => {
     setStoredPrizes(updated);
     saveStoredPrizes(updated);
+    const sid = getCurrentStudentId();
+    if (sid && sid > 0) studentsApi.update(sid, { lottery_prizes: updated } as Partial<ApiStudent>).catch(() => {});
+  };
+
+  const syncLotteryHistory = (updated: LotteryRecord[]) => {
+    setLotteryHistory(updated);
+    localStorage.setItem(LOTTERY_HISTORY_KEY, JSON.stringify(updated));
+    const sid = getCurrentStudentId();
+    if (sid && sid > 0) studentsApi.update(sid, { lottery_history: updated } as Partial<ApiStudent>).catch(() => {});
+  };
+
+  const updatePrize = (index: number, field: "label" | "weight", value: string | number) => {
+    syncLotteryPrizes(storedPrizes.map((p, i) => (i === index ? { ...p, [field]: value } : p)));
   };
 
   const removePrize = (index: number) => {
-    const updated = storedPrizes.filter((_, i) => i !== index);
-    setStoredPrizes(updated);
-    saveStoredPrizes(updated);
+    syncLotteryPrizes(storedPrizes.filter((_, i) => i !== index));
   };
 
   const addPrize = () => {
-    const updated = [...storedPrizes, { id: `prize-${Date.now()}`, label: "新奖品", weight: 0 }];
-    setStoredPrizes(updated);
-    saveStoredPrizes(updated);
+    syncLotteryPrizes([...storedPrizes, { id: `prize-${Date.now()}`, label: "新奖品", weight: 0 }]);
   };
 
   const reorderPrizes = (fromId: string, toId: string) => {
@@ -616,8 +632,7 @@ function App() {
     const updated = [...storedPrizes];
     const [moved] = updated.splice(fromIndex, 1);
     updated.splice(toIndex, 0, moved);
-    setStoredPrizes(updated);
-    saveStoredPrizes(updated);
+    syncLotteryPrizes(updated);
   };
 
   const clearTestHistory = () => {
@@ -1160,6 +1175,8 @@ function App() {
                     const val = Math.max(1, Number(event.target.value));
                     setLotteryCost(val);
                     saveLotteryCost(val);
+                    const sid = getCurrentStudentId();
+                    if (sid && sid > 0) studentsApi.update(sid, { lottery_cost: val } as Partial<ApiStudent>).catch(() => {});
                   }}
                 />
                 <label className="field-label">Prizes</label>
@@ -1241,8 +1258,7 @@ function App() {
                               className="danger"
                               style={{ marginLeft: "auto", padding: "2px 10px", fontSize: "0.8rem" }}
                               onClick={() => {
-                                const updated = deleteLotteryRecord(record.id);
-                                setLotteryHistory(updated);
+                                syncLotteryHistory(lotteryHistory.filter((r) => r.id !== record.id));
                               }}
                             >
                               Delete
@@ -1254,10 +1270,7 @@ function App() {
                     <div className="teacher-actions">
                       <button
                         className="danger"
-                        onClick={() => {
-                          localStorage.removeItem(LOTTERY_HISTORY_KEY);
-                          setLotteryHistory([]);
-                        }}
+                        onClick={() => { syncLotteryHistory([]); }}
                       >
                         Clear All
                       </button>
@@ -1554,17 +1567,5 @@ function loadLotteryHistory(): LotteryRecord[] {
   }
 }
 
-function saveLotteryRecord(record: LotteryRecord): void {
-  const history = loadLotteryHistory();
-  history.unshift(record);
-  if (history.length > 100) history.length = 100;
-  localStorage.setItem(LOTTERY_HISTORY_KEY, JSON.stringify(history));
-}
-
-function deleteLotteryRecord(id: string): LotteryRecord[] {
-  const history = loadLotteryHistory().filter((r) => r.id !== id);
-  localStorage.setItem(LOTTERY_HISTORY_KEY, JSON.stringify(history));
-  return history;
-}
 
 export default App;
