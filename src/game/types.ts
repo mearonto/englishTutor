@@ -1,6 +1,6 @@
 export type Grade = 3 | 4;
 
-export type Subject = "english" | "astronomy" | "canada";
+export type Subject = "english" | "astronomy" | "canada" | "math-kangaroo" | "leon";
 
 export type SkillType =
   | "spelling"
@@ -18,6 +18,10 @@ export type SkillType =
   | "earth-space"
   | "fun-fact"
   | "astronomy-vocab"
+  | "kangaroo-g5"
+  | "kangaroo-g6"
+  | "kangaroo-g7"
+  | "kangaroo-g8"
   | "math"
   | "science"
   | "social-studies"
@@ -50,6 +54,7 @@ export interface PlayerState {
   subject: Subject;
   astronomyCategories: string[];
   canadaCategories: string[];
+  mathKangarooCategories: string[];
 }
 
 export interface ShopItem {

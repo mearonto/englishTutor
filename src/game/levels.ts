@@ -2,6 +2,8 @@ import { ASTRONOMY_CATEGORY_LABELS, ASTRONOMY_LEVELS } from "./astronomyLevels";
 export { ASTRONOMY_CATEGORY_LABELS };
 import { CANADA_CATEGORY_LABELS, CANADA_LEVELS } from "./canadaLevels";
 export { CANADA_CATEGORY_LABELS };
+import { MATH_KANGAROO_CATEGORY_LABELS, MATH_KANGAROO_LEVELS } from "./mathKangarooLevels";
+export { MATH_KANGAROO_CATEGORY_LABELS };
 import type { Level, ShopItem, SkillType } from "./types";
 
 const CUSTOM_LEVELS_KEY = "word-quest-custom-levels-v1";
@@ -27,6 +29,10 @@ export function getAstronomyLevels(): Level[] {
 
 export function getCanadaLevels(): Level[] {
   return CANADA_LEVELS;
+}
+
+export function getMathKangarooLevels(): Level[] {
+  return MATH_KANGAROO_LEVELS;
 }
 
 export function getCustomLevelsCount(): number {

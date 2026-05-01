@@ -145,6 +145,11 @@ function App() {
       gameEvents.emit("command-font-size", { size: fs });
       saveAudioSettings({ enabled: ae, rate: ar });
 
+      // Per-student enabled subjects
+      const es = (s.enabled_subjects?.length ? s.enabled_subjects : [...ALL_SUBJECTS]) as string[];
+      setEnabledSubjects(es);
+      setPendingEnabledSubjects(es);
+
       // Per-student lottery settings
       const lc = s.lottery_cost ?? 50;
       const lp = s.lottery_prizes?.length ? s.lottery_prizes : DEFAULT_STORED_PRIZES.map(p => ({ ...p }));
@@ -252,6 +257,9 @@ function App() {
   const [pendingAstroCats, setPendingAstroCats] = useState<string[]>([]);
   const [pendingCanadaCats, setPendingCanadaCats] = useState<string[]>([]);
   const [pendingMathKangarooCats, setPendingMathKangarooCats] = useState<string[]>([]);
+  const ALL_SUBJECTS = ["astronomy", "canada", "math-kangaroo", "leon"] as const;
+  const [enabledSubjects, setEnabledSubjects] = useState<string[]>([...ALL_SUBJECTS]);
+  const [pendingEnabledSubjects, setPendingEnabledSubjects] = useState<string[]>([...ALL_SUBJECTS]);
   const [pendingFontSize, setPendingFontSize] = useState<FontSizePref>(
     () => (localStorage.getItem(FONT_SIZE_STORAGE_KEY) as FontSizePref | null) ?? "small"
   );
@@ -389,7 +397,8 @@ function App() {
     setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
     setCanGoNext(false);
     setFeedback({ message: "", good: false });
-    gameEvents.emit("command-set-mode", { testMode: false });
+    // Tell Phaser immediately whether we're in test tab (suppresses all TTS)
+    gameEvents.emit("command-set-mode", { testMode: newMode === "test" });
     gameEvents.emit("command-next");
   };
 
@@ -410,6 +419,7 @@ function App() {
     setPendingAstroCats([...s.astronomyCategories]);
     setPendingCanadaCats([...s.canadaCategories]);
     setPendingMathKangarooCats([...s.mathKangarooCategories]);
+    setPendingEnabledSubjects([...enabledSubjects]);
     setPendingFontSize((localStorage.getItem(FONT_SIZE_STORAGE_KEY) as FontSizePref | null) ?? "small");
     setTeacherOpen(true);
     setTeacherUnlocked(false);
@@ -438,6 +448,17 @@ function App() {
     setAstronomyCategories(pendingAstroCats);
     setCanadaCategories(pendingCanadaCats);
     setMathKangarooCategories(pendingMathKangarooCats);
+    setEnabledSubjects(pendingEnabledSubjects);
+
+    // If current subject was disabled, switch to first still-enabled subject
+    const prevSubject = getState().subject;
+    let subjectChanged = false;
+    if (!pendingEnabledSubjects.includes(prevSubject) && pendingEnabledSubjects.length > 0) {
+      const next = pendingEnabledSubjects[0] as import("./game/types").Subject;
+      setSubject(next);
+      subjectChanged = true;
+    }
+
     // Persist per-student settings to DB
     const sid = getCurrentStudentId();
     if (sid && sid > 0) {
@@ -447,14 +468,28 @@ function App() {
         astronomy_categories: pendingAstroCats,
         canada_categories: pendingCanadaCats,
         math_kangaroo_categories: pendingMathKangarooCats,
+        enabled_subjects: pendingEnabledSubjects,
       } as Partial<ApiStudent>).catch(() => {});
     }
-    if (astroDiff || canadaDiff || kangarooDiff || fontSizeDiff) {
+
+    if (astroDiff || canadaDiff || kangarooDiff || fontSizeDiff || subjectChanged) {
+      // Re-fetch question pool so practice & test immediately reflect the new settings
+      const finalSubject = getState().subject;
+      const cats = finalSubject === "astronomy" ? pendingAstroCats
+        : finalSubject === "canada" ? pendingCanadaCats
+        : finalSubject === "math-kangaroo" ? pendingMathKangarooCats
+        : [];
       setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
       setCanGoNext(false);
       setFeedback({ message: "", good: false });
       gameEvents.emit("command-set-mode", { testMode: false });
-      gameEvents.emit("command-next");
+      void fetchPool(
+        currentStudent?.id ?? -1,
+        finalSubject,
+        cats,
+        currentStudent?.difficultyMin ?? 1,
+        currentStudent?.difficultyMax ?? 5,
+      );
     }
     setTeacherOpen(false);
     setTeacherUnlocked(false);
@@ -720,27 +755,42 @@ function App() {
 
       <section className="map-panel metrics-panel">
         <div className="subject-toggle-row">
-          <button
-            className={`subject-btn${state.subject === "astronomy" ? " active" : ""}`}
-            onClick={() => { if (state.subject !== "astronomy") switchSubject("astronomy"); }}
-            disabled={testState.running}
-          >
-            🔭 Astronomy
-          </button>
-          <button
-            className={`subject-btn${state.subject === "canada" ? " active" : ""}`}
-            onClick={() => { if (state.subject !== "canada") switchSubject("canada"); }}
-            disabled={testState.running}
-          >
-            🍁 Canada G4
-          </button>
-          <button
-            className={`subject-btn${state.subject === "math-kangaroo" ? " active" : ""}`}
-            onClick={() => { if (state.subject !== "math-kangaroo") switchSubject("math-kangaroo"); }}
-            disabled={testState.running}
-          >
-            🦘 Math Kangaroo
-          </button>
+          {enabledSubjects.includes("astronomy") && (
+            <button
+              className={`subject-btn${state.subject === "astronomy" ? " active" : ""}`}
+              onClick={() => { if (state.subject !== "astronomy") switchSubject("astronomy"); }}
+              disabled={testState.running}
+            >
+              🔭 Astronomy
+            </button>
+          )}
+          {enabledSubjects.includes("canada") && (
+            <button
+              className={`subject-btn${state.subject === "canada" ? " active" : ""}`}
+              onClick={() => { if (state.subject !== "canada") switchSubject("canada"); }}
+              disabled={testState.running}
+            >
+              🍁 Canada G4
+            </button>
+          )}
+          {enabledSubjects.includes("math-kangaroo") && (
+            <button
+              className={`subject-btn${state.subject === "math-kangaroo" ? " active" : ""}`}
+              onClick={() => { if (state.subject !== "math-kangaroo") switchSubject("math-kangaroo"); }}
+              disabled={testState.running}
+            >
+              🦘 Math Kangaroo
+            </button>
+          )}
+          {enabledSubjects.includes("leon") && (
+            <button
+              className={`subject-btn${state.subject === "leon" ? " active" : ""}`}
+              onClick={() => { if (state.subject !== "leon") switchSubject("leon"); }}
+              disabled={testState.running}
+            >
+              🧮 Leon Math
+            </button>
+          )}
         </div>
         {mode === "practice" ? (
           <>
@@ -750,7 +800,9 @@ function App() {
                   ? `Astronomy${state.astronomyCategories.length === 1 ? ` • ${ASTRONOMY_CATEGORY_LABELS[state.astronomyCategories[0]] ?? state.astronomyCategories[0]}` : state.astronomyCategories.length > 1 ? ` • ${state.astronomyCategories.length} categories` : ""}`
                   : state.subject === "canada"
                     ? `Canada G4${state.canadaCategories.length === 1 ? ` • ${CANADA_CATEGORY_LABELS[state.canadaCategories[0]] ?? state.canadaCategories[0]}` : state.canadaCategories.length > 1 ? ` • ${state.canadaCategories.length} subjects` : ""}`
-                    : `Math Kangaroo${state.mathKangarooCategories.length === 1 ? ` • ${MATH_KANGAROO_CATEGORY_LABELS[state.mathKangarooCategories[0]] ?? state.mathKangarooCategories[0]}` : state.mathKangarooCategories.length > 1 ? ` • ${state.mathKangarooCategories.length} grades` : ""}`}
+                    : state.subject === "leon"
+                      ? "Leon Math"
+                      : `Math Kangaroo${state.mathKangarooCategories.length === 1 ? ` • ${MATH_KANGAROO_CATEGORY_LABELS[state.mathKangarooCategories[0]] ?? state.mathKangarooCategories[0]}` : state.mathKangarooCategories.length > 1 ? ` • ${state.mathKangarooCategories.length} grades` : ""}`}
               </span>
               <span>
                 Streak: <strong>{state.streak}</strong>
@@ -772,7 +824,7 @@ function App() {
               )}
             </div>
             {!testState.running && !testState.finished && (
-              <span style={{ fontSize: "0.8rem", color: state.subject === "astronomy" ? "#0099cc" : state.subject === "canada" ? "#cc5500" : "#0f766e", fontWeight: 700 }}>
+              <span style={{ fontSize: "0.8rem", color: state.subject === "astronomy" ? "#0099cc" : state.subject === "canada" ? "#cc5500" : state.subject === "leon" ? "#7c3aed" : "#0f766e", fontWeight: 700 }}>
                 {state.subject === "astronomy"
                   ? (state.astronomyCategories.length === 1
                       ? `Astronomy • ${ASTRONOMY_CATEGORY_LABELS[state.astronomyCategories[0]] ?? state.astronomyCategories[0]}`
@@ -785,11 +837,13 @@ function App() {
                         : state.canadaCategories.length > 1
                           ? `Canada G4 • ${state.canadaCategories.length} subjects`
                           : "Canada G4")
-                    : (state.mathKangarooCategories.length === 1
-                        ? `Math Kangaroo • ${MATH_KANGAROO_CATEGORY_LABELS[state.mathKangarooCategories[0]] ?? state.mathKangarooCategories[0]}`
-                        : state.mathKangarooCategories.length > 1
-                          ? `Math Kangaroo • ${state.mathKangarooCategories.length} grades`
-                          : "Math Kangaroo")}
+                    : state.subject === "leon"
+                      ? "Leon Math"
+                      : (state.mathKangarooCategories.length === 1
+                          ? `Math Kangaroo • ${MATH_KANGAROO_CATEGORY_LABELS[state.mathKangarooCategories[0]] ?? state.mathKangarooCategories[0]}`
+                          : state.mathKangarooCategories.length > 1
+                            ? `Math Kangaroo • ${state.mathKangarooCategories.length} grades`
+                            : "Math Kangaroo")}
               </span>
             )}
             {testState.finished ? (
@@ -828,7 +882,7 @@ function App() {
       </section>
 
       <section className="actions">
-        <button onClick={onHearWord} disabled={mode === "test" && testState.running}>
+        <button onClick={onHearWord} disabled={mode === "test"}>
           Hear Word
         </button>
         {mode === "practice" ? (
@@ -1011,6 +1065,34 @@ function App() {
                 <p className="helper-text" style={{ marginTop: "0.2rem" }}>
                   Takes effect when you close Teacher Mode.
                 </p>
+                <hr />
+                <h3>Available Subjects</h3>
+                <p className="helper-text" style={{ marginTop: "-0.4rem" }}>
+                  Control which subjects appear for this student.
+                </p>
+                <div className="category-checkboxes">
+                  {([
+                    { id: "astronomy", label: "🔭 Astronomy" },
+                    { id: "canada", label: "🍁 Canada G4" },
+                    { id: "math-kangaroo", label: "🦘 Math Kangaroo" },
+                    { id: "leon", label: "🧮 Leon Math" },
+                  ] as const).map(({ id, label }) => (
+                    <label key={id} className="check-row">
+                      <input
+                        type="checkbox"
+                        checked={pendingEnabledSubjects.includes(id)}
+                        onChange={() => {
+                          const next = pendingEnabledSubjects.includes(id)
+                            ? pendingEnabledSubjects.filter((s) => s !== id)
+                            : [...pendingEnabledSubjects, id];
+                          // Keep at least one subject enabled
+                          if (next.length > 0) setPendingEnabledSubjects(next);
+                        }}
+                      />
+                      <span>{label}</span>
+                    </label>
+                  ))}
+                </div>
                 <hr />
                 <h3>Category Settings</h3>
                 <p className="helper-text" style={{ marginTop: "-0.4rem" }}>

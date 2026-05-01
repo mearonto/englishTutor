@@ -129,10 +129,27 @@ export class ChallengeScene extends Phaser.Scene {
       "fun-fact": "Fun Fact",
       "astronomy-vocab": "Astronomy Vocab"
     };
+    const CANADA_LABELS: Record<string, string> = {
+      math: "Math",
+      science: "Science",
+      "social-studies": "Social Studies",
+      "language-arts": "Language Arts",
+      health: "Health & Phys-Ed"
+    };
+    const KANGAROO_LABELS: Record<string, string> = {
+      "kangaroo-g5": "Grade 5",
+      "kangaroo-g6": "Grade 6",
+      "kangaroo-g7": "Grade 7",
+      "kangaroo-g8": "Grade 8"
+    };
     this.typeText.setText(
       this.level.grade === 0
         ? `Astronomy • ${ASTRO_LABELS[this.level.type] ?? this.level.type}`
-        : `Grade ${this.level.grade} • ${this.level.type}`
+        : this.level.id.startsWith("ca-")
+          ? `Canada G4 • ${CANADA_LABELS[this.level.type] ?? this.level.type}`
+          : this.level.id.startsWith("mk-")
+            ? `Math Kangaroo • ${KANGAROO_LABELS[this.level.type] ?? this.level.type}`
+            : `Grade ${this.level.grade} • ${this.level.type}`
     );
     this.promptText.setText(this.level.prompt);
     this.metaText.setText("");
@@ -311,15 +328,11 @@ export class ChallengeScene extends Phaser.Scene {
   }
 
   private pronounceCurrent(): void {
-    if (!this.level) {
+    if (!this.level || this.testMode) {
       return;
     }
     this.resumeAudioContext();
-    if (this.testMode) {
-      this.speak(this.level.prompt);
-    } else {
-      this.speak(this.level.word, this.level.contextSentence);
-    }
+    this.speak(this.level.word, this.level.contextSentence);
   }
 
   private resumeAudioContext(): void {

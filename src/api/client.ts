@@ -42,6 +42,7 @@ export interface ApiStudent {
   lottery_cost: number;
   lottery_prizes: { id: string; label: string; weight: number }[];
   lottery_history: { id: string; time: number; prizeLabel: string }[];
+  enabled_subjects: string[];
   created_at: string;
 }
 

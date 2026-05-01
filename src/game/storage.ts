@@ -14,7 +14,8 @@ export function defaultState(): PlayerState {
     inventory: [],
     subject: "english",
     astronomyCategories: [],
-    canadaCategories: []
+    canadaCategories: [],
+    mathKangarooCategories: []
   };
 }
 

@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"curl -s http://localhost:3001/api/health\",\"description\":\"Check API health\"}",
+  "error": "Exit code 7",
+  "timestamp": "2026-05-01T03:20:08.477Z",
+  "retry_count": 1
+}
