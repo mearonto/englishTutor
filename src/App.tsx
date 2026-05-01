@@ -822,7 +822,8 @@ function App() {
         )}
       </section>
 
-      <section className="game-frame">
+      <section className="game-frame"
+        style={{ pointerEvents: (teacherOpen || shopOpen || lotteryOpen || miniGamesOpen) ? "none" : "auto" }}>
         <div id="phaser-root" />
       </section>
 
