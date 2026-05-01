@@ -35,6 +35,10 @@ export interface ApiStudent {
   math_kangaroo_categories: string[];
   difficulty_min: number;
   difficulty_max: number;
+  font_size: string;
+  test_length: number;
+  audio_enabled: boolean;
+  audio_rate: number;
   created_at: string;
 }
 

@@ -122,14 +122,29 @@ function App() {
 
   const handleStudentSelect = useCallback(
     async (student: { id: number; name: string; data: ApiStudent }) => {
-      loadStudentState(student.id, student.data);
+      const s = student.data;
+      loadStudentState(student.id, s);
       setCurrentStudent({
         id: student.id,
         name: student.name,
-        difficultyMin: student.data.difficulty_min ?? 1,
-        difficultyMax: student.data.difficulty_max ?? 5,
+        difficultyMin: s.difficulty_min ?? 1,
+        difficultyMax: s.difficulty_max ?? 5,
       });
-      const s = student.data;
+
+      // Apply per-student settings
+      const fs = (s.font_size ?? "small") as FontSizePref;
+      const tl = (s.test_length ?? 10) as 10 | 20 | 50;
+      const ae = s.audio_enabled ?? true;
+      const ar = Number(s.audio_rate ?? 0.88);
+
+      setPendingFontSize(fs);
+      setTestLength(tl);
+      setAudioEnabled(ae);
+      setSpeechRate(ar);
+      localStorage.setItem(FONT_SIZE_STORAGE_KEY, fs);
+      gameEvents.emit("command-font-size", { size: fs });
+      saveAudioSettings({ enabled: ae, rate: ar });
+
       const cats = s.subject === "astronomy" ? (s.astronomy_categories ?? [])
         : s.subject === "canada" ? (s.canada_categories ?? [])
         : s.subject === "math-kangaroo" ? (s.math_kangaroo_categories ?? [])
@@ -138,6 +153,15 @@ function App() {
     },
     [fetchPool]
   );
+
+  const handleSwitchStudent = useCallback(() => {
+    invalidateCache();
+    setCurrentStudent(null);
+    setTestState({ running: false, finished: false, target: 10, answered: 0, correct: 0 });
+    setFeedback({ message: "", good: false });
+    setCanGoNext(false);
+    gameEvents.emit("command-set-mode", { testMode: false });
+  }, []);
 
   const handleGuest = useCallback(() => {
     setCurrentStudent({ id: -1, name: "Guest", difficultyMin: 1, difficultyMax: 5 });
@@ -319,6 +343,10 @@ function App() {
   useEffect(() => {
     saveAudioSettings({ enabled: audioEnabled, rate: speechRate });
     gameEvents.emit("command-audio-settings", { enabled: audioEnabled, rate: speechRate });
+    const sid = getCurrentStudentId();
+    if (sid && sid > 0) {
+      studentsApi.update(sid, { audio_enabled: audioEnabled, audio_rate: speechRate } as Partial<ApiStudent>).catch(() => {});
+    }
   }, [audioEnabled, speechRate]);
 
   useEffect(() => {
@@ -402,6 +430,17 @@ function App() {
     setAstronomyCategories(pendingAstroCats);
     setCanadaCategories(pendingCanadaCats);
     setMathKangarooCategories(pendingMathKangarooCats);
+    // Persist per-student settings to DB
+    const sid = getCurrentStudentId();
+    if (sid && sid > 0) {
+      studentsApi.update(sid, {
+        font_size: pendingFontSize,
+        test_length: testLength,
+        astronomy_categories: pendingAstroCats,
+        canada_categories: pendingCanadaCats,
+        math_kangaroo_categories: pendingMathKangarooCats,
+      } as Partial<ApiStudent>).catch(() => {});
+    }
     if (astroDiff || canadaDiff || kangarooDiff || fontSizeDiff) {
       setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
       setCanGoNext(false);
@@ -612,7 +651,22 @@ function App() {
     <main className="app-shell">
       <header className="topbar">
         <div className="topbar-row">
-          <h1>Happy Study for Matthew and Leon</h1>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+            <h1>Happy Study for Matthew and Leon</h1>
+            {currentStudent && (
+              <span style={{ display: "flex", alignItems: "center", gap: "0.5rem",
+                background: "rgba(255,255,255,0.15)", borderRadius: 20,
+                padding: "0.2rem 0.75rem", fontSize: "0.85rem", fontWeight: 700 }}>
+                👤 {currentStudent.name}
+                <button onClick={handleSwitchStudent}
+                  style={{ background: "rgba(255,255,255,0.25)", border: "none",
+                    borderRadius: 12, padding: "1px 8px", cursor: "pointer",
+                    fontSize: "0.75rem", color: "inherit", fontWeight: 600 }}>
+                  切换
+                </button>
+              </span>
+            )}
+          </div>
           <div className="mode-toggle">
             <button
               className={mode === "practice" ? "active" : ""}
@@ -733,7 +787,12 @@ function App() {
               <div className="test-start-row">
                 <select
                   value={String(testLength)}
-                  onChange={(event) => setTestLength(Number(event.target.value) as 10 | 20 | 50)}
+                  onChange={(event) => {
+                    const tl = Number(event.target.value) as 10 | 20 | 50;
+                    setTestLength(tl);
+                    const sid = getCurrentStudentId();
+                    if (sid && sid > 0) studentsApi.update(sid, { test_length: tl } as Partial<ApiStudent>).catch(() => {});
+                  }}
                 >
                   {TEST_LENGTH_OPTIONS.map((size) => (
                     <option key={size} value={size}>
