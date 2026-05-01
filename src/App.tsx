@@ -34,6 +34,7 @@ import {
 } from "./game/store";
 import { importLevelsFromCsv, importLevelsFromJson, reportToCsv } from "./game/teacher";
 import { QuestionTable } from "./components/teacher/QuestionTable";
+import { StudentList } from "./components/teacher/StudentList";
 import type { PlayerState } from "./game/types";
 
 const AUDIO_SETTINGS_KEY = "word-quest-audio-settings-v1";
@@ -174,7 +175,7 @@ function App() {
   const [teacherPasswordInput, setTeacherPasswordInput] = useState("");
   const [teacherAuthMessage, setTeacherAuthMessage] = useState("");
   const [teacherAuthGood, setTeacherAuthGood] = useState(false);
-  const [teacherTab, setTeacherTab] = useState<"questions" | "settings">("settings");
+  const [teacherTab, setTeacherTab] = useState<"questions" | "students" | "settings">("settings");
   const [audioEnabled, setAudioEnabled] = useState<boolean>(true);
   const [speechRate, setSpeechRate] = useState<number>(0.88);
   const [testLength, setTestLength] = useState<10 | 20 | 50>(10);
@@ -897,7 +898,7 @@ function App() {
               <>
                 {/* Tab bar */}
                 <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1rem", borderBottom: "2px solid #e2e8f0", paddingBottom: "0.5rem" }}>
-                  {(["questions", "settings"] as const).map((tab) => (
+                  {(["questions", "students", "settings"] as const).map((tab) => (
                     <button key={tab} onClick={() => setTeacherTab(tab)}
                       style={{
                         padding: "0.4rem 1.1rem", borderRadius: "6px 6px 0 0",
@@ -905,12 +906,13 @@ function App() {
                         background: teacherTab === tab ? "#3b82f6" : "#f1f5f9",
                         color: teacherTab === tab ? "#fff" : "#475569",
                       }}>
-                      {tab === "questions" ? "📚 Questions" : "⚙️ Settings"}
+                      {tab === "questions" ? "📚 Questions" : tab === "students" ? "👩‍🎓 Students" : "⚙️ Settings"}
                     </button>
                   ))}
                 </div>
 
                 {teacherTab === "questions" && <QuestionTable />}
+                {teacherTab === "students" && <StudentList />}
 
                 {teacherTab === "settings" && <>
                 <h3>Font Size</h3>
