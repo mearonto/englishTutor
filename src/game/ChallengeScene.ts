@@ -84,6 +84,7 @@ export class ChallengeScene extends Phaser.Scene {
     gameEvents.on("command-audio-settings", this.applyAudioSettings, this);
     gameEvents.on("command-set-mode", this.applyModeSettings, this);
     gameEvents.on("command-font-size", this.applyFontSize, this);
+    gameEvents.on("command-set-input-enabled", this.applyInputEnabled, this);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanup, this);
     this.events.once(Phaser.Scenes.Events.DESTROY, this.cleanup, this);
 
@@ -432,6 +433,10 @@ export class ChallengeScene extends Phaser.Scene {
     this.testMode = payload.testMode;
   }
 
+  private applyInputEnabled(payload: { enabled: boolean }): void {
+    this.input.enabled = payload.enabled;
+  }
+
   private applyFontSize(payload: { size: FontSizePref }): void {
     if (payload.size in SIZE_CONFIG) {
       this.fontSize = payload.size;
@@ -457,6 +462,7 @@ export class ChallengeScene extends Phaser.Scene {
     gameEvents.off("command-audio-settings", this.applyAudioSettings, this);
     gameEvents.off("command-set-mode", this.applyModeSettings, this);
     gameEvents.off("command-font-size", this.applyFontSize, this);
+    gameEvents.off("command-set-input-enabled", this.applyInputEnabled, this);
   }
 
   private canRender(): boolean {

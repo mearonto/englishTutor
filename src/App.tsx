@@ -455,6 +455,7 @@ function App() {
     setOldPassword("");
     setNewPassword("");
     setChangePasswordMessage("");
+    gameEvents.emit("command-set-input-enabled", { enabled: false });
   };
 
   const closeTeacherMode = () => {
@@ -528,6 +529,7 @@ function App() {
     setOldPassword("");
     setNewPassword("");
     setChangePasswordMessage("");
+    gameEvents.emit("command-set-input-enabled", { enabled: true });
   };
 
   const unlockTeacherMode = () => {
