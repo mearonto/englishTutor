@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 // ── Shared ────────────────────────────────────────────────────────────────────
-type GameId = "memory" | "mole" | "blaster";
+type GameId = "memory" | "mole" | "blaster" | "tetris";
 
 interface Props {
   stars: number;
@@ -411,6 +411,248 @@ function SpaceBlasterGame({ onResult }: { onResult: (score: number, trapsHit: nu
   );
 }
 
+// ── Tetris ────────────────────────────────────────────────────────────────────
+const TETRIS_COST = 3;
+const TC = 22; // cell size px
+const TW = 10; // board width in cells
+const TH = 20; // board height in cells
+
+const T_SHAPES: number[][][] = [
+  [[1,1,1,1]],               // I
+  [[1,1],[1,1]],             // O
+  [[0,1,0],[1,1,1]],         // T
+  [[0,1,1],[1,1,0]],         // S
+  [[1,1,0],[0,1,1]],         // Z
+  [[1,0,0],[1,1,1]],         // J
+  [[0,0,1],[1,1,1]],         // L
+];
+const T_COLORS = ["#22d3ee","#facc15","#a855f7","#4ade80","#f87171","#60a5fa","#fb923c"];
+
+function rotateCW(s: number[][]): number[][] {
+  const rows = s.length, cols = s[0].length;
+  return Array.from({length: cols}, (_, c) =>
+    Array.from({length: rows}, (_, r) => s[rows - 1 - r][c])
+  );
+}
+function randPiece() {
+  const i = Math.floor(Math.random() * 7);
+  return { shape: T_SHAPES[i].map(r => [...r]), color: T_COLORS[i] };
+}
+type TBoard = (string | 0)[][];
+function emptyTBoard(): TBoard {
+  return Array.from({length: TH}, () => Array<string | 0>(TW).fill(0));
+}
+function tFits(board: TBoard, shape: number[][], x: number, y: number): boolean {
+  for (let r = 0; r < shape.length; r++)
+    for (let c = 0; c < shape[r].length; c++) {
+      if (!shape[r][c]) continue;
+      const nr = y + r, nc = x + c;
+      if (nr >= TH || nc < 0 || nc >= TW || (nr >= 0 && board[nr][nc])) return false;
+    }
+  return true;
+}
+function tPlace(board: TBoard, shape: number[][], x: number, y: number, color: string): TBoard {
+  const b = board.map(r => [...r]) as TBoard;
+  for (let r = 0; r < shape.length; r++)
+    for (let c = 0; c < shape[r].length; c++)
+      if (shape[r][c] && y + r >= 0) b[y + r][x + c] = color;
+  return b;
+}
+function tClearLines(board: TBoard): { board: TBoard; cleared: number } {
+  const kept = board.filter(row => row.some(c => !c));
+  const cleared = TH - kept.length;
+  const empty = Array.from({length: cleared}, () => Array<string | 0>(TW).fill(0));
+  return { board: [...empty, ...kept] as TBoard, cleared };
+}
+
+function TetrisGame({ onResult }: { onResult: (lines: number) => void }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const moveRef   = useRef<(dx: number) => void>(() => {});
+  const rotRef    = useRef<() => void>(() => {});
+  const softRef   = useRef<() => void>(() => {});
+  const hardRef   = useRef<() => void>(() => {});
+  const [displayLines, setDisplayLines] = useState(0);
+  const onResultRef = useRef(onResult);
+  onResultRef.current = onResult;
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d")!;
+
+    const s = {
+      board: emptyTBoard(),
+      piece: randPiece(),
+      next:  randPiece(),
+      x: 0, y: 0,
+      lines: 0,
+      done: false,
+    };
+    s.x = Math.floor((TW - s.piece.shape[0].length) / 2);
+
+    let dropTimer: ReturnType<typeof setTimeout> | null = null;
+
+    function cell(col: number, row: number, color: string, alpha = 1) {
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = color;
+      ctx.fillRect(col * TC + 1, row * TC + 1, TC - 2, TC - 2);
+      ctx.fillStyle = "rgba(255,255,255,0.28)";
+      ctx.fillRect(col * TC + 1, row * TC + 1, TC - 2, 5);
+      ctx.globalAlpha = 1;
+    }
+
+    function draw() {
+      // background
+      ctx.fillStyle = "#0f172a";
+      ctx.fillRect(0, 0, TW * TC, TH * TC);
+      // grid lines
+      ctx.strokeStyle = "rgba(255,255,255,0.04)";
+      ctx.lineWidth = 0.5;
+      for (let r = 0; r <= TH; r++) { ctx.beginPath(); ctx.moveTo(0,r*TC); ctx.lineTo(TW*TC,r*TC); ctx.stroke(); }
+      for (let c = 0; c <= TW; c++) { ctx.beginPath(); ctx.moveTo(c*TC,0); ctx.lineTo(c*TC,TH*TC); ctx.stroke(); }
+      // placed cells
+      for (let r = 0; r < TH; r++)
+        for (let c = 0; c < TW; c++)
+          if (s.board[r][c]) cell(c, r, s.board[r][c] as string);
+      // ghost piece
+      let gy = s.y;
+      while (tFits(s.board, s.piece.shape, s.x, gy + 1)) gy++;
+      if (gy !== s.y)
+        for (let r = 0; r < s.piece.shape.length; r++)
+          for (let c = 0; c < s.piece.shape[r].length; c++)
+            if (s.piece.shape[r][c]) cell(s.x + c, gy + r, s.piece.color, 0.2);
+      // active piece
+      for (let r = 0; r < s.piece.shape.length; r++)
+        for (let c = 0; c < s.piece.shape[r].length; c++)
+          if (s.piece.shape[r][c] && s.y + r >= 0) cell(s.x + c, s.y + r, s.piece.color);
+      // game-over overlay
+      if (s.done) {
+        ctx.fillStyle = "rgba(0,0,0,0.55)";
+        ctx.fillRect(0, 0, TW * TC, TH * TC);
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 18px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("Game Over", TW * TC / 2, TH * TC / 2);
+      }
+    }
+
+    function scheduleNext() {
+      if (dropTimer) clearTimeout(dropTimer);
+      if (s.done) return;
+      const delay = s.lines < 10 ? 600 : s.lines < 20 ? 400 : 250;
+      dropTimer = setTimeout(drop, delay);
+    }
+
+    function lockAndSpawn() {
+      s.board = tPlace(s.board, s.piece.shape, s.x, s.y, s.piece.color);
+      const { board, cleared } = tClearLines(s.board);
+      s.board = board;
+      s.lines += cleared;
+      setDisplayLines(s.lines);
+      s.piece = s.next;
+      s.next  = randPiece();
+      s.x = Math.floor((TW - s.piece.shape[0].length) / 2);
+      s.y = 0;
+      if (!tFits(s.board, s.piece.shape, s.x, s.y)) {
+        s.done = true;
+        draw();
+        onResultRef.current(s.lines);
+        return;
+      }
+      draw();
+      scheduleNext();
+    }
+
+    function drop() {
+      if (s.done) return;
+      if (tFits(s.board, s.piece.shape, s.x, s.y + 1)) {
+        s.y++;
+        draw();
+        scheduleNext();
+      } else {
+        lockAndSpawn();
+      }
+    }
+
+    function move(dx: number) {
+      if (s.done) return;
+      if (tFits(s.board, s.piece.shape, s.x + dx, s.y)) { s.x += dx; draw(); }
+    }
+
+    function rotate() {
+      if (s.done) return;
+      const rot = rotateCW(s.piece.shape);
+      for (const kick of [0, -1, 1, -2, 2]) {
+        if (tFits(s.board, rot, s.x + kick, s.y)) {
+          s.piece = { ...s.piece, shape: rot };
+          s.x += kick;
+          draw();
+          return;
+        }
+      }
+    }
+
+    function hardDrop() {
+      if (s.done) return;
+      if (dropTimer) clearTimeout(dropTimer);
+      while (tFits(s.board, s.piece.shape, s.x, s.y + 1)) s.y++;
+      lockAndSpawn();
+    }
+
+    // Wire refs so buttons work
+    moveRef.current = move;
+    rotRef.current  = rotate;
+    softRef.current = () => { if (dropTimer) clearTimeout(dropTimer); drop(); };
+    hardRef.current = hardDrop;
+
+    const onKey = (e: KeyboardEvent) => {
+      switch (e.key) {
+        case "ArrowLeft":  e.preventDefault(); move(-1);   break;
+        case "ArrowRight": e.preventDefault(); move(1);    break;
+        case "ArrowDown":  e.preventDefault(); softRef.current(); break;
+        case "ArrowUp":    e.preventDefault(); rotate();   break;
+        case " ":          e.preventDefault(); hardDrop(); break;
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    draw();
+    scheduleNext();
+
+    return () => {
+      if (dropTimer) clearTimeout(dropTimer);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, []);
+
+  const btn: React.CSSProperties = {
+    padding: "0.5rem 0.85rem", fontSize: "1.15rem", borderRadius: 8,
+    border: "none", background: "#334155", color: "#fff",
+    cursor: "pointer", fontWeight: 700, touchAction: "manipulation",
+  };
+
+  return (
+    <div className="minigame-area">
+      <div className="minigame-hud">
+        <span>🧱 Lines: {displayLines}</span>
+        <span style={{ fontSize: "0.78rem", color: "#94a3b8" }}>↑ rotate · Space = drop</span>
+      </div>
+      <canvas
+        ref={canvasRef}
+        width={TW * TC}
+        height={TH * TC}
+        style={{ border: "2px solid #1e293b", borderRadius: 8, display: "block" }}
+      />
+      <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.5rem", justifyContent: "center" }}>
+        <button style={btn} onPointerDown={() => moveRef.current(-1)}>◀</button>
+        <button style={btn} onPointerDown={() => rotRef.current()}>↻</button>
+        <button style={btn} onPointerDown={() => moveRef.current(1)}>▶</button>
+        <button style={{...btn, background: "#475569"}} onPointerDown={() => softRef.current()}>▼</button>
+        <button style={{...btn, background: "#dc2626"}} onPointerDown={() => hardRef.current()}>⬇⬇</button>
+      </div>
+    </div>
+  );
+}
+
 // ── Main Modal ────────────────────────────────────────────────────────────────
 export function MiniGamesModal({ stars, onSpendStars, onEarnStars, onClose }: Props) {
   const [screen, setScreen] = useState<"menu" | GameId | "result">("menu");
@@ -433,6 +675,12 @@ export function MiniGamesModal({ stars, onSpendStars, onEarnStars, onClose }: Pr
     const r = onSpendStars(BLASTER_COST);
     if (!r.ok) { setResultMsg(r.message); setResultGood(false); setScreen("result"); return; }
     setScreen("blaster");
+  };
+
+  const startTetris = () => {
+    const r = onSpendStars(TETRIS_COST);
+    if (!r.ok) { setResultMsg(r.message); setResultGood(false); setScreen("result"); return; }
+    setScreen("tetris");
   };
 
   const handleMemoryResult = useCallback((won: boolean, fast: boolean) => {
@@ -461,6 +709,20 @@ export function MiniGamesModal({ stars, onSpendStars, onEarnStars, onClose }: Pr
     else { earned = 1; msg = `Score ${score}. Keep practising! +${earned} ⭐`; }
     onEarnStars(earned);
     setResultGood(score >= 8);
+    setResultMsg(msg);
+    setScreen("result");
+  }, [onEarnStars]);
+
+  const handleTetrisResult = useCallback((lines: number) => {
+    let earned = 0;
+    let msg = "";
+    if (lines >= 15)      { earned = 12; msg = `Tetris master! ${lines} lines! +${earned} ⭐`; }
+    else if (lines >= 10) { earned = 8;  msg = `Excellent! ${lines} lines! +${earned} ⭐`; }
+    else if (lines >= 5)  { earned = 5;  msg = `Nice! ${lines} lines cleared! +${earned} ⭐`; }
+    else if (lines >= 2)  { earned = 3;  msg = `${lines} lines! Keep practising! +${earned} ⭐`; }
+    else                  { earned = 1;  msg = `${lines} line${lines === 1 ? "" : "s"}. Keep going! +${earned} ⭐`; }
+    onEarnStars(earned);
+    setResultGood(lines >= 5);
     setResultMsg(msg);
     setScreen("result");
   }, [onEarnStars]);
@@ -523,6 +785,15 @@ export function MiniGamesModal({ stars, onSpendStars, onEarnStars, onClose }: Pr
                   Play! ({BLASTER_COST} ⭐)
                 </button>
               </div>
+              <div className="minigame-card">
+                <div className="minigame-card-icon">🧱</div>
+                <h3>Tetris</h3>
+                <p>Stack the falling blocks and clear as many lines as you can!</p>
+                <p className="minigame-cost">Cost: {TETRIS_COST} ⭐ &nbsp;|&nbsp; Win up to 12 ⭐</p>
+                <button onClick={startTetris} disabled={stars < TETRIS_COST}>
+                  Play! ({TETRIS_COST} ⭐)
+                </button>
+              </div>
             </div>
             <button onClick={onClose} style={{ marginTop: "1rem" }}>Close</button>
           </>
@@ -546,6 +817,13 @@ export function MiniGamesModal({ stars, onSpendStars, onEarnStars, onClose }: Pr
           <>
             <h3>🚀 Space Blaster</h3>
             <SpaceBlasterGame onResult={handleBlasterResult} />
+          </>
+        )}
+
+        {screen === "tetris" && (
+          <>
+            <h3>🧱 Tetris</h3>
+            <TetrisGame onResult={handleTetrisResult} />
           </>
         )}
 
