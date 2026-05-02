@@ -157,8 +157,9 @@ export class ChallengeScene extends Phaser.Scene {
     this.hintText.setText("");
 
     // Measure the actual prompt height after word-wrap so choices never overlap it
+    const imageOffset = this.level.imageUrl ? 130 : 0;
     const promptBottom = this.promptText.y + this.promptText.height;
-    const choiceStartY = Math.max(cfg.choiceH * 2, promptBottom + 14);
+    const choiceStartY = Math.max(cfg.choiceH * 2, promptBottom + 14) + imageOffset;
     const choiceSpacing = cfg.spacing;
     const choiceHeight = cfg.choiceH;
 
@@ -219,7 +220,7 @@ export class ChallengeScene extends Phaser.Scene {
     }
 
     gameEvents.emit("feedback", { message: "", good: false });
-    gameEvents.emit("round-start");
+    gameEvents.emit("round-start", { imageUrl: this.level.imageUrl });
     if (!this.testMode) {
       this.pronounceCurrent();
     }
@@ -293,6 +294,7 @@ export class ChallengeScene extends Phaser.Scene {
         coach: this.level.coach,
         type: this.level.type,
         subject: getState().subject,
+        imageUrl: this.level.imageUrl,
       });
       return;
     }
@@ -345,6 +347,7 @@ export class ChallengeScene extends Phaser.Scene {
       coach: this.level.coach,
       type: this.level.type,
       subject: getState().subject,
+      imageUrl: this.level.imageUrl,
     });
   }
 

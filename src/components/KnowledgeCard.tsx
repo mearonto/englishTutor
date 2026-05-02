@@ -8,6 +8,7 @@ export type KnowledgeCardData = {
   type: string;
   subject: string;
   correct: boolean;
+  imageUrl?: string;
 };
 
 interface KnowledgeCardProps {
@@ -62,7 +63,7 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 export function KnowledgeCard({ data, onDismiss }: KnowledgeCardProps) {
-  const { word, definition, contextSentence, coach, type, subject, correct } = data;
+  const { word, definition, contextSentence, coach, type, subject, correct, imageUrl } = data;
   const color = SUBJECT_COLORS[subject] ?? "#334155";
   const icon = SUBJECT_ICONS[subject] ?? "📖";
   const typeLabel = TYPE_LABELS[type] ?? type;
@@ -132,6 +133,18 @@ export function KnowledgeCard({ data, onDismiss }: KnowledgeCardProps) {
 
         {/* Body */}
         <div style={body}>
+          {/* Question image */}
+          {imageUrl && (
+            <div style={{ textAlign: "center" }}>
+              <img
+                src={imageUrl}
+                alt=""
+                style={{ maxHeight: 150, maxWidth: "100%", borderRadius: 8,
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}
+              />
+            </div>
+          )}
+
           {/* Word / concept */}
           <div style={{
             fontSize: "1.5rem",

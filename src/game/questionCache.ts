@@ -31,6 +31,7 @@ function rowToLevel(row: Record<string, unknown>): Level {
       return [String(h[0] ?? ""), String(h[1] ?? "")] as [string, string];
     })(),
     coach: String(row.coach ?? ""),
+    imageUrl: row.image_url ? String(row.image_url) : undefined,
   };
 }
 

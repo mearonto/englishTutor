@@ -40,6 +40,7 @@ export interface Level {
   contextSentence: string;
   hints: [string, string];
   coach: string;
+  imageUrl?: string;
 }
 
 export interface PlayerState {

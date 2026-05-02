@@ -127,7 +127,10 @@ export function QuestionTable() {
                 <td style={styles.td}>{q.id}</td>
                 <td style={styles.td}><span style={styles.subjectPill}>{q.subject}</span></td>
                 <td style={styles.td}><code style={{ fontSize: "0.75rem" }}>{q.type}</code></td>
-                <td style={styles.td}><strong>{q.word}</strong></td>
+                <td style={styles.td}>
+                  <strong>{q.word}</strong>
+                  {q.image_url && <span title="Has image" style={{ marginLeft: 4, fontSize: "0.8rem" }}>🖼️</span>}
+                </td>
                 <td style={{ ...styles.td, maxWidth: 260 }}>
                   <span title={q.prompt} style={styles.truncate}>{q.prompt}</span>
                 </td>

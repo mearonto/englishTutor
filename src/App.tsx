@@ -254,6 +254,7 @@ function App() {
   const [dragOverPrizeId, setDragOverPrizeId] = useState<string | null>(null);
   const [canGoNext, setCanGoNext] = useState(false);
   const [knowledgeCard, setKnowledgeCard] = useState<KnowledgeCardData | null>(null);
+  const [roundImageUrl, setRoundImageUrl] = useState<string | null>(null);
   const [testState, setTestState] = useState<TestState>({
     running: false,
     finished: false,
@@ -292,11 +293,14 @@ function App() {
 
     const feedbackHandler = (payload: { message: string; good: boolean }) => setFeedback(payload);
     gameEvents.on("feedback", feedbackHandler);
-    gameEvents.on("round-start", () => setCanGoNext(false));
+    gameEvents.on("round-start", (payload?: { imageUrl?: string }) => {
+      setCanGoNext(false);
+      setRoundImageUrl(payload?.imageUrl ?? null);
+    });
     gameEvents.on("question-complete", (payload: {
       correct: boolean; word: string;
       definition?: string; contextSentence?: string; coach?: string;
-      type?: string; subject?: string;
+      type?: string; subject?: string; imageUrl?: string;
     }) => {
       if (modeRef.current === "practice") {
         // Show knowledge card — it triggers the next question on dismiss
@@ -308,6 +312,7 @@ function App() {
           type: payload.type ?? "",
           subject: payload.subject ?? "",
           correct: payload.correct,
+          imageUrl: payload.imageUrl,
         });
         return;
       }
@@ -406,6 +411,7 @@ function App() {
     setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
     setCanGoNext(false);
     setKnowledgeCard(null);
+    setRoundImageUrl(null);
     setFeedback({ message: "", good: false });
     gameEvents.emit("command-set-mode", { testMode: false });
     const sid = currentStudent?.id ?? -1;
@@ -423,6 +429,7 @@ function App() {
     setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
     setCanGoNext(false);
     setKnowledgeCard(null);
+    setRoundImageUrl(null);
     setFeedback({ message: "", good: false });
     // Tell Phaser immediately whether we're in test tab (suppresses all TTS)
     gameEvents.emit("command-set-mode", { testMode: newMode === "test" });
@@ -909,8 +916,21 @@ function App() {
       </section>
 
       <section className="game-frame"
-        style={{ pointerEvents: (teacherOpen || shopOpen || lotteryOpen || miniGamesOpen || !!knowledgeCard) ? "none" : "auto" }}>
+        style={{ pointerEvents: (teacherOpen || shopOpen || lotteryOpen || miniGamesOpen || !!knowledgeCard) ? "none" : "auto", position: "relative" }}>
         <div id="phaser-root" />
+        {roundImageUrl && (
+          <div style={{
+            position: "absolute", top: 8, left: "50%", transform: "translateX(-50%)",
+            zIndex: 10, pointerEvents: "none",
+          }}>
+            <img
+              src={roundImageUrl}
+              alt=""
+              style={{ maxHeight: 120, maxWidth: "95%", borderRadius: 8,
+                boxShadow: "0 2px 10px rgba(0,0,0,0.22)", display: "block" }}
+            />
+          </div>
+        )}
       </section>
 
       <section className="actions">

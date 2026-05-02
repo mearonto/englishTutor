@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { questionsApi, type ApiQuestion } from "../../api/client";
+import { questionsApi, uploadApi, type ApiQuestion } from "../../api/client";
 
 const SUBJECTS = ["astronomy", "canada", "math-kangaroo", "english"];
 
@@ -33,6 +33,7 @@ export function QuestionForm({ question, onSave, onClose }: Props) {
   const [form, setForm] = useState<Partial<ApiQuestion>>(question ?? blank());
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     setForm(question ?? blank());
@@ -196,6 +197,44 @@ export function QuestionForm({ question, onSave, onClose }: Props) {
             <label style={styles.label}>Active</label>
             <input type="checkbox" checked={form.active ?? true}
               onChange={(e) => set("active", e.target.checked)} />
+          </div>
+
+          <div style={styles.row}>
+            <label style={styles.label}>Image</label>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>
+              {form.image_url && (
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <img src={form.image_url} alt="" style={{ maxHeight: 80, borderRadius: 6,
+                    border: "1px solid #e2e8f0" }} />
+                  <button type="button"
+                    style={{ padding: "2px 10px", background: "#fff1f2", border: "1px solid #fecdd3",
+                      borderRadius: 5, cursor: "pointer", fontSize: "0.78rem", color: "#be123c" }}
+                    onClick={() => set("image_url", null)}>
+                    ✕ Remove
+                  </button>
+                </div>
+              )}
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <input type="file" accept="image/*" disabled={uploading}
+                  style={{ fontSize: "0.85rem" }}
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setUploading(true);
+                    setError("");
+                    try {
+                      const { url } = await uploadApi.image(file);
+                      set("image_url", url);
+                    } catch (err) {
+                      setError(err instanceof Error ? err.message : "Upload failed");
+                    } finally {
+                      setUploading(false);
+                      e.target.value = "";
+                    }
+                  }} />
+                {uploading && <span style={{ fontSize: "0.82rem", color: "#64748b" }}>Uploading…</span>}
+              </div>
+            </div>
           </div>
 
           {error && <p style={{ color: "#dc2626", margin: "0.5rem 0", fontSize: "0.9rem" }}>{error}</p>}

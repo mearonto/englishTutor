@@ -61,6 +61,7 @@ export interface ApiQuestion {
   coach: string;
   difficulty: number;
   active: boolean;
+  image_url?: string | null;
 }
 
 // ── Students ─────────────────────────────────────────────────────────────────
@@ -126,6 +127,20 @@ export const questionsApi = {
 
   bulk(questions: Partial<ApiQuestion>[]): Promise<{ inserted: number }> {
     return apiFetch("/questions/bulk", { method: "POST", body: JSON.stringify(questions) });
+  },
+};
+
+// ── Upload ────────────────────────────────────────────────────────────────────
+export const uploadApi = {
+  async image(file: File): Promise<{ url: string }> {
+    const form = new FormData();
+    form.append("image", file);
+    const res = await fetch(`${BASE}/upload/image`, { method: "POST", body: form });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ error: "Upload failed" })) as { error?: string };
+      throw new Error(err.error ?? `HTTP ${res.status}`);
+    }
+    return res.json() as Promise<{ url: string }>;
   },
 };
 
