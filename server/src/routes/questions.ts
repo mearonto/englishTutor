@@ -148,6 +148,7 @@ router.put("/:id", async (req: Request, res: Response) => {
   const allowed = [
     "subject", "type", "grade", "word", "prompt", "choices", "answer",
     "definition", "context_sentence", "hints", "coach", "difficulty", "active",
+    "image_url",
   ];
   const fields: string[] = [];
   const values: unknown[] = [];

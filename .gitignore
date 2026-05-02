@@ -26,3 +26,7 @@ dist-ssr
 
 # Brainstorm session files
 .superpowers/
+
+# Uploaded question images (keep directory, ignore files)
+server/uploads/*
+!server/uploads/.gitkeep

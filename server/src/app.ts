@@ -1,17 +1,22 @@
 import express from "express";
 import cors from "cors";
+import path from "path";
 import { runMigrations } from "./migrate";
 import { seedQuestions, seedStudents } from "./seed";
 import { pool } from "./db";
 import questionsRouter from "./routes/questions";
 import studentsRouter from "./routes/students";
 import testsRouter from "./routes/tests";
+import uploadRouter from "./routes/upload";
 
 const app = express();
 const PORT = parseInt(process.env.PORT ?? "3001", 10);
 
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
+
+// Serve uploaded images as static files
+app.use("/uploads", express.static(path.join(__dirname, "../../uploads")));
 
 // Routes
 app.get("/api/health", (_req, res) => {
@@ -20,6 +25,7 @@ app.get("/api/health", (_req, res) => {
 app.use("/api/questions", questionsRouter);
 app.use("/api/students", studentsRouter);
 app.use("/api/test-sessions", testsRouter);
+app.use("/api/upload", uploadRouter);
 
 // Global error handler
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
