@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback, type CSSProperties, type ChangeEvent } from "react";
 import { StudentPicker } from "./components/StudentPicker";
+import { KnowledgeCard, type KnowledgeCardData } from "./components/KnowledgeCard";
 import { studentsApi, testSessionsApi, type ApiStudent } from "./api/client";
 import { loadQuestionPool, invalidateCache } from "./game/questionCache";
 import { MiniGamesModal } from "./MiniGames";
@@ -247,6 +248,7 @@ function App() {
   const [dragPrizeId, setDragPrizeId] = useState<string | null>(null);
   const [dragOverPrizeId, setDragOverPrizeId] = useState<string | null>(null);
   const [canGoNext, setCanGoNext] = useState(false);
+  const [knowledgeCard, setKnowledgeCard] = useState<KnowledgeCardData | null>(null);
   const [testState, setTestState] = useState<TestState>({
     running: false,
     finished: false,
@@ -286,9 +288,22 @@ function App() {
     const feedbackHandler = (payload: { message: string; good: boolean }) => setFeedback(payload);
     gameEvents.on("feedback", feedbackHandler);
     gameEvents.on("round-start", () => setCanGoNext(false));
-    gameEvents.on("question-complete", (payload: { correct: boolean; word: string }) => {
+    gameEvents.on("question-complete", (payload: {
+      correct: boolean; word: string;
+      definition?: string; contextSentence?: string; coach?: string;
+      type?: string; subject?: string;
+    }) => {
       if (modeRef.current === "practice") {
-        setCanGoNext(true);
+        // Show knowledge card — it triggers the next question on dismiss
+        setKnowledgeCard({
+          word: payload.word,
+          definition: payload.definition ?? "",
+          contextSentence: payload.contextSentence ?? "",
+          coach: payload.coach ?? "",
+          type: payload.type ?? "",
+          subject: payload.subject ?? "",
+          correct: payload.correct,
+        });
         return;
       }
       // test mode: auto-advance handled by ChallengeScene; track progress + record
@@ -375,11 +390,17 @@ function App() {
     }
   }, [lastPrize]);
 
+  const dismissKnowledgeCard = useCallback(() => {
+    setKnowledgeCard(null);
+    gameEvents.emit("command-next");
+  }, []);
+
   const switchSubject = (newSubject: import("./game/types").Subject) => {
     if (testState.running) return;
     setSubject(newSubject);
     setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
     setCanGoNext(false);
+    setKnowledgeCard(null);
     setFeedback({ message: "", good: false });
     gameEvents.emit("command-set-mode", { testMode: false });
     const sid = currentStudent?.id ?? -1;
@@ -396,6 +417,7 @@ function App() {
     modeRef.current = newMode;
     setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
     setCanGoNext(false);
+    setKnowledgeCard(null);
     setFeedback({ message: "", good: false });
     // Tell Phaser immediately whether we're in test tab (suppresses all TTS)
     gameEvents.emit("command-set-mode", { testMode: newMode === "test" });
@@ -877,7 +899,7 @@ function App() {
       </section>
 
       <section className="game-frame"
-        style={{ pointerEvents: (teacherOpen || shopOpen || lotteryOpen || miniGamesOpen) ? "none" : "auto" }}>
+        style={{ pointerEvents: (teacherOpen || shopOpen || lotteryOpen || miniGamesOpen || !!knowledgeCard) ? "none" : "auto" }}>
         <div id="phaser-root" />
       </section>
 
@@ -895,9 +917,11 @@ function App() {
           </button>
         )}
         {mode === "practice" ? (
-          <button onClick={onNext} disabled={!canGoNext}>
-            Next Challenge
-          </button>
+          knowledgeCard ? null : (
+            <button onClick={onNext} disabled={!canGoNext}>
+              Next Challenge
+            </button>
+          )
         ) : testState.running ? (
           <button className="danger" onClick={quitTest}>Quit Test</button>
         ) : (
@@ -1493,6 +1517,10 @@ function App() {
           <div style={{ fontSize: "2rem" }}>⏳</div>
           <p style={{ fontSize: "1.1rem", margin: 0 }}>Loading questions…</p>
         </div>
+      )}
+
+      {knowledgeCard && (
+        <KnowledgeCard data={knowledgeCard} onDismiss={dismissKnowledgeCard} />
       )}
 
       {confetti.length > 0 && (

@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { gameEvents } from "./events";
-import { applyCorrect, applyFailedRound, breakStreak, pickNextLevel } from "./store";
+import { applyCorrect, applyFailedRound, breakStreak, getState, pickNextLevel } from "./store";
 import { speakWord } from "./tts";
 import type { Level } from "./types";
 
@@ -282,7 +282,17 @@ export class ChallengeScene extends Phaser.Scene {
         message: `Correct! +${reward.xp} XP, +${reward.stars} stars, +${reward.tokens} tokens`,
         good: true
       });
-      gameEvents.emit("question-complete", { correct: true, answer: this.level.answer, word: this.level.word, tries: this.tries });
+      gameEvents.emit("question-complete", {
+        correct: true,
+        answer: this.level.answer,
+        word: this.level.word,
+        tries: this.tries,
+        definition: this.level.definition,
+        contextSentence: this.level.contextSentence,
+        coach: this.level.coach,
+        type: this.level.type,
+        subject: getState().subject,
+      });
       return;
     }
 
@@ -324,7 +334,17 @@ export class ChallengeScene extends Phaser.Scene {
       message: `Answer: ${this.level.answer}. You still earn +${reward.xp} XP.`,
       good: false
     });
-    gameEvents.emit("question-complete", { correct: false, answer: this.level.answer, word: this.level.word, tries: this.tries });
+    gameEvents.emit("question-complete", {
+      correct: false,
+      answer: this.level.answer,
+      word: this.level.word,
+      tries: this.tries,
+      definition: this.level.definition,
+      contextSentence: this.level.contextSentence,
+      coach: this.level.coach,
+      type: this.level.type,
+      subject: getState().subject,
+    });
   }
 
   private pronounceCurrent(): void {
