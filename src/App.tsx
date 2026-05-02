@@ -40,6 +40,7 @@ import type { PlayerState } from "./game/types";
 
 const AUDIO_SETTINGS_KEY = "word-quest-audio-settings-v1";
 const TEACHER_PASSWORD_KEY = "word-quest-teacher-password-v1";
+const enabledSubjectsKey = (sid: number) => `word-quest-enabled-subjects-${sid}-v1`;
 const TEST_HISTORY_KEY = "word-quest-test-history-v1";
 const LOTTERY_COST_KEY = "word-quest-lottery-cost-v1";
 const LOTTERY_PRIZES_KEY = "word-quest-lottery-prizes-v1";
@@ -146,8 +147,12 @@ function App() {
       gameEvents.emit("command-font-size", { size: fs });
       saveAudioSettings({ enabled: ae, rate: ar });
 
-      // Per-student enabled subjects
-      const es = (s.enabled_subjects?.length ? s.enabled_subjects : [...ALL_SUBJECTS]) as string[];
+      // Per-student enabled subjects — prefer localStorage (written synchronously on save)
+      // over the API value which may be stale due to async write timing
+      const localEs = localStorage.getItem(enabledSubjectsKey(student.id));
+      const es = (localEs
+        ? (JSON.parse(localEs) as string[])
+        : s.enabled_subjects?.length ? s.enabled_subjects : [...ALL_SUBJECTS]) as string[];
       setEnabledSubjects(es);
       setPendingEnabledSubjects(es);
 
@@ -481,9 +486,12 @@ function App() {
       subjectChanged = true;
     }
 
-    // Persist per-student settings to DB
+    // Persist per-student settings to DB + localStorage (sync)
     const sid = getCurrentStudentId();
     if (sid && sid > 0) {
+      // Save enabled_subjects to localStorage immediately so it survives a student switch
+      // before the async API call completes
+      localStorage.setItem(enabledSubjectsKey(sid), JSON.stringify(pendingEnabledSubjects));
       studentsApi.update(sid, {
         font_size: pendingFontSize,
         test_length: testLength,
