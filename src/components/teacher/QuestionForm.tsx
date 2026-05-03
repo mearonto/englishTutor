@@ -140,12 +140,30 @@ export function QuestionForm({ question, onSave, onClose }: Props) {
           </div>
 
           <div style={styles.row}>
-            <label style={styles.label}>Choices (4)</label>
+            <label style={styles.label}>Choices</label>
             <div style={{ display: "flex", flexDirection: "column", gap: 4, flex: 1 }}>
               {(form.choices ?? ["", "", "", ""]).map((c, i) => (
                 <input key={i} style={styles.input} placeholder={`Choice ${i + 1}`}
                   value={c} onChange={(e) => setChoice(i, e.target.value)} />
               ))}
+              <div style={{ display: "flex", gap: 6 }}>
+                {(form.choices?.length ?? 4) < 5 && (
+                  <button type="button"
+                    style={{ fontSize: "0.8rem", padding: "2px 10px", background: "#eff6ff",
+                      border: "1px solid #bfdbfe", borderRadius: 5, cursor: "pointer", color: "#1d4ed8" }}
+                    onClick={() => setForm((f) => ({ ...f, choices: [...(f.choices ?? []), ""] }))}>
+                    + Add 5th choice
+                  </button>
+                )}
+                {(form.choices?.length ?? 4) > 4 && (
+                  <button type="button"
+                    style={{ fontSize: "0.8rem", padding: "2px 10px", background: "#fff1f2",
+                      border: "1px solid #fecdd3", borderRadius: 5, cursor: "pointer", color: "#be123c" }}
+                    onClick={() => setForm((f) => ({ ...f, choices: (f.choices ?? []).slice(0, -1) }))}>
+                    − Remove 5th choice
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
