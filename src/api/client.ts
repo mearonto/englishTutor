@@ -33,6 +33,7 @@ export interface ApiStudent {
   astronomy_categories: string[];
   canada_categories: string[];
   math_kangaroo_categories: string[];
+  leon_categories: string[];
   difficulty_min: number;
   difficulty_max: number;
   font_size: string;
@@ -62,6 +63,7 @@ export interface ApiQuestion {
   difficulty: number;
   active: boolean;
   image_url?: string | null;
+  choice_images?: (string | null)[] | null;
 }
 
 // ── Students ─────────────────────────────────────────────────────────────────

@@ -4,6 +4,13 @@ import { CANADA_CATEGORY_LABELS, CANADA_LEVELS } from "./canadaLevels";
 export { CANADA_CATEGORY_LABELS };
 import { MATH_KANGAROO_CATEGORY_LABELS, MATH_KANGAROO_LEVELS } from "./mathKangarooLevels";
 export { MATH_KANGAROO_CATEGORY_LABELS };
+
+export const LEON_CATEGORY_LABELS: Record<string, string> = {
+  all: "All Types",
+  addition: "Addition",
+  subtraction: "Subtraction",
+  multiply: "Multiplication",
+};
 import type { Level, ShopItem, SkillType } from "./types";
 
 const CUSTOM_LEVELS_KEY = "word-quest-custom-levels-v1";

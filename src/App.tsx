@@ -12,6 +12,7 @@ import {
   ASTRONOMY_CATEGORY_LABELS,
   CANADA_CATEGORY_LABELS,
   MATH_KANGAROO_CATEGORY_LABELS,
+  LEON_CATEGORY_LABELS,
   SHOP_ITEMS
 } from "./game/levels";
 import { createGame } from "./game/createGame";
@@ -28,6 +29,7 @@ import {
   setAstronomyCategories,
   setCanadaCategories,
   setMathKangarooCategories,
+  setLeonCategories,
   setSubject,
   spendStars,
   spendTokens,
@@ -167,6 +169,7 @@ function App() {
       const cats = s.subject === "astronomy" ? (s.astronomy_categories ?? [])
         : s.subject === "canada" ? (s.canada_categories ?? [])
         : s.subject === "math-kangaroo" ? (s.math_kangaroo_categories ?? [])
+        : s.subject === "leon" ? (s.leon_categories ?? [])
         : [];
       await fetchPool(student.id, s.subject, cats, s.difficulty_min ?? 1, s.difficulty_max ?? 5);
     },
@@ -268,6 +271,7 @@ function App() {
   const [pendingAstroCats, setPendingAstroCats] = useState<string[]>([]);
   const [pendingCanadaCats, setPendingCanadaCats] = useState<string[]>([]);
   const [pendingMathKangarooCats, setPendingMathKangarooCats] = useState<string[]>([]);
+  const [pendingLeonCats, setPendingLeonCats] = useState<string[]>([]);
   const ALL_SUBJECTS = ["astronomy", "canada", "math-kangaroo", "leon"] as const;
   const [enabledSubjects, setEnabledSubjects] = useState<string[]>([...ALL_SUBJECTS]);
   const [pendingEnabledSubjects, setPendingEnabledSubjects] = useState<string[]>([...ALL_SUBJECTS]);
@@ -441,6 +445,7 @@ function App() {
     const cats = newSubject === "astronomy" ? state.astronomyCategories
       : newSubject === "canada" ? state.canadaCategories
       : newSubject === "math-kangaroo" ? state.mathKangarooCategories
+      : newSubject === "leon" ? state.leonCategories
       : [];
     void fetchPool(sid, newSubject, cats, currentStudent?.difficultyMin ?? 1, currentStudent?.difficultyMax ?? 5);
   };
@@ -479,6 +484,7 @@ function App() {
     setPendingAstroCats([...s.astronomyCategories]);
     setPendingCanadaCats([...s.canadaCategories]);
     setPendingMathKangarooCats([...s.mathKangarooCategories]);
+    setPendingLeonCats([...s.leonCategories]);
     setPendingEnabledSubjects([...enabledSubjects]);
     setPendingFontSize((localStorage.getItem(FONT_SIZE_STORAGE_KEY) as FontSizePref | null) ?? "small");
     setTeacherOpen(true);
@@ -502,6 +508,9 @@ function App() {
     const kangarooDiff =
       JSON.stringify([...pendingMathKangarooCats].sort()) !==
       JSON.stringify([...s.mathKangarooCategories].sort());
+    const leonDiff =
+      JSON.stringify([...pendingLeonCats].sort()) !==
+      JSON.stringify([...s.leonCategories].sort());
     const prevFontSize = (localStorage.getItem(FONT_SIZE_STORAGE_KEY) as FontSizePref | null) ?? "small";
     const fontSizeDiff = pendingFontSize !== prevFontSize;
     localStorage.setItem(FONT_SIZE_STORAGE_KEY, pendingFontSize);
@@ -509,6 +518,7 @@ function App() {
     setAstronomyCategories(pendingAstroCats);
     setCanadaCategories(pendingCanadaCats);
     setMathKangarooCategories(pendingMathKangarooCats);
+    setLeonCategories(pendingLeonCats);
     setEnabledSubjects(pendingEnabledSubjects);
 
     // If current subject was disabled, switch to first still-enabled subject
@@ -532,16 +542,18 @@ function App() {
         astronomy_categories: pendingAstroCats,
         canada_categories: pendingCanadaCats,
         math_kangaroo_categories: pendingMathKangarooCats,
+        leon_categories: pendingLeonCats,
         enabled_subjects: pendingEnabledSubjects,
       } as Partial<ApiStudent>).catch(() => {});
     }
 
-    if (astroDiff || canadaDiff || kangarooDiff || fontSizeDiff || subjectChanged) {
+    if (astroDiff || canadaDiff || kangarooDiff || leonDiff || fontSizeDiff || subjectChanged) {
       // Re-fetch question pool so practice & test immediately reflect the new settings
       const finalSubject = getState().subject;
       const cats = finalSubject === "astronomy" ? pendingAstroCats
         : finalSubject === "canada" ? pendingCanadaCats
         : finalSubject === "math-kangaroo" ? pendingMathKangarooCats
+        : finalSubject === "leon" ? pendingLeonCats
         : [];
       setTestState({ running: false, finished: false, target: testLength, answered: 0, correct: 0 });
       setCanGoNext(false);
@@ -1331,6 +1343,40 @@ function App() {
                           ))}
                         </div>
                       </div>
+                      {(() => {
+                        const leonKeys = Object.keys(LEON_CATEGORY_LABELS).filter(k => k !== "all");
+                        const leonAllSelected = pendingLeonCats.length === 0;
+                        const toggleLeon = (key: string) => {
+                          const effective = leonAllSelected ? leonKeys : pendingLeonCats;
+                          if (effective.includes(key)) {
+                            const next = effective.filter(k => k !== key);
+                            setPendingLeonCats(next.length === 0 || next.length === leonKeys.length ? [] : next);
+                          } else {
+                            const next = [...effective, key];
+                            setPendingLeonCats(next.length === leonKeys.length ? [] : next);
+                          }
+                        };
+                        return (
+                          <div className="teacher-category-col">
+                            <label className="field-label">🧮 Leon Math</label>
+                            <div className="category-checkboxes">
+                              <label className="check-row">
+                                <input type="checkbox" checked={leonAllSelected}
+                                  onChange={() => setPendingLeonCats([])} />
+                                <span>All Types</span>
+                              </label>
+                              {leonKeys.map(key => (
+                                <label key={key} className="check-row">
+                                  <input type="checkbox"
+                                    checked={leonAllSelected || pendingLeonCats.includes(key)}
+                                    onChange={() => toggleLeon(key)} />
+                                  <span>{LEON_CATEGORY_LABELS[key]}</span>
+                                </label>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })()}
                     </div>
                   );
                 })()}

@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { questionsApi, uploadApi, type ApiQuestion } from "../../api/client";
 
-const SUBJECTS = ["astronomy", "canada", "math-kangaroo", "english"];
+const SUBJECTS = ["astronomy", "canada", "math-kangaroo", "leon", "english"];
 
 const CATEGORIES: Record<string, string[]> = {
   astronomy: ["solar-system", "stars-galaxies", "space-exploration", "nasa-ksc", "earth-space", "fun-fact", "astronomy-vocab"],
   canada: ["math", "science", "social-studies", "language-arts", "health"],
   "math-kangaroo": ["kangaroo-g5", "kangaroo-g6", "kangaroo-g7", "kangaroo-g8"],
+  leon: ["addition", "subtraction", "multiply"],
   english: ["spelling", "homophone", "prefix", "suffix", "multiple-meaning", "word-relationships", "compound-word", "context-clues"],
 };
 

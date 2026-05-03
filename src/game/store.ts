@@ -92,6 +92,11 @@ function availableLevels(): Level[] {
     }
     return levels.sort((a, b) => (state.learned[a.id] ?? 0) - (state.learned[b.id] ?? 0));
   }
+  if (state.subject === "leon") {
+    // Leon has no static fallback levels — return empty so the game shows nothing
+    // until the API cache is loaded
+    return [];
+  }
   const unlocked = getLevels().filter((level) => level.grade <= state.gradeUnlocked);
   return unlocked.sort((a, b) => (state.learned[a.id] ?? 0) - (state.learned[b.id] ?? 0));
 }
@@ -122,6 +127,11 @@ export function setCanadaCategories(categories: string[]): void {
 
 export function setMathKangarooCategories(categories: string[]): void {
   state = { ...state, mathKangarooCategories: categories };
+  emit();
+}
+
+export function setLeonCategories(categories: string[]): void {
+  state = { ...state, leonCategories: categories };
   emit();
 }
 
@@ -269,6 +279,7 @@ export function loadStudentState(id: number, data: {
   astronomy_categories: string[];
   canada_categories: string[];
   math_kangaroo_categories: string[];
+  leon_categories: string[];
 }): void {
   currentStudentId = id;
   state = {
@@ -285,6 +296,7 @@ export function loadStudentState(id: number, data: {
     astronomyCategories: data.astronomy_categories ?? [],
     canadaCategories: data.canada_categories ?? [],
     mathKangarooCategories: data.math_kangaroo_categories ?? [],
+    leonCategories: data.leon_categories ?? [],
   };
   emit();
 }

@@ -26,7 +26,10 @@ export type SkillType =
   | "science"
   | "social-studies"
   | "language-arts"
-  | "health";
+  | "health"
+  | "addition"
+  | "subtraction"
+  | "multiply";
 
 export interface Level {
   id: string;
@@ -41,6 +44,7 @@ export interface Level {
   hints: [string, string];
   coach: string;
   imageUrl?: string;
+  choiceImages?: (string | null)[];
 }
 
 export interface PlayerState {
@@ -56,6 +60,7 @@ export interface PlayerState {
   astronomyCategories: string[];
   canadaCategories: string[];
   mathKangarooCategories: string[];
+  leonCategories: string[];
 }
 
 export interface ShopItem {

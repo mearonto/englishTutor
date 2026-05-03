@@ -42,14 +42,14 @@ router.put("/:id", async (req: Request, res: Response) => {
   const allowed = [
     "name", "grade_unlocked", "xp", "stars", "tokens", "streak",
     "mastery3", "learned", "inventory", "subject",
-    "astronomy_categories", "canada_categories", "math_kangaroo_categories",
+    "astronomy_categories", "canada_categories", "math_kangaroo_categories", "leon_categories",
     "difficulty_min", "difficulty_max",
     "font_size", "test_length", "audio_enabled", "audio_rate",
     "lottery_cost", "lottery_prizes", "lottery_history",
     "enabled_subjects",
   ];
   const jsonFields = new Set(["mastery3", "learned", "inventory",
-    "astronomy_categories", "canada_categories", "math_kangaroo_categories",
+    "astronomy_categories", "canada_categories", "math_kangaroo_categories", "leon_categories",
     "lottery_prizes", "lottery_history", "enabled_subjects"]);
 
   const fields: string[] = [];
