@@ -34,6 +34,7 @@ export function QuestionForm({ question, onSave, onClose }: Props) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [uploadingChoiceIdx, setUploadingChoiceIdx] = useState<number | null>(null);
 
   useEffect(() => {
     setForm(question ?? blank());
@@ -47,6 +48,13 @@ export function QuestionForm({ question, onSave, onClose }: Props) {
     const choices = [...(form.choices ?? ["", "", "", ""])];
     choices[i] = val;
     setForm((f) => ({ ...f, choices }));
+  };
+
+  const setChoiceImage = (i: number, url: string | null) => {
+    const base = form.choice_images ?? (form.choices ?? ["", "", "", ""]).map(() => null);
+    const imgs = [...base] as (string | null)[];
+    imgs[i] = url;
+    setForm((f) => ({ ...f, choice_images: imgs }));
   };
 
   const setHint = (i: number, val: string) => {
@@ -141,17 +149,64 @@ export function QuestionForm({ question, onSave, onClose }: Props) {
 
           <div style={styles.row}>
             <label style={styles.label}>Choices</label>
-            <div style={{ display: "flex", flexDirection: "column", gap: 4, flex: 1 }}>
-              {(form.choices ?? ["", "", "", ""]).map((c, i) => (
-                <input key={i} style={styles.input} placeholder={`Choice ${i + 1}`}
-                  value={c} onChange={(e) => setChoice(i, e.target.value)} />
-              ))}
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
+              {(form.choices ?? ["", "", "", ""]).map((c, i) => {
+                const imgUrl = form.choice_images?.[i] ?? null;
+                return (
+                  <div key={i} style={{ display: "flex", flexDirection: "column", gap: 3,
+                    border: "1px solid #e2e8f0", borderRadius: 7, padding: "6px 8px", background: "#f8fafc" }}>
+                    <input style={styles.input} placeholder={`Choice ${i + 1} (text)`}
+                      value={c} onChange={(e) => setChoice(i, e.target.value)} />
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                      {imgUrl && (
+                        <>
+                          <img src={imgUrl} alt="" style={{ height: 48, borderRadius: 4,
+                            border: "1px solid #e2e8f0", objectFit: "contain" }} />
+                          <button type="button"
+                            style={{ padding: "1px 8px", background: "#fff1f2", border: "1px solid #fecdd3",
+                              borderRadius: 4, cursor: "pointer", fontSize: "0.76rem", color: "#be123c" }}
+                            onClick={() => setChoiceImage(i, null)}>
+                            ✕ Remove image
+                          </button>
+                        </>
+                      )}
+                      <label style={{ fontSize: "0.78rem", color: "#475569", cursor: "pointer",
+                        display: "flex", alignItems: "center", gap: 4 }}>
+                        🖼️
+                        <input type="file" accept="image/*"
+                          disabled={uploadingChoiceIdx !== null}
+                          style={{ display: "none" }}
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            setUploadingChoiceIdx(i);
+                            setError("");
+                            try {
+                              const { url } = await uploadApi.image(file);
+                              setChoiceImage(i, url);
+                            } catch (err) {
+                              setError(err instanceof Error ? err.message : "Upload failed");
+                            } finally {
+                              setUploadingChoiceIdx(null);
+                              e.target.value = "";
+                            }
+                          }} />
+                        {uploadingChoiceIdx === i ? "Uploading…" : imgUrl ? "Replace image" : "Add image"}
+                      </label>
+                    </div>
+                  </div>
+                );
+              })}
               <div style={{ display: "flex", gap: 6 }}>
                 {(form.choices?.length ?? 4) < 5 && (
                   <button type="button"
                     style={{ fontSize: "0.8rem", padding: "2px 10px", background: "#eff6ff",
                       border: "1px solid #bfdbfe", borderRadius: 5, cursor: "pointer", color: "#1d4ed8" }}
-                    onClick={() => setForm((f) => ({ ...f, choices: [...(f.choices ?? []), ""] }))}>
+                    onClick={() => setForm((f) => ({
+                      ...f,
+                      choices: [...(f.choices ?? []), ""],
+                      choice_images: [...(f.choice_images ?? (f.choices ?? []).map(() => null)), null],
+                    }))}>
                     + Add 5th choice
                   </button>
                 )}
@@ -159,7 +214,11 @@ export function QuestionForm({ question, onSave, onClose }: Props) {
                   <button type="button"
                     style={{ fontSize: "0.8rem", padding: "2px 10px", background: "#fff1f2",
                       border: "1px solid #fecdd3", borderRadius: 5, cursor: "pointer", color: "#be123c" }}
-                    onClick={() => setForm((f) => ({ ...f, choices: (f.choices ?? []).slice(0, -1) }))}>
+                    onClick={() => setForm((f) => ({
+                      ...f,
+                      choices: (f.choices ?? []).slice(0, -1),
+                      choice_images: (f.choice_images ?? []).slice(0, -1),
+                    }))}>
                     − Remove 5th choice
                   </button>
                 )}

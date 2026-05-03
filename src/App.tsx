@@ -255,6 +255,9 @@ function App() {
   const [canGoNext, setCanGoNext] = useState(false);
   const [knowledgeCard, setKnowledgeCard] = useState<KnowledgeCardData | null>(null);
   const [roundImageUrl, setRoundImageUrl] = useState<string | null>(null);
+  const [imageChoices, setImageChoices] = useState<{ choices: string[]; choiceImages: (string | null)[] } | null>(null);
+  const [disabledImageChoices, setDisabledImageChoices] = useState<Set<string>>(new Set());
+  const [coachImageAnswer, setCoachImageAnswer] = useState<string | null>(null);
   const [testState, setTestState] = useState<TestState>({
     running: false,
     finished: false,
@@ -293,10 +296,25 @@ function App() {
 
     const feedbackHandler = (payload: { message: string; good: boolean }) => setFeedback(payload);
     gameEvents.on("feedback", feedbackHandler);
-    gameEvents.on("round-start", (payload?: { imageUrl?: string }) => {
+    gameEvents.on("round-start", (payload?: { imageUrl?: string; choices?: string[]; choiceImages?: (string | null)[] }) => {
       setCanGoNext(false);
       setRoundImageUrl(payload?.imageUrl ?? null);
+      if (payload?.choices && payload?.choiceImages) {
+        setImageChoices({ choices: payload.choices, choiceImages: payload.choiceImages });
+      } else {
+        setImageChoices(null);
+      }
+      setDisabledImageChoices(new Set());
+      setCoachImageAnswer(null);
     });
+    const imageChoiceDisableHandler = ({ value }: { value: string }) => {
+      setDisabledImageChoices((prev) => new Set([...prev, value]));
+    };
+    const imageChoiceCoachHandler = ({ answer }: { answer: string }) => {
+      setCoachImageAnswer(answer);
+    };
+    gameEvents.on("image-choice-disable", imageChoiceDisableHandler);
+    gameEvents.on("image-choice-coach", imageChoiceCoachHandler);
     gameEvents.on("question-complete", (payload: {
       correct: boolean; word: string;
       definition?: string; contextSentence?: string; coach?: string;
@@ -372,6 +390,8 @@ function App() {
       gameEvents.off("feedback", feedbackHandler);
       gameEvents.off("round-start");
       gameEvents.off("question-complete");
+      gameEvents.off("image-choice-disable", imageChoiceDisableHandler);
+      gameEvents.off("image-choice-coach", imageChoiceCoachHandler);
       gameRef.current?.destroy(true);
       gameRef.current = null;
     };
@@ -412,6 +432,9 @@ function App() {
     setCanGoNext(false);
     setKnowledgeCard(null);
     setRoundImageUrl(null);
+    setImageChoices(null);
+    setDisabledImageChoices(new Set());
+    setCoachImageAnswer(null);
     setFeedback({ message: "", good: false });
     gameEvents.emit("command-set-mode", { testMode: false });
     const sid = currentStudent?.id ?? -1;
@@ -430,6 +453,9 @@ function App() {
     setCanGoNext(false);
     setKnowledgeCard(null);
     setRoundImageUrl(null);
+    setImageChoices(null);
+    setDisabledImageChoices(new Set());
+    setCoachImageAnswer(null);
     setFeedback({ message: "", good: false });
     // Tell Phaser immediately whether we're in test tab (suppresses all TTS)
     gameEvents.emit("command-set-mode", { testMode: newMode === "test" });
@@ -931,6 +957,57 @@ function App() {
             />
           </div>
         )}
+        {imageChoices && (() => {
+          const LETTERS = ["A", "B", "C", "D", "E"];
+          const cols = imageChoices.choices.length <= 3 ? imageChoices.choices.length : 2;
+          return (
+            <div style={{
+              position: "absolute", bottom: 0, left: 0, right: 0,
+              padding: "8px 12px 12px",
+              background: "rgba(248,250,252,0.97)",
+              borderTop: "1px solid #bfdbfe",
+              display: "grid",
+              gridTemplateColumns: `repeat(${cols}, 1fr)`,
+              gap: 8,
+              zIndex: 20,
+              pointerEvents: "auto",
+            }}>
+              {imageChoices.choices.map((choice, i) => {
+                const imgUrl = imageChoices.choiceImages[i] ?? null;
+                const isEliminated = disabledImageChoices.has(choice);
+                const isCoachAnswer = coachImageAnswer === choice;
+                const isDisabled = isEliminated || (coachImageAnswer !== null && !isCoachAnswer);
+                return (
+                  <button
+                    key={i}
+                    disabled={isDisabled}
+                    onClick={() => {
+                      if (!coachImageAnswer) gameEvents.emit("command-choice-selected", { choice });
+                    }}
+                    style={{
+                      display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
+                      padding: 8,
+                      border: isCoachAnswer ? "2.5px solid #f59e0b" : "1.5px solid #bfdbfe",
+                      borderRadius: 8,
+                      background: isCoachAnswer ? "#fef3c7" : "#fff",
+                      cursor: isDisabled ? "default" : "pointer",
+                      opacity: isEliminated ? 0.35 : 1,
+                      transition: "all 0.15s",
+                    }}
+                  >
+                    <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#64748b" }}>{LETTERS[i]}</span>
+                    {imgUrl ? (
+                      <img src={imgUrl} alt={`Choice ${LETTERS[i]}`}
+                        style={{ maxWidth: "100%", maxHeight: 110, borderRadius: 4, objectFit: "contain" }} />
+                    ) : (
+                      <span style={{ fontSize: "0.9rem", color: "#0a3d5c", textAlign: "center" }}>{choice}</span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          );
+        })()}
       </section>
 
       <section className="actions">
