@@ -86,7 +86,7 @@ router.post("/", async (req: Request, res: Response) => {
     difficulty = 3, active = true,
   } = req.body;
 
-  if (!subject || !type || !word || !prompt || !choices || !answer || !definition) {
+  if (!subject || !type || !word || !prompt || !choices || !answer) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
@@ -148,7 +148,7 @@ router.put("/:id", async (req: Request, res: Response) => {
   const allowed = [
     "subject", "type", "grade", "word", "prompt", "choices", "answer",
     "definition", "context_sentence", "hints", "coach", "difficulty", "active",
-    "image_url",
+    "image_url", "choice_images",
   ];
   const fields: string[] = [];
   const values: unknown[] = [];
@@ -156,7 +156,9 @@ router.put("/:id", async (req: Request, res: Response) => {
   for (const key of allowed) {
     if (key in req.body) {
       values.push(
-        key === "choices" || key === "hints" ? JSON.stringify(req.body[key]) : req.body[key]
+        key === "choices" || key === "hints" || key === "choice_images"
+          ? JSON.stringify(req.body[key])
+          : req.body[key]
       );
       fields.push(`${key} = $${values.length}`);
     }

@@ -71,7 +71,6 @@ export function QuestionForm({ question, onSave, onClose }: Props) {
   const validate = (): string => {
     if (!form.word?.trim()) return "Word is required";
     if (!form.prompt?.trim()) return "Prompt is required";
-    if (!form.definition?.trim()) return "Definition is required";
     const choices = form.choices?.filter(Boolean) ?? [];
     if (choices.length < 2) return "At least 2 choices are required";
     if (!form.answer?.trim()) return "Answer is required";
