@@ -4,7 +4,7 @@
  * Falls back to the static level functions if the API is unavailable.
  */
 import type { Level, SkillType } from "./types";
-import { getAstronomyLevels, getCanadaLevels, getMathKangarooLevels, getLevels } from "./levels";
+import { getAstronomyLevels, getCanadaLevels, getLevels } from "./levels";
 
 // Module-level cache
 let cachedPool: Level[] = [];
@@ -32,6 +32,13 @@ function rowToLevel(row: Record<string, unknown>): Level {
     })(),
     coach: String(row.coach ?? ""),
     imageUrl: row.image_url ? String(row.image_url) : undefined,
+    choiceImages: (() => {
+      if (!row.choice_images) return undefined;
+      const arr = Array.isArray(row.choice_images)
+        ? row.choice_images
+        : JSON.parse(String(row.choice_images));
+      return arr as (string | null)[];
+    })(),
   };
 }
 
@@ -131,13 +138,9 @@ function staticPool(subject: string, categories: string[]): Level[] {
       const filtered = pool.filter((l) => s.has(l.type));
       if (filtered.length) pool = filtered;
     }
-  } else if (subject === "math-kangaroo") {
-    pool = getMathKangarooLevels();
-    if (categories.length > 0) {
-      const s = new Set(categories);
-      const filtered = pool.filter((l) => s.has(l.type));
-      if (filtered.length) pool = filtered;
-    }
+  } else if (subject === "math-kangaroo" || subject === "leon") {
+    // Content is fully in the DB — no static fallback
+    pool = [];
   } else {
     pool = getLevels();
   }
